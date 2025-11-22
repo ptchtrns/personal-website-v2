@@ -9,7 +9,7 @@ This repository contains backend and frontend of my personal website. Deployed v
 Pages:
 
 - **About me** page with bio, links to social media
-- **Projects** list of projects, screenshots and links to them
+- **Projects** list of projects, screenshots and links to them (planned)
 - **Services** what I'm able to help with (planned)
 - **Contact me** form on a separate page (planned)
 - **Gallery** page, containing collection of photos (planned)
