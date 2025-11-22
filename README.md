@@ -29,4 +29,4 @@ Work in progress.
 
 ## License
 
-This project is licensed under [GNU General Public License version 3](LICENSE.md) license.
+This project is licensed under [GNU General Public License version 3](LICENSE) license.
