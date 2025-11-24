@@ -18,16 +18,15 @@
 
         <article class="flex flex-col gap-2">
           <h3 class="text-xl font-bold text-stone-900">UI Development Trainee - Internship</h3>
-          
-          <div class="flex justify-between items-center text-sm text-stone-700">
-            <a href="https://www.peikko.com/" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-medium">Peikko Group</a>
-            <span class="font-medium text-stone-500">October 2024 – May 2025</span>
-          </div>
+          <span class="text-sm text-stone-700 font-medium">October 2024 – May 2025</span>
+          <span>
+            <a href="https://www.peikko.com/" target="_blank" rel="noopener noreferrer" class="text-sm text-blue-700 hover:underline font-medium inline-block">Peikko Group</a>
+          </span>
           
           <ul class="list-disc ml-6 text-stone-700 leading-relaxed">
-            <li>Contributed to a software development project focusing on frontend, accurately implementing UI.</li>
-            <li>Gained practical experience utilizing technologies, including Azure DevOps and Blazor for UI development.</li>
-            <li>Implemented the Three.js component library for displaying 3D objects, improving visualization capabilities.</li>
+            <li>Contributed to a software development project focusing on frontend, accurately implementing UI components.</li>
+            <li>Gained practical experience utilizing technologies, including Blazor for UI development and Azure DevOps.</li>
+            <li>Implemented Three.js library in Blazor to display 3D objects.</li>
           </ul>
         </article>
       </section>
@@ -63,10 +62,11 @@
               
               <h3 class="text-xl font-bold text-stone-900">SimPictures</h3>
               
-               <p class="text-stone-700">
-                Website for sharing flight simulator screenshots & a social media platform, &laquo;The perfect place for your screenshots&raquo;.
-                User-friendly and neat UI, actively maintained website, tens of active users and moderators.
-              </p> 
+              <ul class="list-disc ml-6 text-stone-700 leading-relaxed">
+                <li>Social media platform for sharing flight simulator screenshots, resource to for flightsimmers find flight simulator addons they need.</li>
+                <li>Built with Next.js and PostgreSQL. Additionaly, ASP.NET Core, MongoDB, Appsmith and various Amazon Web Services are used under the hood.</li>
+                <li>Various systems, such as account management, image upload, own addon database, e-mail newsletter implemented.</li>
+              </ul>
             </a>
           </article>
         </div>

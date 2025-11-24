@@ -7,21 +7,14 @@
 
 @layer base {
     @font-face {
-        font-family: 'IBMPlexSans';
-        src: url('./assets/fonts/IBMPlexSans-VariableFont_wdth\,wght.ttf') format('truetype');
+        font-family: 'DINish';
+        src: url('./assets/fonts/DINish[slnt,wdth,wght].woff2') format('woff2');
         font-weight: 100 900;
         font-style: normal;
         font-display: swap;
     }
-    @font-face {
-        font-family: "IBMPlexSans";
-        src: url('./assets/fonts/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
-        font-weight: 100 900;
-        font-style: italic;
-        font-display: swap;
-    }
     @theme {
-        --font-ibm-plex-sans: 'IBMPlexSans', sans-serif;
+        --font-ibm-plex-sans: 'DINish', sans-serif;
     }
     body, html {
         font-family: var(--font-ibm-plex-sans);

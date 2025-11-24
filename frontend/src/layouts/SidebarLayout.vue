@@ -1,7 +1,7 @@
 <template>
   <div class="flex mx-auto 2xl:max-w-[1600px]">
     <Sidebar />
-    <div class="ml-90 xl:ml-112 mr-12">
+    <div class="ml-90 xl:ml-106 mr-12">
       <RouterView />
     </div>
   </div>

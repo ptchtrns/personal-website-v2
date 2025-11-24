@@ -1,5 +1,5 @@
 <template>
-  <nav class="fixed w-64 xl:w-86 m-12">
+  <nav class="fixed w-64 xl:w-80 m-12">
     <div class="bg-white rounded-[17px] flex flex-col p-3 border border-stone-300">
       <div class="px-3 py-2 flex flex-col gap-2.5">
         <img src="/nikolai.jpg" alt="Nikolai Zakharov" class="rounded-full w-32" />
@@ -8,8 +8,8 @@
           <span class="text-stone-700">&commat;ptchtrns</span>
         </div>
         <div class="flex gap-2">
-          <a v-for="socialMediaIcon in socialMediaIcons" :href="socialMediaIcon.url" target="_blank" rel="noopener noreferrer" class="text-stone-700 hover:text-stone-950">
-            <FontAwesomeIcon :icon="socialMediaIcon.icon" class="text-lg" />
+          <a v-for="socialMediaIcon in socialMediaIcons" :href="socialMediaIcon.url" target="_blank" rel="noopener noreferrer" class="text-stone-700 hover:text-stone-950 active:scale-92 transition-all">
+            <FontAwesomeIcon :icon="socialMediaIcon.icon" class="text-xl" />
           </a>
         </div>
       </div>
