@@ -1,4 +1,9 @@
 <template>
-  <h1 class="italic">Welcome to the Gallery Page!</h1>
-  <p>This is the main content area, rendered inside the SidebarLayout.</p>
+  <MainDisplay>
+    <p class="text-stone-900 dark:text-stone-100">Work on this page is in progress</p>
+  </MainDisplay>
 </template>
+
+<script setup>
+import MainDisplay from '@/components/MainDisplay.vue';
+</script>
