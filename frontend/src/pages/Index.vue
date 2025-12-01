@@ -39,7 +39,7 @@
         </h2>
         
         <article class="flex flex-row gap-6 items-center">
-          <img src="/metropolia_logo.png" alt="Metropolia Logo" class="w-16 md:w-24 my-2" />
+          <img src="/img/metropolia_logo.png" alt="Metropolia Logo" class="w-16 md:w-24 my-2" />
           <div class="flex flex-col gap-2">
             <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Information and Communication Technology - Bachelor's degree</h3>   
             <span class="text-stone-700 dark:text-stone-300">
@@ -49,7 +49,7 @@
         </article>
 
         <article class="flex flex-row gap-6 items-center">
-          <img src="/salpaus_logo.png" alt="Salpaus Logo" class="w-16 md:w-24 my-2" />
+          <img src="/img/salpaus_logo.png" alt="Salpaus Logo" class="w-16 md:w-24 my-2" />
           <div class="flex flex-col gap-2">
             <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Software Engineering - Vocational undergraduate degree</h3>   
             <span class="text-stone-700 dark:text-stone-300">
@@ -65,7 +65,7 @@
         </h2>
         <div class="flex flex-col gap-6">
           <article class="flex flex-row gap-6 items-start">
-            <img src="/simpictures_logo.svg" alt="SimPictures Logo" class="w-16 lg:w-24 my-2" />
+            <img src="/img/simpictures_logo.svg" alt="SimPictures Logo" class="w-16 lg:w-24 my-2" />
             <div class="flex flex-col gap-3">
               <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">SimPictures</h3>
               

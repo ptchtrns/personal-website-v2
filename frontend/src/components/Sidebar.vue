@@ -20,7 +20,7 @@
   >
     <div class="bg-white dark:bg-stone-900 rounded-[17px] flex flex-col p-3 border border-stone-300 dark:border-stone-700">
       <div class="px-3 py-2 flex flex-col gap-2.5">
-        <img src="/nikolai.jpg" alt="Nikolai Zakharov" class="rounded-full w-32" />
+        <img src="/img/nikolai.jpg" alt="Nikolai Zakharov" class="rounded-full w-32" />
         <div>
           <h2 class="font-bold text-xl dark:text-stone-100">Nikolai Zakharov</h2>
           <span class="text-stone-700 dark:text-stone-400">&commat;ptchtrns</span>
