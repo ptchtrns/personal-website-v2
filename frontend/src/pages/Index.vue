@@ -41,9 +41,9 @@
         <article class="flex flex-row gap-6 items-center">
           <img src="/img/metropolia_logo.png" alt="Metropolia Logo" class="w-16 md:w-24 my-2" />
           <div class="flex flex-col gap-2">
-            <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Information and Communication Technology - Bachelor's degree</h3>   
+            <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">Information and Communication Technology - Bachelor's degree (In Progress)</h3>   
             <span class="text-stone-700 dark:text-stone-300">
-              Metropolia University of Applied Sciences, 2025-now
+              Metropolia University of Applied Sciences, 2025-2029 (Expected)
             </span>
           </div>
         </article>

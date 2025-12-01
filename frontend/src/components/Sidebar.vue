@@ -9,7 +9,7 @@
   <div :class="[
     'fixed top-0 left-0 bottom-0 right-0 backdrop-blur-3xl bg-gradien',
     'bg-linear-to-br via-transparent from-black/25 to-transparent dark:from-white/10 dark:to-white/5',
-    isOpen ? 'fixed' : 'hidden']"
+    isOpen ? 'block md:hidden fixed' : 'hidden']"
   />
 
   <nav
