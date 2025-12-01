@@ -1,4 +1,4 @@
-> **⚠️ Attention: This website is in its early stages of development.**
+> **⚠️ Attention: This website is in its early stages of development. It is a mess right now.**
 
 # Personal Website v2
 
