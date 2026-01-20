@@ -7,6 +7,9 @@
           Nikolai Zakharov
         </h1>
         <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
+          &#x1F1EB;&#x1F1EE; Espoo, Finland
+        </p>
+        <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
           Software Development student with solid experience in different programming languages and frameworks, gained through practical work on various projects.
         </p>
       </section>
@@ -26,9 +29,10 @@
           </span>
           
           <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
-            <li>Contributed to a software development project focusing on frontend, accurately implementing UI components.</li>
-            <li>Gained practical experience utilizing technologies, including Blazor for UI development and Azure DevOps.</li>
-            <li>Implemented Three.js library in Blazor to display 3D objects.</li>
+            <li>Built UI layout and components, accurately following company&apos;s design guidelines and ensuring accessibility.</li>
+            <li>Used Blazor (C#) and Azure DevOps.</li>
+            <li>Used Three.js library to display 3D objects.</li>
+            <li>Worked in group and collaborated with students from LAB University of Applied Sciences.</li>
           </ul>
         </article>
       </section>
@@ -70,9 +74,10 @@
               <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">SimPictures</h3>
               
               <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
-                <li>Social media platform for sharing flight simulator screenshots, resource for flightsimmers to find the addons they need.</li>
-                <li>Built with Next.js and PostgreSQL. Additionally, ASP.NET Core, MongoDB, Appsmith and various AWS services are used.</li>
-                <li>Various systems, such as account management, image upload and processing, own addon database, e-mail newsletter implemented.</li>
+                <li>Social media platform for sharing flight simulator screenshots.</li>
+                <li>Built with Next.js and PostgreSQL. ASP.NET, multiple AWS services (s3, CloudFront, App Runner, ECR, Rekognition), Vercel, Discord.Net and Appsmith are also utilized.</li>
+                <li>Implemented account management, image upload and processing, custom UI design and components.</li>
+                <li>To be open-sourced in 2026.</li>
               </ul>
               <span>
                 <a href="https://www.simpictures.com/" target="_blank" rel="noopener noreferrer" class="text-blue-700 dark:text-blue-400 hover:underline inline-block">
@@ -92,17 +97,4 @@
 import MainDisplay from '@/components/MainDisplay.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
-import { ref, watch } from 'vue';
-
-const theme = ref<'light' | 'dark' | 'system'>('system');
-
-// Update <html> class based on theme
-watch(theme, (newTheme) => {
-  const html = document.documentElement;
-  html.classList.remove('dark');
-  
-  if (newTheme === 'dark' || (newTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    html.classList.add('dark');
-  }
-});
 </script>

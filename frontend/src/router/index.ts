@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import SidebarLayout from '@/layouts/SidebarLayout.vue';
 import IndexPage from '@/pages/Index.vue';
+import ServicesPage from '@/pages/Services.vue';
+import ContactPage from '@/pages/Contact.vue';
 import GalleryPage from '@/pages/Gallery.vue';
 import AudioPage from '@/pages/Audio.vue';
 
@@ -13,17 +15,27 @@ const router = createRouter({
       component: SidebarLayout,
       children: [
         {
-          path: '/',
+          path: '',
           name: 'Home',
           component: IndexPage,
         },
         {
-          path: '/gallery/',
+          path: 'services/',
+          name: 'Services',
+          component: ServicesPage,
+        },
+        {
+          path: 'contact/',
+          name: 'Contact me',
+          component: ContactPage,
+        },
+        {
+          path: 'gallery/',
           name: 'Gallery',
           component: GalleryPage,
         },
         {
-          path: '/audio/',
+          path: 'audio/',
           name: 'Audio',
           component: AudioPage,
         },

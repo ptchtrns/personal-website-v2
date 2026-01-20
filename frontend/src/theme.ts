@@ -1,29 +1,40 @@
+import { ref } from "vue";
+
 export type Theme = "dark" | "light" | "system";
 
-export function applyTheme(theme: Theme): void {
-    const html = document.documentElement;
+export function useTheme() {
+    const currentTheme = ref('system')
 
-    if (theme === "dark") {
-        html.classList.add("dark");
-        localStorage.setItem("theme", "dark");
-    } else if (theme === "light") {
-        html.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-    } else {
-        html.classList.remove("dark");
-        localStorage.removeItem("theme");
+    function updateTheme(theme: Theme): void {
+        const html = document.documentElement;
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        if (theme === "dark") {
+            html.classList.add("dark");
+            localStorage.setItem("theme", "dark");
+            currentTheme.value = "dark";
+        } else if (theme === "light") {
+            html.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+            currentTheme.value = "light";
+        } else if(systemPrefersDark) {
+            html.classList.add("dark");
+            localStorage.setItem("theme", "system");
+            currentTheme.value = "system";
+        } else {
+            html.classList.remove("dark");
+            localStorage.setItem("theme", "system");
+            currentTheme.value = "system";
+        }
     }
-}
 
-export function initTheme(): void {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     if (savedTheme) {
-        applyTheme(savedTheme);
-    } else if (systemPrefersDark) {
-        applyTheme("dark");
+        updateTheme(savedTheme);
     } else {
-        applyTheme("light");
+        updateTheme("system");
     }
+
+    return { currentTheme, updateTheme }
 }

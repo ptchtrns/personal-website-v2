@@ -63,7 +63,7 @@
           :key="theme.theme"
           :class="[
             'cursor-pointer active:scale-92 transition-all',
-            isActive(theme.theme) 
+            currentTheme === theme.theme
               ? 'text-blue-700' 
               : 'text-stone-400 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-200'
           ]"
@@ -85,9 +85,9 @@
 import { RouterLink, useRoute } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faGithub, faLinkedin, type IconDefinition } from '@fortawesome/free-brands-svg-icons';
-import { faBars, faCircleHalfStroke, faHeadphones, faImages, faMoon, faSun, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCircleHalfStroke, faHeadphones, faIdCardClip, faImages, faListUl, faMoon, faSun, faUser } from '@fortawesome/free-solid-svg-icons';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { applyTheme, type Theme } from '@/theme';
+import { useTheme, type Theme } from '@/theme';
 
 const isOpen = ref(false)
 const route = useRoute();
@@ -116,6 +116,16 @@ const navItems = [
     icon: faUser,
   },
   {
+    title: "Services",
+    url: "/services",
+    icon: faListUl,
+  },
+  {
+    title: "Contact me",
+    url: "/contact",
+    icon: faIdCardClip,
+  },
+  {
     title: "Gallery",
     url: "/gallery",
     icon: faImages,
@@ -127,18 +137,18 @@ const navItems = [
   },
 ]
 
-const currentTheme = ref('system')
+const { currentTheme, updateTheme } = useTheme();
 
 const updateCurrentTheme = () => {
   const saved = localStorage.getItem('theme')
-  if (saved === 'dark' || saved === 'light') currentTheme.value = saved
-  else currentTheme.value = 'system'
+  if (saved === 'dark' || saved === 'light') updateTheme(saved)
+  else updateTheme("system")
 }
 
-const handleSystemChange = (e: MediaQueryListEvent) => {
+const handleSystemChange = () => {
   if (!localStorage.getItem('theme')) {
-    applyTheme(e.matches ? 'dark' : 'light')
-    currentTheme.value = 'system'
+    updateTheme("system")
+    updateTheme("system")
   }
 }
 
@@ -158,19 +168,14 @@ onBeforeUnmount(() => {
 })
 
 const setDark = () => {
-  applyTheme('dark')
-  currentTheme.value = 'dark'
+  updateTheme('dark')
 }
 const setLight = () => {
-  applyTheme('light')
-  currentTheme.value = 'light'
+  updateTheme('light')
 }
 const setSystem = () => {
-  applyTheme('system')
-  currentTheme.value = 'system'
+  updateTheme('system')
 }
-
-const isActive = (theme: Theme) => currentTheme.value === theme
 
 const themes: {theme: Theme, icon: IconDefinition, action: () => void}[] = [
   { theme: 'dark', icon: faMoon, action: setDark },
