@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-import MainDisplay from '@/components/MainDisplay.vue';
+import MainDisplay from '@/components/layout/MainDisplay.vue';
 </script>

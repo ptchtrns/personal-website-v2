@@ -10,6 +10,7 @@
     'fixed top-0 left-0 bottom-0 right-0 backdrop-blur-3xl bg-gradien',
     'bg-linear-to-br via-transparent from-black/25 to-transparent dark:from-white/10 dark:to-white/5',
     isOpen ? 'block md:hidden fixed' : 'hidden']"
+    @click="closeMenu"
   />
 
   <nav
@@ -43,11 +44,12 @@
         <li v-for="navItem in navItems" :key="navItem.url">
           <RouterLink
             :to="navItem.url"
-            class="w-full py-1.5 px-3 flex gap-4
-              text-stone-700 dark:text-stone-300 hover:text-stone-950 dark:hover:text-white
-              hover:bg-linear-to-r from-stone-100 via-stone-100 to-stone-50 dark:from-stone-800 dark:via-stone-800 dark:to-stone-900
-              border border-transparent hover:border-stone-200 dark:hover:border-stone-600
-              rounded-lg active:scale-99 transition-all"
+            :class="['w-full py-1.5 px-3 flex gap-4',
+              route.path == navItem.url ? 'font-bold text-stone-950 dark:text-white' : 'text-stone-700 dark:text-stone-300',
+              'hover:text-stone-950 dark:hover:text-white',
+              'hover:bg-linear-to-r from-stone-100 via-stone-100 to-stone-50 dark:from-stone-800 dark:via-stone-800 dark:to-stone-900',
+              'border border-transparent hover:border-stone-200 dark:hover:border-stone-600',
+              'rounded-lg active:scale-99 transition-all']"
           >
             <span class="w-4"><FontAwesomeIcon :icon="navItem.icon" /></span>
             <span>{{ navItem.title }}</span>
@@ -62,9 +64,9 @@
           v-for="theme in themes"
           :key="theme.theme"
           :class="[
-            'cursor-pointer active:scale-92 transition-all',
+            'cursor-pointer active:scale-92 transition-all px-0.5',
             themeStore.currentTheme === theme.theme
-              ? 'text-blue-700' 
+              ? 'text-white bg-stone-400 dark:bg-stone-600 rounded-full' 
               : 'text-stone-400 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-200'
           ]"
           @click="theme.action"
@@ -86,8 +88,8 @@ import { RouterLink, useRoute } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faGithub, faLinkedin, type IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faBars, faCircleHalfStroke, faHeadphones, faIdCardClip, faImages, faListUl, faMoon, faSun, faUser } from '@fortawesome/free-solid-svg-icons';
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { useThemeStore, type Theme } from '@/theme';
+import { ref, watch } from 'vue';
+import { useThemeStore, type Theme } from '@/stores/theme';
 
 const isOpen = ref(false)
 const route = useRoute();
@@ -136,6 +138,10 @@ const navItems = [
     icon: faHeadphones,
   },
 ]
+
+function closeMenu() {
+  isOpen.value = false
+}
 
 const themeStore = useThemeStore();
 

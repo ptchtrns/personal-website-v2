@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import MainDisplay from '@/components/MainDisplay.vue';
+import MainDisplay from '@/components/layout/MainDisplay.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 </script>
