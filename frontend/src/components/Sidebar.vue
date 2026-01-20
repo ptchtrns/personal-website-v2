@@ -63,7 +63,7 @@
           :key="theme.theme"
           :class="[
             'cursor-pointer active:scale-92 transition-all',
-            currentTheme === theme.theme
+            themeStore.currentTheme === theme.theme
               ? 'text-blue-700' 
               : 'text-stone-400 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-200'
           ]"
@@ -87,7 +87,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faGithub, faLinkedin, type IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { faBars, faCircleHalfStroke, faHeadphones, faIdCardClip, faImages, faListUl, faMoon, faSun, faUser } from '@fortawesome/free-solid-svg-icons';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { useTheme, type Theme } from '@/theme';
+import { useThemeStore, type Theme } from '@/theme';
 
 const isOpen = ref(false)
 const route = useRoute();
@@ -137,49 +137,11 @@ const navItems = [
   },
 ]
 
-const { currentTheme, updateTheme } = useTheme();
-
-const updateCurrentTheme = () => {
-  const saved = localStorage.getItem('theme')
-  if (saved === 'dark' || saved === 'light') updateTheme(saved)
-  else updateTheme("system")
-}
-
-const handleSystemChange = () => {
-  if (!localStorage.getItem('theme')) {
-    updateTheme("system")
-    updateTheme("system")
-  }
-}
-
-let mediaQuery: MediaQueryList | null = null
-
-onMounted(() => {
-  updateCurrentTheme()
-  // Optionally watch system changes if needed
-  mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  mediaQuery.addEventListener('change', handleSystemChange)
-})
-
-onBeforeUnmount(() => {
-  if (mediaQuery) {
-    mediaQuery.removeEventListener('change', handleSystemChange)
-  }
-})
-
-const setDark = () => {
-  updateTheme('dark')
-}
-const setLight = () => {
-  updateTheme('light')
-}
-const setSystem = () => {
-  updateTheme('system')
-}
+const themeStore = useThemeStore();
 
 const themes: {theme: Theme, icon: IconDefinition, action: () => void}[] = [
-  { theme: 'dark', icon: faMoon, action: setDark },
-  { theme: 'light', icon: faSun, action: setLight },
-  { theme: 'system', icon: faCircleHalfStroke, action: setSystem },
+  { theme: 'dark', icon: faMoon, action: () => themeStore.updateTheme('dark') },
+  { theme: 'light', icon: faSun, action: () => themeStore.updateTheme('light') },
+  { theme: 'system', icon: faCircleHalfStroke, action: () => themeStore.updateTheme('system') },
 ]
 </script>
