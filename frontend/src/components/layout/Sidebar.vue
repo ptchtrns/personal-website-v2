@@ -128,14 +128,9 @@ const navItems = [
     icon: faIdCardClip,
   },
   {
-    title: "Gallery",
-    url: "/gallery",
+    title: "Media",
+    url: "/media",
     icon: faImages,
-  },
-  {
-    title: "Audio",
-    url: "/audio",
-    icon: faHeadphones,
   },
 ]
 

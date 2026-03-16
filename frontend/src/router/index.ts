@@ -4,8 +4,10 @@ import SidebarLayout from '@/layouts/SidebarLayout.vue';
 import IndexPage from '@/pages/Index.vue';
 import ServicesPage from '@/pages/Services.vue';
 import ContactPage from '@/pages/Contact.vue';
-import GalleryPage from '@/pages/Gallery.vue';
-import AudioPage from '@/pages/Audio.vue';
+import MediaPage from '@/pages/Media.vue';
+import AdminPage from '@/pages/Admin.vue';
+import LoginPage from '@/pages/Login.vue';
+import api from '@/lib/api';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,18 +32,42 @@ const router = createRouter({
           component: ContactPage,
         },
         {
-          path: 'gallery/',
-          name: 'Gallery',
-          component: GalleryPage,
+          path: 'media/',
+          name: 'Media',
+          component: MediaPage,
         },
         {
-          path: 'audio/',
-          name: 'Audio',
-          component: AudioPage,
+          path: 'admin/',
+          name: 'Admin',
+          component: AdminPage,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'login/',
+          name: 'Login',
+          component: LoginPage,
+          meta: { redirectIfAuth: true }
         },
       ],
     },
   ],
+});
+
+router.beforeEach(async (to) => {
+  if (to.meta.requiresAuth) {
+    try {
+      await api.get("/me", { withCredentials: true });
+    } catch {
+      return "/login";
+    }
+  }
+
+  if (to.meta.redirectIfAuth) {
+    try {
+      await api.get("/me", { withCredentials: true });
+      return "/admin";
+    } catch {}
+  }
 });
 
 export default router

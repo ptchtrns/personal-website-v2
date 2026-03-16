@@ -1,4 +1,4 @@
-> **⚠️ Attention: This website is in its early stages of development. It is a mess right now.	**
+> ⚠️ Many of the website's features are currently not implemented
 
 # Personal Website v2
 
@@ -11,16 +11,17 @@ Pages:
 - **About me** in style of CV
 - **Services** what I'm able to help with (planned)
 - **Contact me** form on a separate page (planned)
-- **Gallery** page, containing collection of photos (planned)
-- **Audio** page, containing collection of music (planned)
+- **Media** page, containing collection of photos and music (planned)
 
 ## Tech stack
 
 This project runs on:
 
-- backend written in Go
-- frontend made with Vue
-- mongodb database
+- Backend written in Python (Flask)
+- Frontend made with Vue
+- MongoDB database
+- AWS s3 + CloudFront
+- Lambda functions for image optimization (planned)
 
 ## License
 

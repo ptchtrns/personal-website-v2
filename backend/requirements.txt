@@ -1,0 +1,6 @@
+flask>=3.1
+flask-cors>=6.0
+pymongo>=4.16
+boto3>=1.42
+PyJWT>=2.11
+python-dotenv>=1.2
