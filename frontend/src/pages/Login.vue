@@ -1,31 +1,35 @@
 <template>
   <MainDisplay>
-    <div class="border border-stone-300 dark:border-stone-600 rounded-lg p-4 w-full">
-        <h2 class="text-xl mb-2">Login</h2>
-        <form @submit.prevent="handleSubmit" class="flex flex-col gap-3">        
-            <div class="flex flex-col gap-1.5">
-                <label for="password">Password</label>
-                <input 
-                id="password"
-                v-model="form.password"
-                type="password" 
-                name="password"
-                placeholder="Enter password"
-                required
-                class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
-                />
-            </div>
-        
-            <div v-if="error" class="error-message">{{ error }}</div>
-        
-            <button 
-                type="submit" 
-                :disabled="loading"
-                class="bg-stone-800 text-white p-1.5 rounded-lg"
-            >
-                {{ loading ? 'Loading...' : 'Log in' }}
-            </button>
-        </form>
+    <div class="w-full max-w-sm">
+      <Card>
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form @submit.prevent="handleSubmit" class="flex flex-col gap-3">
+            <FieldSet>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel for="password">Password</FieldLabel>
+                  <Input
+                    id="password"
+                    v-model="form.password"
+                    type="password"
+                    name="password"
+                    placeholder="Enter password"
+                    required
+                  />
+                  <FieldError v-if="error">{{ error }}</FieldError>
+                </Field>
+              </FieldGroup>
+            </FieldSet>
+
+            <Button type="submit" :disabled="loading" class="w-full" variant="ghost">
+              {{ loading ? 'Loading...' : 'Log in' }}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   </MainDisplay>
 </template>
@@ -34,6 +38,10 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import MainDisplay from '@/components/layout/MainDisplay.vue';
+import { Input } from '@/components/ui/input';
+import { FieldSet, FieldGroup, Field, FieldLabel, FieldError } from '@/components/ui/field';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const router = useRouter();
 const form = reactive({
@@ -59,10 +67,7 @@ const handleSubmit = async () => {
       throw new Error(data.error || 'Failed to log in');
     }
 
-    // Reset form on success
     form.password = '';
-
-    // Redirect to admin page
     router.push('/admin');
   } catch (err) {
     error.value = err.message || 'Failed to log in';
@@ -71,14 +76,3 @@ const handleSubmit = async () => {
   }
 };
 </script>
-
-<style scoped>
-.error-message {
-  padding: 0.75rem;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
-  border-radius: 4px;
-  color: #991b1b;
-  font-size: 0.875rem;
-}
-</style>

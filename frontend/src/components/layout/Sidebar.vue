@@ -1,13 +1,16 @@
 <template>
-  <button
+  <Button
+    variant="outline"
+    size="icon"
     @click="isOpen = !isOpen"
-    class="md:hidden fixed top-6 left-0 z-50 bg-white dark:bg-stone-800 p-1.5 rounded-r-lg border-r border-b border-t border-stone-300 dark:border-stone-600 active:scale-95 transition-all"
+    aria-label="Open menu"
+    class="md:hidden fixed top-6 left-0 z-50 rounded-l-none rounded-r-lg border-l-0 bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600 active:scale-95"
   >
-    <FontAwesomeIcon :icon="faBars" class="text-xl text-stone-800 dark:text-stone-200" />
-  </button>
+    <FontAwesomeIcon :icon="faBars" class="text-stone-800 dark:text-stone-200" />
+  </Button>
 
   <div :class="[
-    'fixed top-0 left-0 bottom-0 right-0 backdrop-blur-3xl bg-gradien',
+    'fixed top-0 left-0 bottom-0 right-0 backdrop-blur-3xl bg-gradient',
     'bg-linear-to-br via-transparent from-black/25 to-transparent dark:from-white/10 dark:to-white/5',
     isOpen ? 'block md:hidden fixed' : 'hidden']"
     @click="closeMenu"
@@ -19,24 +22,12 @@
       isOpen ? 'translate-x-0' : '-translate-x-120'
     ]"
   >
-    <div class="bg-white dark:bg-stone-900 rounded-[17px] flex flex-col p-3 border border-stone-300 dark:border-stone-700">
-      <div class="px-3 py-2 flex flex-col gap-2.5">
+    <Card class="bg-white dark:bg-stone-900 rounded-[17px] flex flex-col p-3 border border-stone-300 dark:border-stone-700">
+      <div class="px-3 pt-2 flex flex-col gap-2.5">
         <img src="/img/nikolai.jpg" alt="Nikolai Zakharov" class="rounded-full w-32" />
         <div>
           <h2 class="font-bold text-xl dark:text-stone-100">Nikolai Zakharov</h2>
           <span class="text-stone-700 dark:text-stone-400">&commat;ptchtrns</span>
-        </div>
-        <div class="flex gap-2">
-          <a
-            v-for="socialMediaIcon in socialMediaIcons"
-            :key="socialMediaIcon.url"
-            :href="socialMediaIcon.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-stone-700 dark:text-stone-300 hover:text-stone-950 dark:hover:text-white active:scale-92 transition-all"
-          >
-            <FontAwesomeIcon :icon="socialMediaIcon.icon" class="text-xl" />
-          </a>
         </div>
       </div>
 
@@ -56,29 +47,44 @@
           </RouterLink>
         </li>
       </ul>
-    </div>
 
-    <footer class="px-6 flex justify-between mt-4">
-      <div class="flex gap-2">
-        <button
+      <Separator />
+
+      <footer class="flex flex-col gap-2">
+        <div class="flex">
+          <Button
+            v-for="socialMediaIcon in socialMediaIcons"
+            :key="socialMediaIcon.url"
+            as="a"
+            variant="ghost"
+            size="icon"
+            :href="socialMediaIcon.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon :icon="socialMediaIcon.icon" class="text-lg" />
+          </Button>
+        </div>
+      </footer>
+    </Card>
+
+    <div class="px-3 flex justify-between mt-4">
+      <div class="flex">
+        <Button
           v-for="theme in themes"
           :key="theme.theme"
-          :class="[
-            'cursor-pointer active:scale-92 transition-all px-0.5',
-            themeStore.currentTheme === theme.theme
-              ? 'text-white bg-stone-400 dark:bg-stone-600 rounded-full' 
-              : 'text-stone-400 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-200'
-          ]"
+          variant="ghost"
+          size="icon-sm"
           @click="theme.action"
         >
           <FontAwesomeIcon :icon="theme.icon" />
-        </button>
+        </Button>
       </div>
 
       <div class="flex gap-2">
         <!-- Language switching placeholder -->
       </div>
-    </footer>
+    </div>
   </nav>
 </template>
 
@@ -87,9 +93,12 @@
 import { RouterLink, useRoute } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faGithub, faLinkedin, type IconDefinition } from '@fortawesome/free-brands-svg-icons';
-import { faBars, faCircleHalfStroke, faHeadphones, faIdCardClip, faImages, faListUl, faMoon, faSun, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCircleHalfStroke, faIdCardClip, faImages, faListUl, faMoon, faSun, faUser } from '@fortawesome/free-solid-svg-icons';
 import { ref, watch } from 'vue';
 import { useThemeStore, type Theme } from '@/stores/theme';
+import Card from '../ui/card/Card.vue';
+import Separator from '../ui/separator/Separator.vue';
+import { Button } from '../ui/button';
 
 const isOpen = ref(false)
 const route = useRoute();
