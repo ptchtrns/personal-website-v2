@@ -92,10 +92,8 @@
 
 
 <script setup>
-import axios from 'axios';
 import { reactive, ref } from 'vue';
 import MainDisplay from '@/components/layout/MainDisplay.vue';
-import api from '@/lib/api';
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -147,8 +145,22 @@ const handleSubmit = async () => {
 
     console.log(image);
 
-    const res = await api.post('/photos', formData);
-    await axios.put(res.data.presigned_url, image, { headers: { 'Content-Type': image.type, 'X-Amz-Tagging': 'OriginalPhoto=True' } });
+    const res = await fetch('api/photos', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Failed to upload image');
+    }
+    const { presigned_url } = await res.json();
+    await fetch(presigned_url, {
+      method: 'PUT',
+      headers: { 'Content-Type': image.type, 'X-Amz-Tagging': 'OriginalPhoto=True' },
+      body: image,
+    });
 
     // Reset form on success
     form.image = null;
@@ -161,7 +173,7 @@ const handleSubmit = async () => {
       success.value = '';
     }, 3000);
   } catch (err) {
-    error.value = err.response?.data?.error || err.message || 'Failed to upload image';
+    error.value = err.message || 'Failed to upload image';
   } finally {
     loading.value = false;
   }

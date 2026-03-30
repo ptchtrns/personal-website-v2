@@ -30,12 +30,11 @@
 
 <script setup>
 import MainDisplay from '@/components/layout/MainDisplay.vue';
-import api from '@/lib/api';
 import { useQuery } from '@tanstack/vue-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const { data, isLoading, error } = useQuery({
   queryKey: ["photos"],
-  queryFn: () => api.get("/photos", { withCredentials: true }).then(res => res.data),
+  queryFn: () => fetch('api/photos', { credentials: 'include' }).then(res => res.json()),
 })
 </script>

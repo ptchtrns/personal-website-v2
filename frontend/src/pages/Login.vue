@@ -34,7 +34,6 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import MainDisplay from '@/components/layout/MainDisplay.vue';
-import api from '@/lib/api';
 
 const router = useRouter();
 const form = reactive({
@@ -49,15 +48,24 @@ const handleSubmit = async () => {
   loading.value = true;
 
   try {
-    await api.post("/login", form, { withCredentials: true });
+    const res = await fetch('api/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Failed to log in');
+    }
 
     // Reset form on success
     form.password = '';
-    
+
     // Redirect to admin page
     router.push('/admin');
   } catch (err) {
-    error.value = err.response?.data?.error || err.message || 'Failed to log in';
+    error.value = err.message || 'Failed to log in';
   } finally {
     loading.value = false;
   }

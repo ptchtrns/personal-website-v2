@@ -7,7 +7,6 @@ import ContactPage from '@/pages/Contact.vue';
 import MediaPage from '@/pages/Media.vue';
 import AdminPage from '@/pages/Admin.vue';
 import LoginPage from '@/pages/Login.vue';
-import api from '@/lib/api';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,7 +55,8 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   if (to.meta.requiresAuth) {
     try {
-      await api.get("/me", { withCredentials: true });
+      const res = await fetch('api/me', { credentials: 'include' });
+      if (!res.ok) return "/login";
     } catch {
       return "/login";
     }
@@ -64,8 +64,8 @@ router.beforeEach(async (to) => {
 
   if (to.meta.redirectIfAuth) {
     try {
-      await api.get("/me", { withCredentials: true });
-      return "/admin";
+      const res = await fetch('api/me', { credentials: 'include' });
+      if (res.ok) return "/admin";
     } catch {}
   }
 });
