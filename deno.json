@@ -45,7 +45,9 @@
     "wrangler": "npm:wrangler@4.125.0",
     "tailwind-merge": "npm:tailwind-merge@^3.6.0",
     "@std/dotenv/load": "jsr:@std/dotenv@^0.225.8/load",
-    "@std/http/cookie": "jsr:@std/http@^1.1.3/cookie"
+    "@std/http/cookie": "jsr:@std/http@^1.1.3/cookie",
+    "@std/path": "jsr:@std/path@^1.1.2",
+    "@std/media-types": "jsr:@std/media-types@^1.1.0"
   },
   "compilerOptions": {
     "lib": [

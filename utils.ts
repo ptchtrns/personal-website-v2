@@ -5,6 +5,8 @@ import { createDefine } from "fresh";
 export interface State {
   /** Whether the request carries a valid admin session cookie. */
   isAdmin: boolean;
+  /** Sidebar profile picture URL, resolved once per request. */
+  pfpSrc: string | null;
 }
 
 export const define = createDefine<State>();

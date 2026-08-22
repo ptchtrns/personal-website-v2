@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { getDb } from "@/db/local-client.ts";
-import { education, projects, workExperience } from "@/db/schema.ts";
+import { education, media, projects, workExperience } from "@/db/schema.ts";
 
 export type WorkExperienceItem = typeof workExperience.$inferSelect;
 export type EducationItem = typeof education.$inferSelect;
@@ -26,4 +26,15 @@ export async function listPinnedProjects(): Promise<ProjectItem[]> {
     .from(projects)
     .where(eq(projects.isPinned, true))
     .orderBy(desc(projects.createdAt));
+}
+
+/** Returns the sidebar profile picture's URL, or null if none has been uploaded yet. */
+export async function getPfpSrc(): Promise<string | null> {
+  const [row] = await getDb()
+    .select({ src: media.src })
+    .from(media)
+    .where(eq(media.type, "pfp"))
+    .orderBy(desc(media.id))
+    .limit(1);
+  return row?.src ?? null;
 }

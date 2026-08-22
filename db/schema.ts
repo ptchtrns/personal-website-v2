@@ -9,7 +9,8 @@ import {
 export const media = sqliteTable("media", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   src: text("src").notNull(),
-  type: text("type", { enum: ["image", "pdf", "audio", "link"] }).notNull(),
+  type: text("type", { enum: ["image", "pdf", "audio", "link", "pfp"] })
+    .notNull(),
 });
 
 export const projects = sqliteTable("projects", {
@@ -18,7 +19,6 @@ export const projects = sqliteTable("projects", {
   description: text("description", { mode: "json" }).$type<string[]>(),
   changelog: text("changelog"),
   shortOverview: text("short_overview"),
-  logoSrc: text("logo_src"),
   externalUrl: text("external_url"),
   isPinned: integer("is_pinned", { mode: "boolean" }).notNull().default(false),
   isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),

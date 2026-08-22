@@ -1,8 +1,35 @@
+import { extname } from "@std/path";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db/local-client.ts";
-import { education, projects, workExperience } from "@/db/schema.ts";
+import {
+  education,
+  gallery,
+  media,
+  projects,
+  projectsToMedia,
+  workExperience,
+} from "@/db/schema.ts";
+import { PHOTO_BASE_URL } from "@/lib/config.ts";
+import {
+  disposeLocalStorage,
+  getCdnBucket,
+  type LocalR2Bucket,
+} from "@/lib/storage-local.ts";
 
 type Db = ReturnType<typeof getDb>;
+
+/** Puts a seed file into the local CDN bucket and returns its public URL. */
+async function uploadSeedFile(
+  bucket: LocalR2Bucket,
+  folder: string,
+  file: URL,
+): Promise<string> {
+  const key = `media/${folder}/${crypto.randomUUID()}/original${
+    extname(file.pathname)
+  }`;
+  await bucket.put(key, await Deno.readFile(file));
+  return `${PHOTO_BASE_URL}/${key}`;
+}
 
 const workExperienceSeed: (typeof workExperience.$inferInsert)[] = [
   {
@@ -20,27 +47,30 @@ const workExperienceSeed: (typeof workExperience.$inferInsert)[] = [
   },
 ];
 
-const educationSeed: (typeof education.$inferInsert)[] = [
-  {
-    degreeTitle:
-      "Information and Communication Technology - Bachelor's degree (In Progress)",
-    degreeType: "Bachelor's degree",
-    educationInstitution: "Metropolia University of Applied Sciences",
-    institutionLogoSrc: "/img/metropolia_logo.png",
-    startedAt: new Date("2025-08-01T00:00:00Z"),
-    finishedAt: null,
-  },
-  {
-    degreeTitle: "Software Engineering - Vocational undergraduate degree",
-    degreeType: "Vocational undergraduate degree",
-    educationInstitution: "Salpaus Further Education",
-    institutionLogoSrc: "/img/salpaus_logo.png",
-    startedAt: new Date("2023-01-01T00:00:00Z"),
-    finishedAt: new Date("2025-06-01T00:00:00Z"),
-  },
-];
+const educationSeed:
+  (Omit<typeof education.$inferInsert, "institutionLogoSrc"> & {
+    logoFile: URL;
+  })[] = [
+    {
+      degreeTitle:
+        "Information and Communication Technology - Bachelor's degree (In Progress)",
+      degreeType: "Bachelor's degree",
+      educationInstitution: "Metropolia University of Applied Sciences",
+      logoFile: new URL("../seed/metropolia_logo.png", import.meta.url),
+      startedAt: new Date("2025-08-01T00:00:00Z"),
+      finishedAt: null,
+    },
+    {
+      degreeTitle: "Software Engineering - Vocational undergraduate degree",
+      degreeType: "Vocational undergraduate degree",
+      educationInstitution: "Salpaus Further Education",
+      logoFile: new URL("../seed/salpaus_logo.png", import.meta.url),
+      startedAt: new Date("2023-01-01T00:00:00Z"),
+      finishedAt: new Date("2025-06-01T00:00:00Z"),
+    },
+  ];
 
-const projectsSeed: (typeof projects.$inferInsert)[] = [
+const projectsSeed: (typeof projects.$inferInsert & { logoFile?: URL })[] = [
   {
     name: "SimPictures",
     description: [
@@ -49,11 +79,40 @@ const projectsSeed: (typeof projects.$inferInsert)[] = [
       "Implemented account management, image upload and processing, custom UI design and components.",
       "To be open-sourced in 2026.",
     ],
-    logoSrc: "/img/simpictures_logo.svg",
     externalUrl: "https://www.simpictures.com/",
     isPinned: true,
+    logoFile: new URL("../seed/simpictures_logo.svg", import.meta.url),
   },
 ];
+
+const gallerySeed: { description: string; file: URL }[] = [
+  {
+    description: "20240828_152407",
+    file: new URL("../seed/20240828_152407.jpg", import.meta.url),
+  },
+  {
+    description: "20240831_185046",
+    file: new URL("../seed/20240831_185046.jpg", import.meta.url),
+  },
+  {
+    description: "20240919_220651_862",
+    file: new URL("../seed/20240919_220651_862.jpg", import.meta.url),
+  },
+  {
+    description: "20241127_150530",
+    file: new URL("../seed/20241127_150530.jpg", import.meta.url),
+  },
+  {
+    description: "20250518_192239",
+    file: new URL("../seed/20250518_192239.jpg", import.meta.url),
+  },
+  {
+    description: "20260705_123908",
+    file: new URL("../seed/20260705_123908.jpg", import.meta.url),
+  },
+];
+
+const pfpSeed = { file: new URL("../seed/nikolai.jpg", import.meta.url) };
 
 /** Inserts each seed row only if a row with the same natural key isn't already present, so re-running never clobbers admin edits. */
 async function seedWorkExperience(db: Db) {
@@ -73,8 +132,8 @@ async function seedWorkExperience(db: Db) {
   }
 }
 
-async function seedEducation(db: Db) {
-  for (const row of educationSeed) {
+async function seedEducation(db: Db, bucket: LocalR2Bucket) {
+  for (const { logoFile, ...row } of educationSeed) {
     const existing = await db
       .select({ id: education.id })
       .from(education)
@@ -86,27 +145,89 @@ async function seedEducation(db: Db) {
       )
       .limit(1);
     if (existing.length > 0) continue;
-    await db.insert(education).values(row);
+
+    const institutionLogoSrc = await uploadSeedFile(
+      bucket,
+      "education",
+      logoFile,
+    );
+    await db.insert(education).values({ ...row, institutionLogoSrc });
   }
 }
 
-async function seedProjects(db: Db) {
-  for (const row of projectsSeed) {
+/**
+ * Inserts each seed project and, if it has a logo, uploads it as a `media`
+ * row linked through `projects_to_media`.
+ */
+async function seedProjects(db: Db, bucket: LocalR2Bucket) {
+  for (const { logoFile, ...row } of projectsSeed) {
     const existing = await db
       .select({ id: projects.id })
       .from(projects)
       .where(eq(projects.name, row.name))
       .limit(1);
     if (existing.length > 0) continue;
-    await db.insert(projects).values(row);
+
+    const [projectRow] = await db.insert(projects).values(row).returning();
+
+    if (logoFile) {
+      const src = await uploadSeedFile(bucket, "projects", logoFile);
+      const [mediaRow] = await db.insert(media).values({ src, type: "image" })
+        .returning();
+      await db.insert(projectsToMedia).values({
+        projectId: projectRow.id,
+        mediaId: mediaRow.id,
+      });
+    }
   }
+}
+
+/**
+ * Puts each seed image's bytes into the local CDN bucket (Miniflare's R2
+ * emulation, see `lib/storage-local.ts`) and inserts the matching
+ * `media`/`gallery` rows, so `/media` has something to show in local dev.
+ */
+async function seedGallery(db: Db, bucket: LocalR2Bucket) {
+  for (const item of gallerySeed) {
+    const existing = await db
+      .select({ id: gallery.id })
+      .from(gallery)
+      .where(eq(gallery.description, item.description))
+      .limit(1);
+    if (existing.length > 0) continue;
+
+    const src = await uploadSeedFile(bucket, "gallery", item.file);
+    const [mediaRow] = await db.insert(media).values({ src, type: "image" })
+      .returning();
+    await db.insert(gallery).values({
+      description: item.description,
+      imageId: mediaRow.id,
+    });
+  }
+}
+
+/** Uploads the seed profile picture and inserts it as the sole `pfp` media row, if one doesn't already exist. */
+async function seedPfp(db: Db, bucket: LocalR2Bucket) {
+  const existing = await db
+    .select({ id: media.id })
+    .from(media)
+    .where(eq(media.type, "pfp"))
+    .limit(1);
+  if (existing.length > 0) return;
+
+  const src = await uploadSeedFile(bucket, "pfp", pfpSeed.file);
+  await db.insert(media).values({ src, type: "pfp" });
 }
 
 async function main() {
   const db = getDb();
+  const bucket = await getCdnBucket();
   await seedWorkExperience(db);
-  await seedEducation(db);
-  await seedProjects(db);
+  await seedEducation(db, bucket);
+  await seedProjects(db, bucket);
+  await seedGallery(db, bucket);
+  await seedPfp(db, bucket);
+  await disposeLocalStorage();
   console.log("Seed complete.");
 }
 

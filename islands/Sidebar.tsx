@@ -46,9 +46,11 @@ const themes: { theme: Theme; icon: (props: IconProps) => JSX.Element }[] = [
 interface SidebarProps {
   /** Current pathname, used to highlight the active nav item. */
   path: string;
+  /** Profile picture URL fetched from the media table, or null if none is set. */
+  pfpSrc: string | null;
 }
 
-export default function Sidebar({ path }: SidebarProps) {
+export default function Sidebar({ path, pfpSrc }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => watchSystemTheme(() => {}), []);
@@ -82,11 +84,13 @@ export default function Sidebar({ path }: SidebarProps) {
       >
         <Card class="bg-white dark:bg-stone-900 rounded-[17px] flex flex-col p-3 border border-stone-300 dark:border-stone-700">
           <div class="px-3 pt-2 flex flex-col gap-2.5">
-            <img
-              src="/img/nikolai.jpg"
-              alt="Nikolai Zakharov"
-              class="rounded-full w-32"
-            />
+            {pfpSrc && (
+              <img
+                src={pfpSrc}
+                alt="Nikolai Zakharov"
+                class="rounded-full w-32"
+              />
+            )}
             <div>
               <h2 class="font-bold text-xl dark:text-stone-100">
                 Nikolai Zakharov

@@ -154,13 +154,6 @@ export default define.page<typeof handler>(function Home({ data }) {
             {projects.map((project) => (
               <Card key={project.id}>
                 <CardContent class="flex flex-row gap-6 items-start">
-                  {project.logoSrc && (
-                    <img
-                      src={project.logoSrc}
-                      alt={`${project.name} Logo`}
-                      class="w-16 lg:w-24 my-2"
-                    />
-                  )}
                   <div class="flex flex-col gap-3">
                     <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
                       {project.name}

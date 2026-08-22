@@ -2,6 +2,7 @@ import { App, staticFiles } from "fresh";
 import { getCookies } from "@std/http/cookie";
 import { define, type State } from "./utils.ts";
 import { COOKIE_NAME, validateToken } from "@/lib/auth.ts";
+import { getPfpSrc } from "@/lib/portfolio.ts";
 
 export const app = new App<State>();
 
@@ -14,6 +15,14 @@ const authMiddleware = define.middleware(async (ctx) => {
   return await ctx.next();
 });
 app.use(authMiddleware);
+
+// Fresh layouts don't support their own `handler` export, so the sidebar's
+// pfp is resolved here and read off `ctx.state` in `routes/_layout.tsx`.
+const pfpMiddleware = define.middleware(async (ctx) => {
+  ctx.state.pfpSrc = await getPfpSrc().catch(() => null);
+  return await ctx.next();
+});
+app.use(pfpMiddleware);
 
 // Include file-system based routes here
 app.fsRoutes();

@@ -11,6 +11,7 @@ import tailwindcss from "@tailwindcss/vite";
 const serverOnlyDependencies = [
   "@aws-sdk/client-s3",
   "@aws-sdk/s3-request-presigner",
+  "wrangler",
 ];
 
 function externalizeServerDependencies(): Plugin {
