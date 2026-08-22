@@ -3,13 +3,12 @@ import { fresh } from "@fresh/plugin-vite";
 import tailwindcss from "@tailwindcss/vite";
 
 /**
- * The MongoDB driver and the AWS SDK are CommonJS packages whose interop
- * breaks once Vite transforms or bundles them. Keeping them external leaves
- * the bare specifiers in place so Deno loads them at runtime, which means
- * `deno install` has to run before `deno task start`.
+ * The AWS SDK is a CommonJS package whose interop breaks once Vite
+ * transforms or bundles it. Keeping it external leaves the bare specifier
+ * in place so Deno loads it at runtime, which means `deno install` has to
+ * run before `deno task start`.
  */
 const serverOnlyDependencies = [
-  "mongodb",
   "@aws-sdk/client-s3",
   "@aws-sdk/s3-request-presigner",
 ];

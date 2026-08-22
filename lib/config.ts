@@ -4,10 +4,6 @@ function env(key: string, fallback: string): string {
   return Deno.env.get(key) ?? fallback;
 }
 
-export const MONGO_URI = env("MONGO_URI", "mongodb://localhost:27017");
-export const MONGO_DB = env("MONGO_DB", "personal-website");
-export const PHOTOS_COLLECTION = env("PHOTOS_COLLECTION", "photos");
-
 export const S3_BUCKET = env("S3_BUCKET", "");
 export const AWS_REGION = env("AWS_REGION", "eu-north-1");
 

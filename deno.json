@@ -5,7 +5,11 @@
     "dev": "vite",
     "build": "vite build",
     "start": "deno serve -A _fresh/server.js",
-    "update": "deno run -A -r jsr:@fresh/update ."
+    "update": "deno run -A -r jsr:@fresh/update .",
+    "db:generate": "deno run -A npm:drizzle-kit generate",
+    "db:migrate:local": "deno run -A npm:wrangler d1 execute personal-website-v2-db --local --command 'SELECT 1;' && deno run -A npm:drizzle-kit migrate",
+    "db:seed": "deno run -A db/seed.ts",
+    "db:studio:local": "deno run -A npm:drizzle-kit studio"
   },
   "lint": {
     "rules": {
@@ -35,7 +39,10 @@
     "class-variance-authority": "npm:class-variance-authority@^0.7.1",
     "clsx": "npm:clsx@^2.1.1",
     "jose": "npm:jose@^6.2.9",
-    "mongodb": "npm:mongodb@^7.5.0",
+    "drizzle-orm": "npm:drizzle-orm@1.0.0-rc.4",
+    "drizzle-orm/": "npm:drizzle-orm@1.0.0-rc.4/",
+    "drizzle-kit": "npm:drizzle-kit@1.0.0-rc.4",
+    "wrangler": "npm:wrangler@4.125.0",
     "tailwind-merge": "npm:tailwind-merge@^3.6.0",
     "@std/dotenv/load": "jsr:@std/dotenv@^0.225.8/load",
     "@std/http/cookie": "jsr:@std/http@^1.1.3/cookie"

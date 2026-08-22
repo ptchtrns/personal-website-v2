@@ -36,9 +36,7 @@ Other tasks:
 | `ADMIN_PASSWORD`                             | Password for `/login`; login is disabled when unset |
 | `JWT_SECRET`                                 | Secret used to sign the session token               |
 | `JWT_EXPIRY_HOURS`                           | Session lifetime in hours (default `24`)            |
-| `MONGO_URI`, `MONGO_DB`                      | MongoDB connection                                  |
-| `PHOTOS_COLLECTION`                          | Collection holding photo metadata                   |
-| `PHOTO_BASE_URL`                             | Public base URL the photo variants are served from  |
+| `PHOTO_BASE_URL`                             | Public base URL gallery images are served from      |
 | `S3_BUCKET`, `AWS_REGION`                    | Bucket that receives the uploaded originals         |
 | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | AWS credentials for presigning uploads              |
 

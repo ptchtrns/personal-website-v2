@@ -1,13 +1,15 @@
 import { define } from "@/utils.ts";
-import { createPhoto, listPhotos } from "@/lib/photos.ts";
+import { createGalleryItem, listGallery } from "@/lib/gallery.ts";
 
 export const handler = define.handlers({
   async GET() {
     try {
-      return Response.json(await listPhotos());
+      return Response.json(await listGallery());
     } catch (error) {
-      console.error("Failed to list photos", error);
-      return Response.json({ error: "Failed to list photos" }, { status: 500 });
+      console.error("Failed to list gallery", error);
+      return Response.json({ error: "Failed to list gallery" }, {
+        status: 500,
+      });
     }
   },
 
@@ -22,18 +24,10 @@ export const handler = define.handlers({
     }
 
     const body = data as Record<string, unknown>;
-    const title = String(body.title ?? "").trim();
-    if (!title) {
-      return Response.json({ error: "Title is required" }, { status: 400 });
-    }
+    const description = String(body.description ?? "").trim();
 
     try {
-      const created = await createPhoto({
-        title,
-        description: String(body.description ?? ""),
-        aspect_ratio: String(body.aspect_ratio ?? ""),
-      });
-
+      const created = await createGalleryItem({ description });
       return Response.json(created, { status: 201 });
     } catch (error) {
       return Response.json({ error: String(error) }, { status: 500 });

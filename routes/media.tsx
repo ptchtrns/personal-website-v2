@@ -2,20 +2,20 @@ import { page } from "fresh";
 import { define } from "../utils.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
 import MediaTabs from "@/islands/MediaTabs.tsx";
-import { listPhotos, type Photo } from "@/lib/photos.ts";
+import { type GalleryItem, listGallery } from "@/lib/gallery.ts";
 
 interface MediaData {
-  photos: Photo[];
+  gallery: GalleryItem[];
   error: string | null;
 }
 
 export const handler = define.handlers({
   async GET(): Promise<ReturnType<typeof page<MediaData>>> {
     try {
-      return page({ photos: await listPhotos(), error: null });
+      return page({ gallery: await listGallery(), error: null });
     } catch (error) {
-      console.error("Failed to load photos", error);
-      return page({ photos: [], error: "Failed to load photos" });
+      console.error("Failed to load gallery", error);
+      return page({ gallery: [], error: "Failed to load gallery" });
     }
   },
 });
@@ -30,7 +30,7 @@ export default define.page<typeof handler>(function Media({ data }) {
             Welcome to the repository of my photos and music.
           </p>
         </section>
-        <MediaTabs photos={data.photos} error={data.error} />
+        <MediaTabs gallery={data.gallery} error={data.error} />
       </div>
     </MainDisplay>
   );

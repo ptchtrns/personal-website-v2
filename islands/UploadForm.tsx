@@ -15,7 +15,6 @@ import {
   FieldSet,
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { Select, SelectItem } from "@/components/ui/select.tsx";
 import {
   Tabs,
   TabsContent,
@@ -24,12 +23,8 @@ import {
 } from "@/components/ui/tabs.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 
-const aspectRatios = ["16/9", "4/3", "3/2", "4/5"];
-
 export default function UploadForm() {
   const [image, setImage] = useState<File | null>(null);
-  const [aspectRatio, setAspectRatio] = useState("");
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -47,23 +42,19 @@ export default function UploadForm() {
         throw new Error("Please select an image");
       }
 
-      const res = await fetch("/api/photos", {
+      const res = await fetch("/api/gallery", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          description,
-          aspect_ratio: aspectRatio,
-        }),
+        body: JSON.stringify({ description }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Failed to upload image");
       }
 
-      const { presigned_url } = await res.json();
-      await fetch(presigned_url, {
+      const { presignedUrl } = await res.json();
+      await fetch(presignedUrl, {
         method: "PUT",
         headers: {
           "Content-Type": image.type,
@@ -74,8 +65,6 @@ export default function UploadForm() {
 
       // Reset form on success
       setImage(null);
-      setAspectRatio("");
-      setTitle("");
       setDescription("");
 
       setSuccess("Image uploaded successfully!");
@@ -118,39 +107,6 @@ export default function UploadForm() {
                     />
                   </Field>
                 </FieldGroup>
-
-                <Field>
-                  <FieldLabel for="aspect_ratio">Aspect Ratio</FieldLabel>
-                  <Select
-                    id="aspect_ratio"
-                    name="aspect_ratio"
-                    value={aspectRatio}
-                    onChange={(event) =>
-                      setAspectRatio(event.currentTarget.value)}
-                  >
-                    <SelectItem value="" disabled>
-                      Select a aspect ratio
-                    </SelectItem>
-                    {aspectRatios.map((ratio) => (
-                      <SelectItem key={ratio} value={ratio}>
-                        {ratio.replace("/", ":")}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </Field>
-
-                <Field>
-                  <FieldLabel for="title">Title</FieldLabel>
-                  <Input
-                    id="title"
-                    type="text"
-                    name="title"
-                    placeholder="Image title"
-                    value={title}
-                    onInput={(event) => setTitle(event.currentTarget.value)}
-                    required
-                  />
-                </Field>
 
                 <Field>
                   <FieldLabel for="description">Description</FieldLabel>

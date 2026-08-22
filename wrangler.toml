@@ -1,0 +1,7 @@
+name = "personal-website-v2"
+compatibility_date = "2026-08-22"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "personal-website-v2-db"
+database_id = "32c54904-af01-4aae-aa0d-f6e1832de361"

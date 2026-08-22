@@ -1,3 +1,4 @@
+import { page } from "fresh";
 import { define } from "../utils.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
 import {
@@ -8,8 +9,54 @@ import {
   CardTitle,
 } from "@/components/ui/card.tsx";
 import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
+import {
+  type EducationItem,
+  listEducation,
+  listPinnedProjects,
+  listWorkExperience,
+  type ProjectItem,
+  type WorkExperienceItem,
+} from "@/lib/portfolio.ts";
 
-export default define.page(function Home() {
+interface HomeData {
+  workExperience: WorkExperienceItem[];
+  education: EducationItem[];
+  projects: ProjectItem[];
+  error: string | null;
+}
+
+function formatDateRange(startedAt: Date, finishedAt: Date | null): string {
+  const format = (d: Date) =>
+    d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  return `${format(startedAt)} – ${
+    finishedAt ? format(finishedAt) : "Present"
+  }`;
+}
+
+export const handler = define.handlers({
+  async GET(): Promise<ReturnType<typeof page<HomeData>>> {
+    try {
+      const [workExperience, education, projects] = await Promise.all([
+        listWorkExperience(),
+        listEducation(),
+        listPinnedProjects(),
+      ]);
+      return page({ workExperience, education, projects, error: null });
+    } catch (error) {
+      console.error("Failed to load homepage data", error);
+      return page({
+        workExperience: [],
+        education: [],
+        projects: [],
+        error: "Failed to load homepage data",
+      });
+    }
+  },
+});
+
+export default define.page<typeof handler>(function Home({ data }) {
+  const { workExperience, education, projects, error } = data;
+
   return (
     <MainDisplay>
       <div class="flex flex-col gap-8">
@@ -27,128 +74,120 @@ export default define.page(function Home() {
           </p>
         </section>
 
-        <section class="flex flex-col gap-6">
-          <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
-            Work Experience
-          </h2>
-          <Card>
-            <CardHeader>
-              <CardTitle>UI Development Trainee - Internship</CardTitle>
-              <CardDescription>
-                October 2024 – May 2025 ·{" "}
-                <a
-                  href="https://www.peikko.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-blue-700 dark:text-blue-400 hover:underline"
-                >
-                  Peikko Group <ArrowUpRightFromSquareIcon class="text-xs" />
-                </a>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
-                <li>
-                  Built UI layout and components, accurately following
-                  company&apos;s design guidelines and ensuring accessibility.
-                </li>
-                <li>Used Blazor (C#) and Azure DevOps.</li>
-                <li>Used Three.js library to display 3D objects.</li>
-                <li>
-                  Worked in group and collaborated with students from LAB
-                  University of Applied Sciences.
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </section>
+        {error && <p class="text-red-600 dark:text-red-400">{error}</p>}
 
-        <section class="flex flex-col gap-6">
-          <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
-            Education
-          </h2>
-          <Card>
-            <CardContent class="flex flex-row gap-6 items-center">
-              <img
-                src="/img/metropolia_logo.png"
-                alt="Metropolia Logo"
-                class="w-16 md:w-24 my-2"
-              />
-              <div class="flex flex-col gap-2">
-                <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
-                  Information and Communication Technology - Bachelor&apos;s
-                  degree (In Progress)
-                </h3>
-                <span class="text-stone-700 dark:text-stone-300">
-                  Metropolia University of Applied Sciences, 2025-2029
-                  (Expected)
-                </span>
-              </div>
-            </CardContent>
-          </Card>
+        {workExperience.length > 0 && (
+          <section class="flex flex-col gap-6">
+            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
+              Work Experience
+            </h2>
+            {workExperience.map((job) => (
+              <Card key={job.id}>
+                <CardHeader>
+                  <CardTitle>{job.jobTitle}</CardTitle>
+                  <CardDescription>
+                    {formatDateRange(job.startedAt, job.finishedAt)} ·{" "}
+                    {job.companyUrl
+                      ? (
+                        <a
+                          href={job.companyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-blue-700 dark:text-blue-400 hover:underline"
+                        >
+                          {job.companyName}{" "}
+                          <ArrowUpRightFromSquareIcon class="text-xs" />
+                        </a>
+                      )
+                      : job.companyName}
+                  </CardDescription>
+                </CardHeader>
+                {job.description && job.description.length > 0 && (
+                  <CardContent>
+                    <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
+                      {job.description.map((line) => (
+                        <li key={line}>{line}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+          </section>
+        )}
 
-          <Card>
-            <CardContent class="flex flex-row gap-6 items-center">
-              <img
-                src="/img/salpaus_logo.png"
-                alt="Salpaus Logo"
-                class="w-16 md:w-24 my-2"
-              />
-              <div class="flex flex-col gap-2">
-                <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
-                  Software Engineering - Vocational undergraduate degree
-                </h3>
-                <span class="text-stone-700 dark:text-stone-300">
-                  Salpaus Further Education, 2023-2025
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
+        {education.length > 0 && (
+          <section class="flex flex-col gap-6">
+            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
+              Education
+            </h2>
+            {education.map((item) => (
+              <Card key={item.id}>
+                <CardContent class="flex flex-row gap-6 items-center">
+                  {item.institutionLogoSrc && (
+                    <img
+                      src={item.institutionLogoSrc}
+                      alt={`${item.educationInstitution} Logo`}
+                      class="w-16 md:w-24 my-2"
+                    />
+                  )}
+                  <div class="flex flex-col gap-2">
+                    <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
+                      {item.degreeTitle}
+                    </h3>
+                    <span class="text-stone-700 dark:text-stone-300">
+                      {item.educationInstitution},{" "}
+                      {formatDateRange(item.startedAt, item.finishedAt)}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </section>
+        )}
 
-        <section class="flex flex-col gap-6">
-          <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
-            Projects
-          </h2>
-          <Card>
-            <CardContent class="flex flex-row gap-6 items-start">
-              <img
-                src="/img/simpictures_logo.svg"
-                alt="SimPictures Logo"
-                class="w-16 lg:w-24 my-2"
-              />
-              <div class="flex flex-col gap-3">
-                <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
-                  SimPictures
-                </h3>
-                <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
-                  <li>
-                    Social media platform for sharing flight simulator
-                    screenshots.
-                  </li>
-                  <li>
-                    Built with Next.js and PostgreSQL. ASP.NET, multiple AWS
-                    services (s3, CloudFront, App Runner, ECR, Rekognition),
-                    Vercel, Discord.Net and Appsmith are also utilized.
-                  </li>
-                  <li>
-                    Implemented account management, image upload and processing,
-                    custom UI design and components.
-                  </li>
-                  <li>To be open-sourced in 2026.</li>
-                </ul>
-                <a
-                  href="https://www.simpictures.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-blue-700 dark:text-blue-400 hover:underline inline-block"
-                >
-                  Open the website <ArrowUpRightFromSquareIcon />
-                </a>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
+        {projects.length > 0 && (
+          <section class="flex flex-col gap-6">
+            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
+              Projects
+            </h2>
+            {projects.map((project) => (
+              <Card key={project.id}>
+                <CardContent class="flex flex-row gap-6 items-start">
+                  {project.logoSrc && (
+                    <img
+                      src={project.logoSrc}
+                      alt={`${project.name} Logo`}
+                      class="w-16 lg:w-24 my-2"
+                    />
+                  )}
+                  <div class="flex flex-col gap-3">
+                    <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
+                      {project.name}
+                    </h3>
+                    {project.description && project.description.length > 0 && (
+                      <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
+                        {project.description.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {project.externalUrl && (
+                      <a
+                        href={project.externalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-blue-700 dark:text-blue-400 hover:underline inline-block"
+                      >
+                        Open the website <ArrowUpRightFromSquareIcon />
+                      </a>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </section>
+        )}
       </div>
     </MainDisplay>
   );

@@ -5,14 +5,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs.tsx";
-import type { Photo } from "@/lib/photos.ts";
+import type { GalleryItem } from "@/lib/gallery.ts";
 
 interface MediaTabsProps {
-  photos: Photo[];
+  gallery: GalleryItem[];
   error: string | null;
 }
 
-export default function MediaTabs({ photos, error }: MediaTabsProps) {
+export default function MediaTabs({ gallery, error }: MediaTabsProps) {
   return (
     <Tabs defaultValue="photos">
       <TabsList>
@@ -22,7 +22,7 @@ export default function MediaTabs({ photos, error }: MediaTabsProps) {
       <TabsContent value="photos">
         {error
           ? <div class="text-red-600">{error}</div>
-          : photos.length === 0
+          : gallery.length === 0
           ? (
             <div class="text-stone-900 dark:text-stone-100">
               No photos found
@@ -30,12 +30,12 @@ export default function MediaTabs({ photos, error }: MediaTabsProps) {
           )
           : (
             <div class="grid grid-cols-1 gap-4">
-              {photos.map((photo) => (
-                <Card key={photo._id}>
+              {gallery.map((item) => (
+                <Card key={item.id}>
                   <CardContent class="pt-6">
                     <img
-                      src={photo.image.original}
-                      alt={photo.title}
+                      src={item.src}
+                      alt={item.description ?? ""}
                       class="w-full"
                     />
                   </CardContent>

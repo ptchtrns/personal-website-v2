@@ -11,3 +11,6 @@ _fresh/
 node_modules/
 vendor/
 
+# Cloudflare Wrangler local state (local D1 sqlite files, etc.)
+.wrangler/
+
