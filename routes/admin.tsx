@@ -1,6 +1,6 @@
 import { define } from "../utils.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
-import UploadForm from "@/islands/UploadForm.tsx";
+import AdminTabs from "@/islands/AdminTabs.tsx";
 
 export const handler = define.handlers({
   GET(ctx) {
@@ -12,7 +12,7 @@ export const handler = define.handlers({
 export default define.page(function Admin() {
   return (
     <MainDisplay>
-      <UploadForm />
+      <AdminTabs />
     </MainDisplay>
   );
 });

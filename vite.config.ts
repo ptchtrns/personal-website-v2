@@ -35,4 +35,12 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    watch: {
+      // Local D1/R2 emulation (Miniflare/Wrangler) writes here on every
+      // dev-mode database or upload mutation; without this, each write
+      // trips Vite's watcher and forces a full page reload mid-request.
+      ignored: ["**/.wrangler/**"],
+    },
+  },
 });

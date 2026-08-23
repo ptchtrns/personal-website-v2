@@ -1,17 +1,18 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db/local-client.ts";
 import { gallery, media } from "@/db/schema.ts";
-import { PHOTO_BASE_URL } from "@/lib/config.ts";
-import { generatePresignedPutUrl } from "@/lib/storage.ts";
 
+export type GalleryRow = typeof gallery.$inferSelect;
 export interface GalleryItem {
   id: number;
   description: string | null;
+  imageId: number;
   src: string;
 }
 
-export interface NewGalleryItem {
-  description: string;
+export interface GalleryInput {
+  description: string | null;
+  imageId: number;
 }
 
 export async function listGallery(): Promise<GalleryItem[]> {
@@ -19,38 +20,67 @@ export async function listGallery(): Promise<GalleryItem[]> {
     .select({
       id: gallery.id,
       description: gallery.description,
+      imageId: gallery.imageId,
       src: media.src,
     })
     .from(gallery)
     .innerJoin(media, eq(gallery.imageId, media.id));
 }
 
-/**
- * Stores the gallery item's media row and returns a presigned URL the client
- * uses to upload the image file straight to S3.
- */
+async function withImage(id: number): Promise<GalleryItem | null> {
+  const [row] = await getDb()
+    .select({
+      id: gallery.id,
+      description: gallery.description,
+      imageId: gallery.imageId,
+      src: media.src,
+    })
+    .from(gallery)
+    .innerJoin(media, eq(gallery.imageId, media.id))
+    .where(eq(gallery.id, id));
+  return row ?? null;
+}
+
 export async function createGalleryItem(
-  input: NewGalleryItem,
-): Promise<{ presignedUrl: string; item: GalleryItem }> {
-  const id = crypto.randomUUID();
-  const key = `media/gallery/${id}/original.jpg`;
-  const src = `${PHOTO_BASE_URL}/${key}`;
-  const presignedUrl = await generatePresignedPutUrl(key, 60);
+  input: GalleryInput,
+): Promise<GalleryItem> {
+  const [row] = await getDb().insert(gallery).values(input).returning();
+  const item = await withImage(row.id);
+  if (!item) throw new Error("Failed to load created gallery item");
+  return item;
+}
 
-  const db = getDb();
-  const [mediaRow] = await db.insert(media).values({ src, type: "image" })
+export async function updateGalleryItem(
+  id: number,
+  input: GalleryInput,
+): Promise<GalleryItem | null> {
+  const [row] = await getDb()
+    .update(gallery)
+    .set(input)
+    .where(eq(gallery.id, id))
     .returning();
-  const [galleryRow] = await db
-    .insert(gallery)
-    .values({ description: input.description, imageId: mediaRow.id })
-    .returning();
+  if (!row) return null;
+  return await withImage(row.id);
+}
 
-  return {
-    presignedUrl,
-    item: {
-      id: galleryRow.id,
-      description: galleryRow.description,
-      src: mediaRow.src,
-    },
-  };
+export async function deleteGalleryItem(id: number): Promise<void> {
+  await getDb().delete(gallery).where(eq(gallery.id, id));
+}
+
+export function parseGalleryInput(
+  data: unknown,
+): { value: GalleryInput } | { error: string } {
+  if (data === null || typeof data !== "object") {
+    return { error: "Invalid request body" };
+  }
+  const body = data as Record<string, unknown>;
+
+  const imageId = Number(body.imageId);
+  if (!Number.isInteger(imageId)) {
+    return { error: "imageId is required" };
+  }
+
+  const description = body.description ? String(body.description).trim() : null;
+
+  return { value: { description, imageId } };
 }

@@ -1,9 +1,9 @@
 import { define } from "@/utils.ts";
 import {
-  createGalleryItem,
-  listGallery,
-  parseGalleryInput,
-} from "@/lib/gallery.ts";
+  createEducation,
+  listEducation,
+  parseEducationInput,
+} from "@/lib/education.ts";
 
 export const handler = define.handlers({
   async GET(ctx) {
@@ -12,10 +12,10 @@ export const handler = define.handlers({
     }
 
     try {
-      return Response.json(await listGallery());
+      return Response.json(await listEducation());
     } catch (error) {
-      console.error("Failed to list gallery", error);
-      return Response.json({ error: "Failed to list gallery" }, {
+      console.error("Failed to list education", error);
+      return Response.json({ error: "Failed to list education" }, {
         status: 500,
       });
     }
@@ -27,17 +27,17 @@ export const handler = define.handlers({
     }
 
     const data = await ctx.req.json().catch(() => null);
-    const parsed = parseGalleryInput(data);
+    const parsed = parseEducationInput(data);
     if ("error" in parsed) {
       return Response.json({ error: parsed.error }, { status: 400 });
     }
 
     try {
-      const created = await createGalleryItem(parsed.value);
+      const created = await createEducation(parsed.value);
       return Response.json(created, { status: 201 });
     } catch (error) {
-      console.error("Failed to create gallery item", error);
-      return Response.json({ error: "Failed to create gallery item" }, {
+      console.error("Failed to create education", error);
+      return Response.json({ error: "Failed to create education" }, {
         status: 500,
       });
     }

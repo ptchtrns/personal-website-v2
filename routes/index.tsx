@@ -9,14 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card.tsx";
 import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
+import { type EducationItem, listEducation } from "@/lib/education.ts";
 import {
-  type EducationItem,
-  listEducation,
   listPinnedProjects,
+  type ProjectRow as ProjectItem,
+} from "@/lib/projects.ts";
+import {
   listWorkExperience,
-  type ProjectItem,
   type WorkExperienceItem,
-} from "@/lib/portfolio.ts";
+} from "@/lib/work-experience.ts";
 
 interface HomeData {
   workExperience: WorkExperienceItem[];

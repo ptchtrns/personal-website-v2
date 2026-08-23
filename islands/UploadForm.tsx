@@ -1,5 +1,5 @@
 import type { JSX } from "preact";
-import { useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import { Button } from "@/components/ui/button.tsx";
 import {
   Card,
@@ -15,17 +15,36 @@ import {
   FieldSet,
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs.tsx";
+import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
+import type { MediaType } from "@/lib/media.ts";
 
-export default function UploadForm() {
-  const [image, setImage] = useState<File | null>(null);
-  const [description, setDescription] = useState("");
+const MEDIA_TYPES: { value: MediaType; label: string }[] = [
+  { value: "image", label: "Image" },
+  { value: "pfp", label: "Profile picture" },
+  { value: "audio", label: "Audio" },
+  { value: "pdf", label: "PDF" },
+  { value: "link", label: "Link" },
+];
+
+const ACCEPT_BY_TYPE: Record<MediaType, string> = {
+  image: "image/*",
+  pfp: "image/*",
+  audio: "audio/*",
+  pdf: "application/pdf",
+  link: "",
+};
+
+interface UploadFormProps {
+  onSuccess?: () => void;
+}
+
+export default function UploadForm({ onSuccess }: UploadFormProps = {}) {
+  const [type, setType] = useState<MediaType>("image");
+  const [file, setFile] = useState<File | null>(null);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [alt, setAlt] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -38,39 +57,67 @@ export default function UploadForm() {
     setLoading(true);
 
     try {
-      if (!image) {
-        throw new Error("Please select an image");
+      if (type === "link") {
+        if (!linkUrl.trim()) {
+          throw new Error("Please enter a link URL");
+        }
+
+        const res = await fetch("/api/media", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type, alt, src: linkUrl.trim() }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || "Failed to add link");
+        }
+
+        setLinkUrl("");
+        setAlt("");
+        setSuccess("Link added successfully!");
+        setTimeout(() => setSuccess(""), 3000);
+        onSuccess?.();
+        return;
       }
 
-      const res = await fetch("/api/gallery", {
+      if (!file) {
+        throw new Error("Please select a file");
+      }
+
+      const res = await fetch("/api/media", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description }),
+        body: JSON.stringify({ type, alt, filename: file.name }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to upload image");
+        throw new Error(data.error || "Failed to upload file");
       }
 
       const { presignedUrl } = await res.json();
-      await fetch(presignedUrl, {
+      const putRes = await fetch(presignedUrl, {
         method: "PUT",
         headers: {
-          "Content-Type": image.type,
+          "Content-Type": file.type,
           "X-Amz-Tagging": "OriginalPhoto=True",
         },
-        body: image,
+        body: file,
       });
+      if (!putRes.ok) {
+        throw new Error("Failed to upload file to storage");
+      }
 
-      // Reset form on success
-      setImage(null);
-      setDescription("");
+      setFile(null);
+      setAlt("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
 
-      setSuccess("Image uploaded successfully!");
+      setSuccess("File uploaded successfully!");
       setTimeout(() => setSuccess(""), 3000);
+      onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload image");
+      setError(err instanceof Error ? err.message : "Failed to upload file");
     } finally {
       setLoading(false);
     }
@@ -79,74 +126,100 @@ export default function UploadForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Image upload</CardTitle>
+        <CardTitle>Media</CardTitle>
         <CardDescription>
-          Upload and manage your photos and audio files.
+          Upload images, profile pictures, audio and PDF files, or add a link,
+          to the media library.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="photos">
-          <TabsList>
-            <TabsTrigger value="photos">Photos</TabsTrigger>
-            <TabsTrigger value="audio">Audio</TabsTrigger>
-          </TabsList>
-          <TabsContent value="photos">
-            <form onSubmit={handleSubmit} class="flex flex-col gap-3">
-              <FieldSet>
-                <FieldGroup>
+        <form onSubmit={handleSubmit} class="flex flex-col gap-3">
+          <FieldSet>
+            <FieldGroup>
+              <Field class="flex flex-col gap-1.5">
+                <FieldLabel for="type">File type</FieldLabel>
+                <Select
+                  id="type"
+                  name="type"
+                  value={type}
+                  onChange={(event) =>
+                    setType(event.currentTarget.value as MediaType)}
+                >
+                  {MEDIA_TYPES.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>{label}</SelectItem>
+                  ))}
+                </Select>
+              </Field>
+
+              {type === "link"
+                ? (
                   <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="image">Image File</FieldLabel>
+                    <FieldLabel for="linkUrl">URL</FieldLabel>
                     <Input
-                      id="image"
-                      type="file"
-                      name="image"
-                      accept="image/jpeg"
-                      onChange={(event) =>
-                        setImage(event.currentTarget.files?.[0] ?? null)}
+                      id="linkUrl"
+                      type="url"
+                      name="linkUrl"
+                      placeholder="https://example.com"
+                      value={linkUrl}
+                      onInput={(event) => setLinkUrl(event.currentTarget.value)}
                       required
                     />
                   </Field>
-                </FieldGroup>
-
-                <Field>
-                  <FieldLabel for="description">Description</FieldLabel>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    placeholder="Image description"
-                    rows={4}
-                    value={description}
-                    onInput={(event) =>
-                      setDescription(event.currentTarget.value)}
-                    class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
-                  />
-                </Field>
-
-                {error && (
-                  <div class="p-3 bg-red-100 border border-red-300 rounded text-red-900 text-sm">
-                    {error}
-                  </div>
+                )
+                : (
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="file">File</FieldLabel>
+                    <Input
+                      ref={fileInputRef}
+                      id="file"
+                      type="file"
+                      name="file"
+                      accept={ACCEPT_BY_TYPE[type]}
+                      onChange={(event) =>
+                        setFile(event.currentTarget.files?.[0] ?? null)}
+                      required
+                    />
+                  </Field>
                 )}
+            </FieldGroup>
 
-                {success && (
-                  <div class="p-3 bg-green-100 border border-green-300 rounded text-green-900 text-sm">
-                    {success}
-                  </div>
-                )}
+            <Field>
+              <FieldLabel for="alt">Alt text</FieldLabel>
+              <Textarea
+                id="alt"
+                name="alt"
+                placeholder="Describe the file for accessibility"
+                rows={3}
+                value={alt}
+                onInput={(event) => setAlt(event.currentTarget.value)}
+                class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+              />
+            </Field>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  class="w-full"
-                  variant="ghost"
-                >
-                  {loading ? "Uploading..." : "Upload Image"}
-                </Button>
-              </FieldSet>
-            </form>
-          </TabsContent>
-          <TabsContent value="audio">Audio</TabsContent>
-        </Tabs>
+            {error && (
+              <div class="p-3 bg-red-100 border border-red-300 rounded text-red-900 text-sm">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div class="p-3 bg-green-100 border border-green-300 rounded text-green-900 text-sm">
+                {success}
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              disabled={loading}
+              class="w-full"
+              variant="ghost"
+            >
+              {loading
+                ? (type === "link" ? "Adding..." : "Uploading...")
+                : (type === "link" ? "Add Link" : "Upload File")}
+            </Button>
+          </FieldSet>
+        </form>
       </CardContent>
     </Card>
   );

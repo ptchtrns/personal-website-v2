@@ -1,9 +1,9 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "7d3e7db4-e515-4665-9e57-3777bcaf6add",
+  "id": "2bcc72b5-8836-447d-9680-c311ae251b7a",
   "prevIds": [
-    "6f4972fe-9a2e-4d86-9295-e8ceef7a5b3e"
+    "810436d4-2be5-4a8f-81e1-c1cde47741e5"
   ],
   "ddl": [
     {
@@ -193,6 +193,16 @@
       "table": "media"
     },
     {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "alt",
+      "entityType": "columns",
+      "table": "media"
+    },
+    {
       "type": "integer",
       "notNull": false,
       "autoincrement": true,
@@ -279,16 +289,6 @@
       "default": null,
       "generated": null,
       "name": "short_overview",
-      "entityType": "columns",
-      "table": "projects"
-    },
-    {
-      "type": "text",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "logo_src",
       "entityType": "columns",
       "table": "projects"
     },

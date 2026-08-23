@@ -5,6 +5,7 @@ import {
   education,
   gallery,
   media,
+  music,
   projects,
   projectsToMedia,
   workExperience,
@@ -114,6 +115,45 @@ const gallerySeed: { description: string; file: URL }[] = [
 
 const pfpSeed = { file: new URL("../seed/nikolai.jpg", import.meta.url) };
 
+const musicSeed: { title: string; file: URL }[] = [
+  {
+    title: "public void",
+    file: new URL("../seed/1. public void.mp3", import.meta.url),
+  },
+  {
+    title: "flashing images",
+    file: new URL("../seed/2. flashing images.mp3", import.meta.url),
+  },
+  {
+    title: "bluenery",
+    file: new URL("../seed/3. bluenery.mp3", import.meta.url),
+  },
+  {
+    title: "bluenery short",
+    file: new URL("../seed/4. bluenery short.mp3", import.meta.url),
+  },
+  {
+    title: "tcp_ip",
+    file: new URL("../seed/5. tcp_ip.mp3", import.meta.url),
+  },
+  {
+    title: "internet things",
+    file: new URL("../seed/6. internet things.mp3", import.meta.url),
+  },
+  {
+    title: "air",
+    file: new URL("../seed/7. air.mp3", import.meta.url),
+  },
+  {
+    title: "destructive_self",
+    file: new URL("../seed/8. destructive_self.mp3", import.meta.url),
+  },
+  {
+    title: "direction",
+    file: new URL("../seed/9. direction.mp3", import.meta.url),
+  },
+];
+
 /** Inserts each seed row only if a row with the same natural key isn't already present, so re-running never clobbers admin edits. */
 async function seedWorkExperience(db: Db) {
   for (const row of workExperienceSeed) {
@@ -206,6 +246,23 @@ async function seedGallery(db: Db, bucket: LocalR2Bucket) {
   }
 }
 
+/** Uploads each seed track's audio bytes and inserts the matching `music` row, so `/media`'s audio tab has something to play in local dev. */
+async function seedMusic(db: Db, bucket: LocalR2Bucket) {
+  for (const item of musicSeed) {
+    const existing = await db
+      .select({ id: music.id })
+      .from(music)
+      .where(eq(music.title, item.title))
+      .limit(1);
+    if (existing.length > 0) continue;
+
+    const src = await uploadSeedFile(bucket, "music", item.file);
+    const [mediaRow] = await db.insert(media).values({ src, type: "audio" })
+      .returning();
+    await db.insert(music).values({ title: item.title, audioId: mediaRow.id });
+  }
+}
+
 /** Uploads the seed profile picture and inserts it as the sole `pfp` media row, if one doesn't already exist. */
 async function seedPfp(db: Db, bucket: LocalR2Bucket) {
   const existing = await db
@@ -226,6 +283,7 @@ async function main() {
   await seedEducation(db, bucket);
   await seedProjects(db, bucket);
   await seedGallery(db, bucket);
+  await seedMusic(db, bucket);
   await seedPfp(db, bucket);
   await disposeLocalStorage();
   console.log("Seed complete.");

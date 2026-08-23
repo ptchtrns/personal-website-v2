@@ -11,6 +11,7 @@ export const media = sqliteTable("media", {
   src: text("src").notNull(),
   type: text("type", { enum: ["image", "pdf", "audio", "link", "pfp"] })
     .notNull(),
+  alt: text("alt"),
 });
 
 export const projects = sqliteTable("projects", {
