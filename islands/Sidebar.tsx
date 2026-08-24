@@ -11,7 +11,6 @@ import {
   IdCardClipIcon,
   ImagesIcon,
   LinkedinIcon,
-  ListUlIcon,
   MoonIcon,
   SunIcon,
   UserIcon,
@@ -32,7 +31,6 @@ const navItems: {
   icon: (props: IconProps) => JSX.Element;
 }[] = [
   { title: "About me", url: "/", icon: UserIcon },
-  { title: "Services", url: "/services", icon: ListUlIcon },
   { title: "Contact me", url: "/contact", icon: IdCardClipIcon },
   { title: "Media", url: "/media", icon: ImagesIcon },
 ];
