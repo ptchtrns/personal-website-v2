@@ -28,9 +28,9 @@ const MEDIA_TYPES: { value: MediaType; label: string }[] = [
 ];
 
 const ACCEPT_BY_TYPE: Record<MediaType, string> = {
-  image: "image/*",
-  pfp: "image/*",
-  audio: "audio/*",
+  image: "image/avif",
+  pfp: "image/avif",
+  audio: "audio/mpeg",
   pdf: "application/pdf",
   link: "",
 };
@@ -84,12 +84,20 @@ export default function UploadForm({ onSuccess }: UploadFormProps = {}) {
       if (!file) {
         throw new Error("Please select a file");
       }
+      if (file.type !== ACCEPT_BY_TYPE[type]) {
+        throw new Error(`File must be of type ${ACCEPT_BY_TYPE[type]}`);
+      }
 
       const res = await fetch("/api/media", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, alt, filename: file.name }),
+        body: JSON.stringify({
+          type,
+          alt,
+          contentType: file.type,
+          size: file.size,
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

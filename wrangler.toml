@@ -7,9 +7,5 @@ database_name = "personal-website-v2-db"
 database_id = "32c54904-af01-4aae-aa0d-f6e1832de361"
 
 [[r2_buckets]]
-binding = "UPLOADS"
-bucket_name = "personal-website-v2-uploads"
-
-[[r2_buckets]]
 binding = "CDN"
 bucket_name = "personal-website-v2-cdn"

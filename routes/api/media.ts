@@ -1,5 +1,11 @@
 import { define } from "@/utils.ts";
-import { createMedia, listMedia, type MediaType } from "@/lib/media.ts";
+import {
+  ALLOWED_CONTENT_TYPE_BY_TYPE,
+  createMedia,
+  listMedia,
+  MAX_BYTES_BY_TYPE,
+  type MediaType,
+} from "@/lib/media.ts";
 
 const MEDIA_TYPES: MediaType[] = ["image", "pdf", "audio", "link", "pfp"];
 
@@ -58,13 +64,27 @@ export const handler = define.handlers({
         }
         created = await createMedia({ type: "link", alt, src });
       } else {
-        const filename = String(body.filename ?? "").trim();
-        if (!filename) {
-          return Response.json({ error: "Missing filename" }, {
-            status: 400,
-          });
+        const contentType = String(body.contentType ?? "").trim();
+        const size = Number(body.size);
+        const expectedContentType = ALLOWED_CONTENT_TYPE_BY_TYPE[body.type];
+        if (contentType !== expectedContentType) {
+          return Response.json({
+            error:
+              `Only ${expectedContentType} files are allowed for "${body.type}"`,
+          }, { status: 400 });
         }
-        created = await createMedia({ type: body.type, alt, filename });
+        const maxBytes = MAX_BYTES_BY_TYPE[body.type];
+        if (!Number.isFinite(size) || size <= 0 || size > maxBytes) {
+          return Response.json({
+            error: `File must be under ${Math.floor(maxBytes / 1024 / 1024)}MB`,
+          }, { status: 400 });
+        }
+        created = await createMedia({
+          type: body.type,
+          alt,
+          contentType,
+          size,
+        });
       }
       return Response.json(created, { status: 201 });
     } catch (error) {

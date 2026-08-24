@@ -82,7 +82,6 @@ const projectsSeed: (typeof projects.$inferInsert & { logoFile?: URL })[] = [
     ],
     externalUrl: "https://www.simpictures.com/",
     isPinned: true,
-    logoFile: new URL("../seed/simpictures_logo.svg", import.meta.url),
   },
 ];
 
@@ -199,27 +198,9 @@ async function seedEducation(db: Db, bucket: LocalR2Bucket) {
  * Inserts each seed project and, if it has a logo, uploads it as a `media`
  * row linked through `projects_to_media`.
  */
-async function seedProjects(db: Db, bucket: LocalR2Bucket) {
-  for (const { logoFile, ...row } of projectsSeed) {
-    const existing = await db
-      .select({ id: projects.id })
-      .from(projects)
-      .where(eq(projects.name, row.name))
-      .limit(1);
-    if (existing.length > 0) continue;
-
-    const [projectRow] = await db.insert(projects).values(row).returning();
-
-    if (logoFile) {
-      const src = await uploadSeedFile(bucket, "projects", logoFile);
-      const [mediaRow] = await db.insert(media).values({ src, type: "image" })
-        .returning();
-      await db.insert(projectsToMedia).values({
-        projectId: projectRow.id,
-        mediaId: mediaRow.id,
-      });
-    }
-  }
+async function seedProjects(db: Db) {
+  for (const { ...row } of projectsSeed)
+    await db.insert(projects).values(row).returning();
 }
 
 /**

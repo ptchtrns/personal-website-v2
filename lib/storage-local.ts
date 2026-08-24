@@ -26,7 +26,6 @@ export interface LocalR2Bucket {
 }
 
 interface Env {
-  UPLOADS: LocalR2Bucket;
   CDN: LocalR2Bucket;
 }
 
@@ -43,10 +42,6 @@ function getProxy() {
     proxyPromise = getPlatformProxy<Env>();
   }
   return proxyPromise;
-}
-
-export async function getUploadsBucket(): Promise<LocalR2Bucket> {
-  return (await getProxy()).env.UPLOADS;
 }
 
 export async function getCdnBucket(): Promise<LocalR2Bucket> {
