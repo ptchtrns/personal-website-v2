@@ -3,25 +3,29 @@ import { define } from "../utils.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
 import MediaTabs from "@/islands/MediaTabs.tsx";
 import { type GalleryItem, listGallery } from "@/lib/gallery.ts";
-import { listMusic, type MusicItem } from "@/lib/music.ts";
+import { listReleases, type ReleaseItem } from "@/lib/releases.ts";
 
 interface MediaData {
   gallery: GalleryItem[];
-  music: MusicItem[];
+  releases: ReleaseItem[];
   error: string | null;
 }
 
 export const handler = define.handlers({
   async GET(): Promise<ReturnType<typeof page<MediaData>>> {
     try {
-      const [gallery, music] = await Promise.all([
+      const [gallery, releases] = await Promise.all([
         listGallery(),
-        listMusic(),
+        listReleases(),
       ]);
-      return page({ gallery, music, error: null });
+      return page({ gallery, releases, error: null });
     } catch (error) {
       console.error("Failed to load media", error);
-      return page({ gallery: [], music: [], error: "Failed to load media" });
+      return page({
+        gallery: [],
+        releases: [],
+        error: "Failed to load media",
+      });
     }
   },
 });
@@ -38,7 +42,7 @@ export default define.page<typeof handler>(function Media({ data }) {
         </section>
         <MediaTabs
           gallery={data.gallery}
-          music={data.music}
+          releases={data.releases}
           error={data.error}
         />
       </div>

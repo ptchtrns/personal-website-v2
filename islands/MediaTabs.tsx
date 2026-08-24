@@ -8,13 +8,19 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs.tsx";
 import type { GalleryItem } from "@/lib/gallery.ts";
-import type { MusicItem } from "@/lib/music.ts";
+import type { ReleaseItem } from "@/lib/releases.ts";
 
 interface MediaTabsProps {
   gallery: GalleryItem[];
-  music: MusicItem[];
+  releases: ReleaseItem[];
   error: string | null;
 }
+
+const RELEASE_TYPE_LABEL: Record<ReleaseItem["type"], string> = {
+  album: "Album",
+  ep: "EP",
+  single: "Single",
+};
 
 function GalleryMasonry({ gallery }: { gallery: GalleryItem[] }) {
   const [active, setActive] = useState<GalleryItem | null>(null);
@@ -61,7 +67,9 @@ function GalleryMasonry({ gallery }: { gallery: GalleryItem[] }) {
   );
 }
 
-export default function MediaTabs({ gallery, music, error }: MediaTabsProps) {
+export default function MediaTabs(
+  { gallery, releases, error }: MediaTabsProps,
+) {
   return (
     <Tabs defaultValue="photos">
       <TabsList class="gap-1">
@@ -82,7 +90,7 @@ export default function MediaTabs({ gallery, music, error }: MediaTabsProps) {
       <TabsContent value="audio">
         {error
           ? <div class="text-red-600">{error}</div>
-          : music.length === 0
+          : releases.length === 0
           ? (
             <div class="text-stone-900 dark:text-stone-100">
               No music found
@@ -90,19 +98,40 @@ export default function MediaTabs({ gallery, music, error }: MediaTabsProps) {
           )
           : (
             <div class="flex flex-col gap-4">
-              {music.map((item) => (
-                <Card key={item.id}>
-                  <CardContent class="pt-6 flex items-center gap-4">
-                    {item.coverSrc && (
+              {releases.map((release) => (
+                <Card key={release.id}>
+                  <CardContent class="pt-6 flex flex-col sm:flex-row gap-4">
+                    {release.coverSrc && (
                       <img
-                        src={item.coverSrc}
+                        src={release.coverSrc}
                         alt=""
-                        class="h-16 w-16 object-cover rounded shrink-0"
+                        class="h-32 w-32 object-cover rounded shrink-0 self-start"
                       />
                     )}
-                    <div class="flex flex-col gap-2 min-w-0 flex-1">
-                      <p class="font-medium truncate">{item.title}</p>
-                      <audio controls src={item.audioSrc} class="w-full" />
+                    <div class="flex flex-col gap-3 min-w-0 flex-1">
+                      <div class="flex items-baseline gap-2 min-w-0">
+                        <p class="font-medium truncate">{release.title}</p>
+                        <span class="text-xs uppercase text-stone-500 shrink-0">
+                          {RELEASE_TYPE_LABEL[release.type]}
+                        </span>
+                      </div>
+                      <div class="flex flex-col gap-2">
+                        {release.tracks.map((track) => (
+                          <div
+                            key={track.id}
+                            class="flex flex-col gap-1"
+                          >
+                            <p class="text-sm text-stone-700 dark:text-stone-300 truncate">
+                              {track.title}
+                            </p>
+                            <audio
+                              controls
+                              src={track.audioSrc}
+                              class="w-full"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

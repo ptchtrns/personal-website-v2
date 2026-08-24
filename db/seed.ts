@@ -5,8 +5,9 @@ import {
   education,
   gallery,
   media,
-  music,
   projects,
+  releases,
+  tracks,
   workExperience,
 } from "@/db/schema.ts";
 import { PHOTO_BASE_URL } from "@/lib/config.ts";
@@ -113,6 +114,12 @@ const gallerySeed: { description: string; file: URL }[] = [
 
 const pfpSeed = { file: new URL("../seed/nikolai.avif", import.meta.url) };
 
+const ALBUM_TITLE = "public void";
+const albumCoverSeed = {
+  file: new URL("../seed/Public-Void-cover-art.avif", import.meta.url),
+};
+
+/** All seed tracks belong to a single seed album. */
 const musicSeed: { title: string; file: URL }[] = [
   {
     title: "public void",
@@ -231,20 +238,45 @@ async function seedGallery(db: Db, bucket: LocalR2Bucket) {
   }
 }
 
-/** Uploads each seed track's audio bytes and inserts the matching `music` row, so `/media`'s audio tab has something to play in local dev. */
+/** Uploads each seed track's audio bytes and inserts them all as tracks on one seed album, so `/media`'s audio tab has something to play in local dev. */
 async function seedMusic(db: Db, bucket: LocalR2Bucket) {
+  let [albumRow] = await db
+    .select({ id: releases.id })
+    .from(releases)
+    .where(eq(releases.title, ALBUM_TITLE))
+    .limit(1);
+
+  if (!albumRow) {
+    const coverSrc = await uploadSeedFile(bucket, "music", albumCoverSeed.file);
+    const [coverMediaRow] = await db.insert(media).values({
+      src: coverSrc,
+      type: "image",
+    }).returning();
+    [albumRow] = await db.insert(releases).values({
+      title: ALBUM_TITLE,
+      type: "album",
+      coverId: coverMediaRow.id,
+    }).returning();
+  }
+
   for (const item of musicSeed) {
     const existing = await db
-      .select({ id: music.id })
-      .from(music)
-      .where(eq(music.title, item.title))
+      .select({ id: tracks.id })
+      .from(tracks)
+      .where(
+        and(eq(tracks.title, item.title), eq(tracks.releaseId, albumRow.id)),
+      )
       .limit(1);
     if (existing.length > 0) continue;
 
     const src = await uploadSeedFile(bucket, "music", item.file);
     const [mediaRow] = await db.insert(media).values({ src, type: "audio" })
       .returning();
-    await db.insert(music).values({ title: item.title, audioId: mediaRow.id });
+    await db.insert(tracks).values({
+      title: item.title,
+      audioId: mediaRow.id,
+      releaseId: albumRow.id,
+    });
   }
 }
 

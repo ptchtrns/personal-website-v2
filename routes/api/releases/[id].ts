@@ -1,0 +1,59 @@
+import { define } from "@/utils.ts";
+import {
+  deleteRelease,
+  parseReleaseInput,
+  updateRelease,
+} from "@/lib/releases.ts";
+
+export const handler = define.handlers({
+  async PUT(ctx) {
+    if (!ctx.state.isAdmin) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const id = Number(ctx.params.id);
+    if (!Number.isInteger(id)) {
+      return Response.json({ error: "Invalid id" }, { status: 400 });
+    }
+
+    const data = await ctx.req.json().catch(() => null);
+    const parsed = parseReleaseInput(data);
+    if ("error" in parsed) {
+      return Response.json({ error: parsed.error }, { status: 400 });
+    }
+
+    try {
+      const updated = await updateRelease(id, parsed.value);
+      if (!updated) {
+        return Response.json({ error: "Not found" }, { status: 404 });
+      }
+      return Response.json(updated);
+    } catch (error) {
+      console.error("Failed to update release", error);
+      return Response.json({ error: "Failed to update release" }, {
+        status: 500,
+      });
+    }
+  },
+
+  async DELETE(ctx) {
+    if (!ctx.state.isAdmin) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const id = Number(ctx.params.id);
+    if (!Number.isInteger(id)) {
+      return Response.json({ error: "Invalid id" }, { status: 400 });
+    }
+
+    try {
+      await deleteRelease(id);
+      return new Response(null, { status: 204 });
+    } catch (error) {
+      console.error("Failed to delete release", error);
+      return Response.json({ error: "Failed to delete release" }, {
+        status: 500,
+      });
+    }
+  },
+});

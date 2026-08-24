@@ -105,14 +105,23 @@ export const gallery = sqliteTable("gallery", {
   }),
 });
 
-export const music = sqliteTable("music", {
+export const releases = sqliteTable("releases", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  type: text("type", { enum: ["album", "ep", "single"] }).notNull(),
+  coverId: integer("cover_id").references(() => media.id, {
+    onDelete: "set null",
+  }),
+});
+
+export const tracks = sqliteTable("tracks", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   audioId: integer("audio_id").notNull().references(() => media.id, {
     onDelete: "cascade",
   }),
-  coverId: integer("cover_id").references(() => media.id, {
-    onDelete: "set null",
+  releaseId: integer("release_id").notNull().references(() => releases.id, {
+    onDelete: "cascade",
   }),
 });
 
@@ -125,7 +134,8 @@ const tables = {
   workExperience,
   education,
   gallery,
-  music,
+  releases,
+  tracks,
 };
 
 export const dbRelations = defineRelations(tables, (r) => ({
@@ -157,15 +167,25 @@ export const dbRelations = defineRelations(tables, (r) => ({
       to: r.media.id,
     }),
   },
-  music: {
-    audio: r.one.media({
-      from: r.music.audioId,
-      to: r.media.id,
-    }),
+  releases: {
     cover: r.one.media({
-      from: r.music.coverId,
+      from: r.releases.coverId,
       to: r.media.id,
       optional: true,
+    }),
+    tracks: r.many.tracks({
+      from: r.releases.id,
+      to: r.tracks.releaseId,
+    }),
+  },
+  tracks: {
+    audio: r.one.media({
+      from: r.tracks.audioId,
+      to: r.media.id,
+    }),
+    release: r.one.releases({
+      from: r.tracks.releaseId,
+      to: r.releases.id,
     }),
   },
 }));

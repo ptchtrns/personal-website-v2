@@ -1,5 +1,9 @@
 import { define } from "@/utils.ts";
-import { createMusic, listMusic, parseMusicInput } from "@/lib/music.ts";
+import {
+  createRelease,
+  listReleases,
+  parseReleaseInput,
+} from "@/lib/releases.ts";
 
 export const handler = define.handlers({
   async GET(ctx) {
@@ -8,10 +12,10 @@ export const handler = define.handlers({
     }
 
     try {
-      return Response.json(await listMusic());
+      return Response.json(await listReleases());
     } catch (error) {
-      console.error("Failed to list music", error);
-      return Response.json({ error: "Failed to list music" }, {
+      console.error("Failed to list releases", error);
+      return Response.json({ error: "Failed to list releases" }, {
         status: 500,
       });
     }
@@ -23,17 +27,17 @@ export const handler = define.handlers({
     }
 
     const data = await ctx.req.json().catch(() => null);
-    const parsed = parseMusicInput(data);
+    const parsed = parseReleaseInput(data);
     if ("error" in parsed) {
       return Response.json({ error: parsed.error }, { status: 400 });
     }
 
     try {
-      const created = await createMusic(parsed.value);
+      const created = await createRelease(parsed.value);
       return Response.json(created, { status: 201 });
     } catch (error) {
-      console.error("Failed to create music item", error);
-      return Response.json({ error: "Failed to create music item" }, {
+      console.error("Failed to create release", error);
+      return Response.json({ error: "Failed to create release" }, {
         status: 500,
       });
     }

@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tabs.tsx";
 import MediaAdmin from "@/islands/MediaAdmin.tsx";
 import GalleryAdmin from "@/islands/GalleryAdmin.tsx";
-import MusicAdmin from "@/islands/MusicAdmin.tsx";
+import ReleasesAdmin from "@/islands/ReleasesAdmin.tsx";
 import EducationAdmin from "@/islands/EducationAdmin.tsx";
 import WorkExperienceAdmin from "@/islands/WorkExperienceAdmin.tsx";
 import ProjectsAdmin from "@/islands/ProjectsAdmin.tsx";
@@ -29,7 +29,7 @@ export default function AdminTabs() {
         <GalleryAdmin />
       </TabsContent>
       <TabsContent value="music">
-        <MusicAdmin />
+        <ReleasesAdmin />
       </TabsContent>
       <TabsContent value="education">
         <EducationAdmin />
