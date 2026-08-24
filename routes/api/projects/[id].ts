@@ -1,59 +1,52 @@
 import { define } from "@/utils.ts";
-import {
-  deleteProject,
-  parseProjectInput,
-  updateProject,
-} from "@/lib/projects.ts";
+import { parseProjectInput, updateProject } from "@/lib/projects.ts";
+import { redirectTo } from "@/lib/http.ts";
 
 export const handler = define.handlers({
-  async PUT(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  async POST(ctx) {
+    if (!ctx.state.isAdmin) return ctx.redirect("/login");
 
     const id = Number(ctx.params.id);
     if (!Number.isInteger(id)) {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
+      return redirectTo(
+        "/admin?tab=projects&error=" + encodeURIComponent("Invalid id"),
+      );
     }
 
-    const data = await ctx.req.json().catch(() => null);
-    const parsed = parseProjectInput(data);
+    const formData = await ctx.req.formData();
+    const parsed = parseProjectInput({
+      name: formData.get("name"),
+      description: formData.get("description"),
+      changelog: formData.get("changelog"),
+      shortOverview: formData.get("shortOverview"),
+      externalUrl: formData.get("externalUrl"),
+      isPinned: formData.get("isPinned") === "on",
+      isActive: formData.get("isActive") === "on",
+      technologyNames: formData.get("technologyNames"),
+      mediaIds: formData.getAll("mediaIds"),
+    });
     if ("error" in parsed) {
-      return Response.json({ error: parsed.error }, { status: 400 });
+      return redirectTo(
+        `/admin?tab=projects&edit=${id}&error=${
+          encodeURIComponent(parsed.error)
+        }`,
+      );
     }
 
     try {
       const updated = await updateProject(id, parsed.value);
       if (!updated) {
-        return Response.json({ error: "Not found" }, { status: 404 });
+        return redirectTo(
+          "/admin?tab=projects&error=" + encodeURIComponent("Not found"),
+        );
       }
-      return Response.json(updated);
+      return redirectTo("/admin?tab=projects&ok=Project+updated");
     } catch (error) {
       console.error("Failed to update project", error);
-      return Response.json({ error: "Failed to update project" }, {
-        status: 500,
-      });
-    }
-  },
-
-  async DELETE(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const id = Number(ctx.params.id);
-    if (!Number.isInteger(id)) {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
-    }
-
-    try {
-      await deleteProject(id);
-      return new Response(null, { status: 204 });
-    } catch (error) {
-      console.error("Failed to delete project", error);
-      return Response.json({ error: "Failed to delete project" }, {
-        status: 500,
-      });
+      return redirectTo(
+        `/admin?tab=projects&edit=${id}&error=` +
+          encodeURIComponent("Failed to update project"),
+      );
     }
   },
 });

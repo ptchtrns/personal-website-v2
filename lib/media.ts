@@ -2,7 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { getDb } from "@/db/local-client.ts";
 import { media } from "@/db/schema.ts";
 import { PHOTO_BASE_URL } from "@/lib/config.ts";
-import { generatePresignedPutUrl } from "@/lib/storage.ts";
+import { uploadObject } from "@/lib/storage.ts";
 
 export type MediaType = (typeof media.$inferSelect)["type"];
 export type MediaItem = typeof media.$inferSelect;
@@ -41,7 +41,7 @@ export type NewMediaItem =
     | {
       type: Exclude<MediaType, "link">;
       contentType: string;
-      size: number;
+      bytes: Uint8Array;
     }
   );
 
@@ -53,14 +53,11 @@ export async function listMedia(type?: MediaType): Promise<MediaItem[]> {
 }
 
 /**
- * For uploadable types, stores the media row and returns a presigned URL
- * the client uses to upload the file straight to storage. Links have no
- * file to upload, so the row is created with the given `src` directly and
- * no presigned URL is returned.
+ * For uploadable types, uploads the file's bytes to storage (the form posts
+ * the file straight to us) and stores the resulting media row. Links have
+ * no file, so the row is created with the given `src` directly.
  */
-export async function createMedia(
-  input: NewMediaItem,
-): Promise<{ presignedUrl: string | null; item: MediaItem }> {
+export async function createMedia(input: NewMediaItem): Promise<MediaItem> {
   const db = getDb();
 
   if (input.type === "link") {
@@ -69,19 +66,14 @@ export async function createMedia(
       type: "link",
       alt: input.alt,
     }).returning();
-    return { presignedUrl: null, item };
+    return item;
   }
 
   const id = crypto.randomUUID();
   const ext = DEFAULT_EXTENSION_BY_TYPE[input.type];
   const key = `media/${input.type}/${id}/original${ext}`;
   const src = `${PHOTO_BASE_URL}/${key}`;
-  const presignedUrl = await generatePresignedPutUrl(
-    key,
-    input.contentType,
-    input.size,
-    60,
-  );
+  await uploadObject(key, input.bytes, input.contentType);
 
   const [item] = await db.insert(media).values({
     src,
@@ -89,7 +81,7 @@ export async function createMedia(
     alt: input.alt,
   }).returning();
 
-  return { presignedUrl, item };
+  return item;
 }
 
 export async function updateMediaAlt(

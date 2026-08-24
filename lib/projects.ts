@@ -165,8 +165,11 @@ export function parseProjectInput(
   if (Array.isArray(body.description)) {
     description = body.description.map((line) => String(line).trim())
       .filter(Boolean);
-    if (description.length === 0) description = null;
+  } else if (typeof body.description === "string") {
+    description = body.description.split("\n").map((line) => line.trim())
+      .filter(Boolean);
   }
+  if (description !== null && description.length === 0) description = null;
 
   const changelog = body.changelog ? String(body.changelog).trim() : null;
   const shortOverview = body.shortOverview
@@ -178,6 +181,8 @@ export function parseProjectInput(
 
   const technologyNames = Array.isArray(body.technologyNames)
     ? body.technologyNames.map((n) => String(n))
+    : typeof body.technologyNames === "string"
+    ? body.technologyNames.split(",").map((n) => n.trim()).filter(Boolean)
     : [];
 
   const mediaIds = Array.isArray(body.mediaIds)

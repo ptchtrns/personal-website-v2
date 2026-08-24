@@ -76,8 +76,11 @@ export function parseWorkExperienceInput(
   if (Array.isArray(body.description)) {
     description = body.description.map((line) => String(line).trim())
       .filter(Boolean);
-    if (description.length === 0) description = null;
+  } else if (typeof body.description === "string") {
+    description = body.description.split("\n").map((line) => line.trim())
+      .filter(Boolean);
   }
+  if (description !== null && description.length === 0) description = null;
 
   return {
     value: {

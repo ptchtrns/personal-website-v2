@@ -1,59 +1,55 @@
 import { define } from "@/utils.ts";
 import {
-  deleteWorkExperience,
   parseWorkExperienceInput,
   updateWorkExperience,
 } from "@/lib/work-experience.ts";
+import { redirectTo } from "@/lib/http.ts";
 
 export const handler = define.handlers({
-  async PUT(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  async POST(ctx) {
+    if (!ctx.state.isAdmin) return ctx.redirect("/login");
 
     const id = Number(ctx.params.id);
     if (!Number.isInteger(id)) {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
+      return redirectTo(
+        "/admin?tab=work-experience&error=" + encodeURIComponent("Invalid id"),
+      );
     }
 
-    const data = await ctx.req.json().catch(() => null);
-    const parsed = parseWorkExperienceInput(data);
+    const formData = await ctx.req.formData();
+    const parsed = parseWorkExperienceInput({
+      jobTitle: formData.get("jobTitle"),
+      companyName: formData.get("companyName"),
+      companyUrl: formData.get("companyUrl"),
+      companyLogoSrc: formData.get("companyLogoSrc"),
+      startedAt: formData.get("startedAt"),
+      finishedAt: formData.get("finishedAt"),
+      description: formData.get("description"),
+    });
     if ("error" in parsed) {
-      return Response.json({ error: parsed.error }, { status: 400 });
+      return redirectTo(
+        `/admin?tab=work-experience&edit=${id}&error=${
+          encodeURIComponent(parsed.error)
+        }`,
+      );
     }
 
     try {
       const updated = await updateWorkExperience(id, parsed.value);
       if (!updated) {
-        return Response.json({ error: "Not found" }, { status: 404 });
+        return redirectTo(
+          "/admin?tab=work-experience&error=" + encodeURIComponent("Not found"),
+        );
       }
-      return Response.json(updated);
+      return redirectTo(
+        "/admin?tab=work-experience&ok=Work+experience+updated",
+      );
     } catch (error) {
       console.error("Failed to update work experience", error);
-      return Response.json({ error: "Failed to update work experience" }, {
-        status: 500,
-      });
-    }
-  },
-
-  async DELETE(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const id = Number(ctx.params.id);
-    if (!Number.isInteger(id)) {
-      return Response.json({ error: "Invalid id" }, { status: 400 });
-    }
-
-    try {
-      await deleteWorkExperience(id);
-      return new Response(null, { status: 204 });
-    } catch (error) {
-      console.error("Failed to delete work experience", error);
-      return Response.json({ error: "Failed to delete work experience" }, {
-        status: 500,
-      });
+      return redirectTo(
+        `/admin?tab=work-experience&edit=${id}&error=` +
+          encodeURIComponent("Failed to update work experience"),
+      );
     }
   },
 });

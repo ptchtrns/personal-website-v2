@@ -1,45 +1,32 @@
 import { define } from "@/utils.ts";
-import {
-  createRelease,
-  listReleases,
-  parseReleaseInput,
-} from "@/lib/releases.ts";
+import { createRelease, parseReleaseInput } from "@/lib/releases.ts";
+import { redirectTo } from "@/lib/http.ts";
 
 export const handler = define.handlers({
-  async GET(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    try {
-      return Response.json(await listReleases());
-    } catch (error) {
-      console.error("Failed to list releases", error);
-      return Response.json({ error: "Failed to list releases" }, {
-        status: 500,
-      });
-    }
-  },
-
   async POST(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!ctx.state.isAdmin) return ctx.redirect("/login");
 
-    const data = await ctx.req.json().catch(() => null);
-    const parsed = parseReleaseInput(data);
+    const formData = await ctx.req.formData();
+    const parsed = parseReleaseInput({
+      title: formData.get("title"),
+      type: formData.get("type"),
+      coverId: formData.get("coverId"),
+    });
     if ("error" in parsed) {
-      return Response.json({ error: parsed.error }, { status: 400 });
+      return redirectTo(
+        `/admin?tab=music&error=${encodeURIComponent(parsed.error)}`,
+      );
     }
 
     try {
-      const created = await createRelease(parsed.value);
-      return Response.json(created, { status: 201 });
+      await createRelease(parsed.value);
+      return redirectTo("/admin?tab=music&ok=Release+added");
     } catch (error) {
       console.error("Failed to create release", error);
-      return Response.json({ error: "Failed to create release" }, {
-        status: 500,
-      });
+      return redirectTo(
+        "/admin?tab=music&error=" +
+          encodeURIComponent("Failed to create release"),
+      );
     }
   },
 });

@@ -1,45 +1,31 @@
 import { define } from "@/utils.ts";
-import {
-  createGalleryItem,
-  listGallery,
-  parseGalleryInput,
-} from "@/lib/gallery.ts";
+import { createGalleryItem, parseGalleryInput } from "@/lib/gallery.ts";
+import { redirectTo } from "@/lib/http.ts";
 
 export const handler = define.handlers({
-  async GET(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    try {
-      return Response.json(await listGallery());
-    } catch (error) {
-      console.error("Failed to list gallery", error);
-      return Response.json({ error: "Failed to list gallery" }, {
-        status: 500,
-      });
-    }
-  },
-
   async POST(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!ctx.state.isAdmin) return ctx.redirect("/login");
 
-    const data = await ctx.req.json().catch(() => null);
-    const parsed = parseGalleryInput(data);
+    const formData = await ctx.req.formData();
+    const parsed = parseGalleryInput({
+      description: formData.get("description"),
+      imageId: formData.get("imageId"),
+    });
     if ("error" in parsed) {
-      return Response.json({ error: parsed.error }, { status: 400 });
+      return redirectTo(
+        `/admin?tab=gallery&error=${encodeURIComponent(parsed.error)}`,
+      );
     }
 
     try {
-      const created = await createGalleryItem(parsed.value);
-      return Response.json(created, { status: 201 });
+      await createGalleryItem(parsed.value);
+      return redirectTo("/admin?tab=gallery&ok=Photo+added");
     } catch (error) {
       console.error("Failed to create gallery item", error);
-      return Response.json({ error: "Failed to create gallery item" }, {
-        status: 500,
-      });
+      return redirectTo(
+        "/admin?tab=gallery&error=" +
+          encodeURIComponent("Failed to create gallery item"),
+      );
     }
   },
 });

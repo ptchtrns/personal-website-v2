@@ -1,45 +1,38 @@
 import { define } from "@/utils.ts";
-import {
-  createProject,
-  listAllProjects,
-  parseProjectInput,
-} from "@/lib/projects.ts";
+import { createProject, parseProjectInput } from "@/lib/projects.ts";
+import { redirectTo } from "@/lib/http.ts";
 
 export const handler = define.handlers({
-  async GET(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    try {
-      return Response.json(await listAllProjects());
-    } catch (error) {
-      console.error("Failed to list projects", error);
-      return Response.json({ error: "Failed to list projects" }, {
-        status: 500,
-      });
-    }
-  },
-
   async POST(ctx) {
-    if (!ctx.state.isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!ctx.state.isAdmin) return ctx.redirect("/login");
 
-    const data = await ctx.req.json().catch(() => null);
-    const parsed = parseProjectInput(data);
+    const formData = await ctx.req.formData();
+    const parsed = parseProjectInput({
+      name: formData.get("name"),
+      description: formData.get("description"),
+      changelog: formData.get("changelog"),
+      shortOverview: formData.get("shortOverview"),
+      externalUrl: formData.get("externalUrl"),
+      isPinned: formData.get("isPinned") === "on",
+      isActive: formData.get("isActive") === "on",
+      technologyNames: formData.get("technologyNames"),
+      mediaIds: formData.getAll("mediaIds"),
+    });
     if ("error" in parsed) {
-      return Response.json({ error: parsed.error }, { status: 400 });
+      return redirectTo(
+        `/admin?tab=projects&error=${encodeURIComponent(parsed.error)}`,
+      );
     }
 
     try {
-      const created = await createProject(parsed.value);
-      return Response.json(created, { status: 201 });
+      await createProject(parsed.value);
+      return redirectTo("/admin?tab=projects&ok=Project+added");
     } catch (error) {
       console.error("Failed to create project", error);
-      return Response.json({ error: "Failed to create project" }, {
-        status: 500,
-      });
+      return redirectTo(
+        "/admin?tab=projects&error=" +
+          encodeURIComponent("Failed to create project"),
+      );
     }
   },
 });

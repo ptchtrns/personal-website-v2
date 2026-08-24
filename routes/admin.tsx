@@ -1,18 +1,200 @@
 import { define } from "../utils.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
-import AdminTabs from "@/islands/AdminTabs.tsx";
+import { AdminNav } from "@/components/admin/AdminNav.tsx";
+import { FormMessage } from "@/components/admin/FormMessage.tsx";
+import GalleryAdmin from "@/components/admin/GalleryAdmin.tsx";
+import MusicAdmin from "@/components/admin/MusicAdmin.tsx";
+import EducationAdmin from "@/components/admin/EducationAdmin.tsx";
+import WorkExperienceAdmin from "@/components/admin/WorkExperienceAdmin.tsx";
+import ProjectsAdmin from "@/components/admin/ProjectsAdmin.tsx";
+import MediaAdmin from "@/components/admin/MediaAdmin.tsx";
+import { listGallery } from "@/lib/gallery.ts";
+import { listReleases } from "@/lib/releases.ts";
+import { listEducation } from "@/lib/education.ts";
+import { listWorkExperience } from "@/lib/work-experience.ts";
+import { listAllProjects } from "@/lib/projects.ts";
+import { listTechnologies } from "@/lib/technologies.ts";
+import { listMedia, type MediaItem } from "@/lib/media.ts";
+import type { GalleryItem } from "@/lib/gallery.ts";
+import type { ReleaseItem } from "@/lib/releases.ts";
+import type { EducationItem } from "@/lib/education.ts";
+import type { WorkExperienceItem } from "@/lib/work-experience.ts";
+import type { ProjectItem } from "@/lib/projects.ts";
+import type { Technology } from "@/lib/technologies.ts";
+
+const TABS = [
+  "media",
+  "gallery",
+  "music",
+  "education",
+  "work-experience",
+  "projects",
+] as const;
+type Tab = typeof TABS[number];
+
+function isTab(value: string | null): value is Tab {
+  return (TABS as readonly string[]).includes(value ?? "");
+}
+
+interface AdminData {
+  tab: Tab;
+  error: string | null;
+  ok: string | null;
+  gallery?: {
+    items: GalleryItem[];
+    images: MediaItem[];
+    editId: number | null;
+    confirmDelete: boolean;
+  };
+  music?: {
+    releases: ReleaseItem[];
+    images: MediaItem[];
+    audio: MediaItem[];
+    editId: number | null;
+    confirmDelete: boolean;
+    trackEditId: number | null;
+    trackConfirmDelete: boolean;
+  };
+  education?: {
+    items: EducationItem[];
+    editId: number | null;
+    confirmDelete: boolean;
+  };
+  workExperience?: {
+    items: WorkExperienceItem[];
+    editId: number | null;
+    confirmDelete: boolean;
+  };
+  projects?: {
+    items: ProjectItem[];
+    images: MediaItem[];
+    technologies: Technology[];
+    editId: number | null;
+    confirmDelete: boolean;
+  };
+  media?: {
+    items: MediaItem[];
+    deleteId: number | null;
+    confirmDelete: boolean;
+  };
+}
 
 export const handler = define.handlers({
-  GET(ctx) {
+  async GET(ctx) {
     if (!ctx.state.isAdmin) return ctx.redirect("/login");
-    return { data: null };
+
+    const url = new URL(ctx.req.url);
+    const tabParam = url.searchParams.get("tab");
+    const tab: Tab = isTab(tabParam) ? tabParam : "media";
+
+    const editParam = url.searchParams.get("edit");
+    const editId = editParam !== null ? Number(editParam) : null;
+    const confirmDelete = url.searchParams.get("confirmDelete") === "1";
+    const trackEditParam = url.searchParams.get("trackEdit");
+    const trackEditId = trackEditParam !== null ? Number(trackEditParam) : null;
+    const trackConfirmDelete =
+      url.searchParams.get("trackConfirmDelete") === "1";
+
+    const common = {
+      tab,
+      error: url.searchParams.get("error"),
+      ok: url.searchParams.get("ok"),
+    };
+
+    switch (tab) {
+      case "gallery": {
+        const [items, images] = await Promise.all([
+          listGallery(),
+          listMedia("image"),
+        ]);
+        const data: AdminData = {
+          ...common,
+          gallery: { items, images, editId, confirmDelete },
+        };
+        return { data };
+      }
+      case "music": {
+        const [releases, images, audio] = await Promise.all([
+          listReleases(),
+          listMedia("image"),
+          listMedia("audio"),
+        ]);
+        const data: AdminData = {
+          ...common,
+          music: {
+            releases,
+            images,
+            audio,
+            editId,
+            confirmDelete,
+            trackEditId,
+            trackConfirmDelete,
+          },
+        };
+        return { data };
+      }
+      case "education": {
+        const items = await listEducation();
+        const data: AdminData = {
+          ...common,
+          education: { items, editId, confirmDelete },
+        };
+        return { data };
+      }
+      case "work-experience": {
+        const items = await listWorkExperience();
+        const data: AdminData = {
+          ...common,
+          workExperience: { items, editId, confirmDelete },
+        };
+        return { data };
+      }
+      case "projects": {
+        const [items, images, technologies] = await Promise.all([
+          listAllProjects(),
+          listMedia("image"),
+          listTechnologies(),
+        ]);
+        const data: AdminData = {
+          ...common,
+          projects: { items, images, technologies, editId, confirmDelete },
+        };
+        return { data };
+      }
+      case "media":
+      default: {
+        const items = await listMedia();
+        const data: AdminData = {
+          ...common,
+          media: { items, deleteId: editId, confirmDelete },
+        };
+        return { data };
+      }
+    }
   },
 });
 
-export default define.page(function Admin() {
+export default define.page<typeof handler>(function Admin({ data }) {
   return (
     <MainDisplay>
-      <AdminTabs />
+      <div class="flex flex-col gap-4">
+        <AdminNav active={data.tab} />
+        <FormMessage error={data.error} ok={data.ok} />
+        {data.tab === "media" && data.media && <MediaAdmin {...data.media} />}
+        {data.tab === "gallery" && data.gallery && (
+          <GalleryAdmin {...data.gallery} />
+        )}
+        {data.tab === "music" && data.music && <MusicAdmin {...data.music} />}
+        {data.tab === "education" && data.education && (
+          <EducationAdmin {...data.education} />
+        )}
+        {data.tab === "work-experience" && data.workExperience && (
+          <WorkExperienceAdmin {...data.workExperience} />
+        )}
+        {data.tab === "projects" && data.projects && (
+          <ProjectsAdmin {...data.projects} />
+        )}
+      </div>
     </MainDisplay>
   );
 });
