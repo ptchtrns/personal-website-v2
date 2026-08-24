@@ -150,8 +150,8 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
           </footer>
         </Card>
 
-        <div class="px-3 flex justify-between mt-4">
-          <div class="flex">
+        <div class="flex justify-between mt-4">
+          <Card class="bg-white dark:bg-stone-900 rounded-[17px] flex flex-row p-1 border border-stone-300 dark:border-stone-700 gap-0">
             {themes.map((theme) => {
               const Icon = theme.icon;
               return (
@@ -166,7 +166,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
                 </Button>
               );
             })}
-          </div>
+          </Card>
 
           <div class="flex gap-2">
             {/* Language switching placeholder */}

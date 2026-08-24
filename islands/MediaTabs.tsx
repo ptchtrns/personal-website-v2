@@ -1,4 +1,6 @@
+import { useState } from "preact/hooks";
 import { Card, CardContent } from "@/components/ui/card.tsx";
+import { Dialog, DialogContent } from "@/components/ui/dialog.tsx";
 import {
   Tabs,
   TabsContent,
@@ -14,10 +16,55 @@ interface MediaTabsProps {
   error: string | null;
 }
 
+function GalleryMasonry({ gallery }: { gallery: GalleryItem[] }) {
+  const [active, setActive] = useState<GalleryItem | null>(null);
+
+  return (
+    <>
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4">
+        {gallery.map((item) => (
+          <button
+            type="button"
+            key={item.id}
+            onClick={() => setActive(item)}
+            class="block w-full break-inside-avoid text-left"
+          >
+            <Card class="overflow-hidden py-0 gap-0 hover:opacity-90 transition-opacity">
+              <img
+                src={item.src}
+                alt={item.description ?? ""}
+                class="w-full"
+                loading="lazy"
+              />
+            </Card>
+          </button>
+        ))}
+      </div>
+
+      <Dialog open={active !== null} onOpenChange={() => setActive(null)}>
+        {active && (
+          <DialogContent>
+            <img
+              src={active.src}
+              alt={active.description ?? ""}
+              class="w-full rounded-lg"
+            />
+            {active.description && (
+              <p class="text-stone-700 dark:text-stone-300">
+                {active.description}
+              </p>
+            )}
+          </DialogContent>
+        )}
+      </Dialog>
+    </>
+  );
+}
+
 export default function MediaTabs({ gallery, music, error }: MediaTabsProps) {
   return (
     <Tabs defaultValue="photos">
-      <TabsList>
+      <TabsList class="gap-1">
         <TabsTrigger value="photos">Photos</TabsTrigger>
         <TabsTrigger value="audio">Audio</TabsTrigger>
       </TabsList>
@@ -30,21 +77,7 @@ export default function MediaTabs({ gallery, music, error }: MediaTabsProps) {
               No photos found
             </div>
           )
-          : (
-            <div class="grid grid-cols-1 gap-4">
-              {gallery.map((item) => (
-                <Card key={item.id}>
-                  <CardContent class="pt-6">
-                    <img
-                      src={item.src}
-                      alt={item.description ?? ""}
-                      class="w-full"
-                    />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+          : <GalleryMasonry gallery={gallery} />}
       </TabsContent>
       <TabsContent value="audio">
         {error

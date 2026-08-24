@@ -29,7 +29,7 @@ export const handler = define.handlers({
 export default define.page<typeof handler>(function Media({ data }) {
   return (
     <MainDisplay>
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-6">
         <section class="flex flex-col gap-3">
           <h1 class="text-4xl font-bold dark:text-stone-100">Media</h1>
           <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
