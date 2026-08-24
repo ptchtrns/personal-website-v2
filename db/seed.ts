@@ -7,7 +7,6 @@ import {
   media,
   music,
   projects,
-  projectsToMedia,
   workExperience,
 } from "@/db/schema.ts";
 import { PHOTO_BASE_URL } from "@/lib/config.ts";
@@ -57,7 +56,7 @@ const educationSeed:
         "Information and Communication Technology - Bachelor's degree (In Progress)",
       degreeType: "Bachelor's degree",
       educationInstitution: "Metropolia University of Applied Sciences",
-      logoFile: new URL("../seed/metropolia_logo.png", import.meta.url),
+      logoFile: new URL("../seed/metropolia_logo.avif", import.meta.url),
       startedAt: new Date("2025-08-01T00:00:00Z"),
       finishedAt: null,
     },
@@ -65,7 +64,7 @@ const educationSeed:
       degreeTitle: "Software Engineering - Vocational undergraduate degree",
       degreeType: "Vocational undergraduate degree",
       educationInstitution: "Salpaus Further Education",
-      logoFile: new URL("../seed/salpaus_logo.png", import.meta.url),
+      logoFile: new URL("../seed/salpaus_logo.avif", import.meta.url),
       startedAt: new Date("2023-01-01T00:00:00Z"),
       finishedAt: new Date("2025-06-01T00:00:00Z"),
     },
@@ -88,31 +87,31 @@ const projectsSeed: (typeof projects.$inferInsert & { logoFile?: URL })[] = [
 const gallerySeed: { description: string; file: URL }[] = [
   {
     description: "20240828_152407",
-    file: new URL("../seed/20240828_152407.jpg", import.meta.url),
+    file: new URL("../seed/20240828_152407.avif", import.meta.url),
   },
   {
     description: "20240831_185046",
-    file: new URL("../seed/20240831_185046.jpg", import.meta.url),
+    file: new URL("../seed/20240831_185046.avif", import.meta.url),
   },
   {
     description: "20240919_220651_862",
-    file: new URL("../seed/20240919_220651_862.jpg", import.meta.url),
+    file: new URL("../seed/20240919_220651_862.avif", import.meta.url),
   },
   {
     description: "20241127_150530",
-    file: new URL("../seed/20241127_150530.jpg", import.meta.url),
+    file: new URL("../seed/20241127_150530.avif", import.meta.url),
   },
   {
     description: "20250518_192239",
-    file: new URL("../seed/20250518_192239.jpg", import.meta.url),
+    file: new URL("../seed/20250518_192239.avif", import.meta.url),
   },
   {
     description: "20260705_123908",
-    file: new URL("../seed/20260705_123908.jpg", import.meta.url),
+    file: new URL("../seed/20260705_123908.avif", import.meta.url),
   },
 ];
 
-const pfpSeed = { file: new URL("../seed/nikolai.jpg", import.meta.url) };
+const pfpSeed = { file: new URL("../seed/nikolai.avif", import.meta.url) };
 
 const musicSeed: { title: string; file: URL }[] = [
   {
@@ -194,13 +193,18 @@ async function seedEducation(db: Db, bucket: LocalR2Bucket) {
   }
 }
 
-/**
- * Inserts each seed project and, if it has a logo, uploads it as a `media`
- * row linked through `projects_to_media`.
- */
+/** Inserts each seed project. */
 async function seedProjects(db: Db) {
-  for (const { ...row } of projectsSeed)
-    await db.insert(projects).values(row).returning();
+  for (const row of projectsSeed) {
+    const existing = await db
+      .select({ id: projects.id })
+      .from(projects)
+      .where(eq(projects.name, row.name))
+      .limit(1);
+    if (existing.length > 0) continue;
+
+    await db.insert(projects).values(row);
+  }
 }
 
 /**
@@ -262,7 +266,7 @@ async function main() {
   const bucket = await getCdnBucket();
   await seedWorkExperience(db);
   await seedEducation(db, bucket);
-  await seedProjects(db, bucket);
+  await seedProjects(db);
   await seedGallery(db, bucket);
   await seedMusic(db, bucket);
   await seedPfp(db, bucket);
