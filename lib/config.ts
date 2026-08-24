@@ -11,6 +11,8 @@ export const AWS_REGION = env("AWS_REGION", "eu-north-1");
 export const LOCAL_DEV = env("LOCAL_DEV", "true") === "true";
 
 export const ADMIN_PASSWORD = env("ADMIN_PASSWORD", "");
+export const RESEND_API_KEY = env("RESEND_API_KEY", "");
+export const CONTACT_TO_EMAIL = env("CONTACT_TO_EMAIL", "ptchtrns@gmail.com");
 export const JWT_SECRET = env(
   "JWT_SECRET",
   "your-secret-key-change-in-production",
