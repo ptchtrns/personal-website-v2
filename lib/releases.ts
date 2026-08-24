@@ -1,7 +1,14 @@
 import { eq, inArray } from "drizzle-orm";
 import { alias } from "drizzle-orm/sqlite-core";
+import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { media, releases, tracks } from "@/db/schema.ts";
+import {
+  optionalIntId,
+  parseWithSchema,
+  requiredIntId,
+  requiredTrimmedString,
+} from "@/lib/validation.ts";
 
 const cover = alias(media, "cover");
 
@@ -116,35 +123,21 @@ export async function deleteRelease(id: number): Promise<void> {
   await getDb().delete(releases).where(eq(releases.id, id));
 }
 
+const ReleaseInputSchema = z.object({
+  title: requiredTrimmedString("title is required"),
+  type: z.preprocess(
+    (v) => String(v ?? ""),
+    z.enum(RELEASE_TYPES as [ReleaseType, ...ReleaseType[]], {
+      errorMap: () => ({ message: "type must be one of album, ep, single" }),
+    }),
+  ),
+  coverId: optionalIntId("Invalid coverId"),
+}) satisfies z.ZodType<ReleaseInput, z.ZodTypeDef, unknown>;
+
 export function parseReleaseInput(
   data: unknown,
 ): { value: ReleaseInput } | { error: string } {
-  if (data === null || typeof data !== "object") {
-    return { error: "Invalid request body" };
-  }
-  const body = data as Record<string, unknown>;
-
-  const title = String(body.title ?? "").trim();
-  if (!title) {
-    return { error: "title is required" };
-  }
-
-  const type = String(body.type ?? "");
-  if (!RELEASE_TYPES.includes(type as ReleaseType)) {
-    return { error: "type must be one of album, ep, single" };
-  }
-
-  let coverId: number | null = null;
-  if (
-    body.coverId !== null && body.coverId !== undefined && body.coverId !== ""
-  ) {
-    coverId = Number(body.coverId);
-    if (!Number.isInteger(coverId)) {
-      return { error: "Invalid coverId" };
-    }
-  }
-
-  return { value: { title, type: type as ReleaseType, coverId } };
+  return parseWithSchema(ReleaseInputSchema, data);
 }
 
 async function trackWithMedia(id: number): Promise<TrackItem | null> {
@@ -186,28 +179,14 @@ export async function deleteTrack(id: number): Promise<void> {
   await getDb().delete(tracks).where(eq(tracks.id, id));
 }
 
+const TrackInputSchema = z.object({
+  title: requiredTrimmedString("title is required"),
+  audioId: requiredIntId("audioId is required"),
+  releaseId: requiredIntId("releaseId is required"),
+}) satisfies z.ZodType<TrackInput, z.ZodTypeDef, unknown>;
+
 export function parseTrackInput(
   data: unknown,
 ): { value: TrackInput } | { error: string } {
-  if (data === null || typeof data !== "object") {
-    return { error: "Invalid request body" };
-  }
-  const body = data as Record<string, unknown>;
-
-  const title = String(body.title ?? "").trim();
-  if (!title) {
-    return { error: "title is required" };
-  }
-
-  const audioId = Number(body.audioId);
-  if (!Number.isInteger(audioId)) {
-    return { error: "audioId is required" };
-  }
-
-  const releaseId = Number(body.releaseId);
-  if (!Number.isInteger(releaseId)) {
-    return { error: "releaseId is required" };
-  }
-
-  return { value: { title, audioId, releaseId } };
+  return parseWithSchema(TrackInputSchema, data);
 }

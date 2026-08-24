@@ -1,6 +1,7 @@
 import { define } from "@/utils.ts";
 import { updateMediaAlt } from "@/lib/media.ts";
 import { redirectTo } from "@/lib/http.ts";
+import { nullableTrimmedString } from "@/lib/validation.ts";
 
 export const handler = define.handlers({
   async POST(ctx) {
@@ -14,8 +15,7 @@ export const handler = define.handlers({
     }
 
     const formData = await ctx.req.formData();
-    const altRaw = formData.get("alt");
-    const alt = altRaw && String(altRaw).trim() ? String(altRaw).trim() : null;
+    const alt = nullableTrimmedString.parse(formData.get("alt"));
 
     try {
       const updated = await updateMediaAlt(id, alt);

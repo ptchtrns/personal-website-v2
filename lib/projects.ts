@@ -1,4 +1,14 @@
 import { desc, eq, inArray } from "drizzle-orm";
+import { z } from "zod";
+import {
+  coercedBoolean,
+  intIdArray,
+  multilineList,
+  nullableTrimmedString,
+  parseWithSchema,
+  requiredTrimmedString,
+  stringArray,
+} from "@/lib/validation.ts";
 import { getDb } from "@/db/local-client.ts";
 import {
   media,
@@ -148,58 +158,23 @@ export async function deleteProject(id: number): Promise<void> {
   await getDb().delete(projects).where(eq(projects.id, id));
 }
 
+const ProjectInputSchema = z.object({
+  name: requiredTrimmedString("name is required"),
+  description: multilineList,
+  changelog: nullableTrimmedString,
+  shortOverview: nullableTrimmedString,
+  externalUrl: nullableTrimmedString,
+  isPinned: coercedBoolean,
+  isActive: z.preprocess(
+    (v) => (v === undefined ? true : Boolean(v)),
+    z.boolean(),
+  ),
+  technologyNames: stringArray,
+  mediaIds: intIdArray,
+}) satisfies z.ZodType<ProjectInput, z.ZodTypeDef, unknown>;
+
 export function parseProjectInput(
   data: unknown,
 ): { value: ProjectInput } | { error: string } {
-  if (data === null || typeof data !== "object") {
-    return { error: "Invalid request body" };
-  }
-  const body = data as Record<string, unknown>;
-
-  const name = String(body.name ?? "").trim();
-  if (!name) {
-    return { error: "name is required" };
-  }
-
-  let description: string[] | null = null;
-  if (Array.isArray(body.description)) {
-    description = body.description.map((line) => String(line).trim())
-      .filter(Boolean);
-  } else if (typeof body.description === "string") {
-    description = body.description.split("\n").map((line) => line.trim())
-      .filter(Boolean);
-  }
-  if (description !== null && description.length === 0) description = null;
-
-  const changelog = body.changelog ? String(body.changelog).trim() : null;
-  const shortOverview = body.shortOverview
-    ? String(body.shortOverview).trim()
-    : null;
-  const externalUrl = body.externalUrl ? String(body.externalUrl).trim() : null;
-  const isPinned = Boolean(body.isPinned);
-  const isActive = body.isActive === undefined ? true : Boolean(body.isActive);
-
-  const technologyNames = Array.isArray(body.technologyNames)
-    ? body.technologyNames.map((n) => String(n))
-    : typeof body.technologyNames === "string"
-    ? body.technologyNames.split(",").map((n) => n.trim()).filter(Boolean)
-    : [];
-
-  const mediaIds = Array.isArray(body.mediaIds)
-    ? body.mediaIds.map((n) => Number(n)).filter((n) => Number.isInteger(n))
-    : [];
-
-  return {
-    value: {
-      name,
-      description,
-      changelog,
-      shortOverview,
-      externalUrl,
-      isPinned,
-      isActive,
-      technologyNames,
-      mediaIds,
-    },
-  };
+  return parseWithSchema(ProjectInputSchema, data);
 }

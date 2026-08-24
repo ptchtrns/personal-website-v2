@@ -1,6 +1,14 @@
 import { desc, eq } from "drizzle-orm";
+import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { education } from "@/db/schema.ts";
+import {
+  nullableTrimmedString,
+  optionalDate,
+  parseWithSchema,
+  requiredDate,
+  requiredTrimmedString,
+} from "@/lib/validation.ts";
 
 export type EducationItem = typeof education.$inferSelect;
 export type EducationInput = typeof education.$inferInsert;
@@ -35,54 +43,20 @@ export async function deleteEducation(id: number): Promise<void> {
   await getDb().delete(education).where(eq(education.id, id));
 }
 
+const EducationInputSchema = z.object({
+  degreeTitle: requiredTrimmedString("degreeTitle is required"),
+  degreeType: requiredTrimmedString("degreeType is required"),
+  educationInstitution: requiredTrimmedString(
+    "educationInstitution is required",
+  ),
+  institutionLogoSrc: nullableTrimmedString,
+  startedAt: requiredDate("Invalid or missing startedAt"),
+  finishedAt: optionalDate("Invalid finishedAt"),
+  description: nullableTrimmedString,
+}) satisfies z.ZodType<EducationInput, z.ZodTypeDef, unknown>;
+
 export function parseEducationInput(
   data: unknown,
 ): { value: EducationInput } | { error: string } {
-  if (data === null || typeof data !== "object") {
-    return { error: "Invalid request body" };
-  }
-  const body = data as Record<string, unknown>;
-
-  const degreeTitle = String(body.degreeTitle ?? "").trim();
-  const degreeType = String(body.degreeType ?? "").trim();
-  const educationInstitution = String(body.educationInstitution ?? "").trim();
-  if (!degreeTitle || !degreeType || !educationInstitution) {
-    return {
-      error: "degreeTitle, degreeType and educationInstitution are required",
-    };
-  }
-
-  const startedAtRaw = body.startedAt;
-  const startedAt = typeof startedAtRaw === "string"
-    ? new Date(startedAtRaw)
-    : null;
-  if (!startedAt || Number.isNaN(startedAt.getTime())) {
-    return { error: "Invalid or missing startedAt" };
-  }
-
-  const finishedAtRaw = body.finishedAt;
-  let finishedAt: Date | null = null;
-  if (typeof finishedAtRaw === "string" && finishedAtRaw.trim()) {
-    finishedAt = new Date(finishedAtRaw);
-    if (Number.isNaN(finishedAt.getTime())) {
-      return { error: "Invalid finishedAt" };
-    }
-  }
-
-  const institutionLogoSrc = body.institutionLogoSrc
-    ? String(body.institutionLogoSrc).trim()
-    : null;
-  const description = body.description ? String(body.description).trim() : null;
-
-  return {
-    value: {
-      degreeTitle,
-      degreeType,
-      educationInstitution,
-      institutionLogoSrc,
-      startedAt,
-      finishedAt,
-      description,
-    },
-  };
+  return parseWithSchema(EducationInputSchema, data);
 }

@@ -3,16 +3,12 @@ import {
   ALLOWED_CONTENT_TYPE_BY_TYPE,
   createMedia,
   MAX_BYTES_BY_TYPE,
-  type MediaType,
+  parseMediaFormInput,
 } from "@/lib/media.ts";
 import { redirectTo } from "@/lib/http.ts";
+import { requiredTrimmedString } from "@/lib/validation.ts";
 
-const MEDIA_TYPES: MediaType[] = ["image", "pdf", "audio", "link", "pfp"];
-
-function isMediaType(value: unknown): value is MediaType {
-  return typeof value === "string" &&
-    (MEDIA_TYPES as string[]).includes(value);
-}
+const LinkUrlSchema = requiredTrimmedString("Missing link URL");
 
 function fail(message: string) {
   return redirectTo("/admin?tab=media&error=" + encodeURIComponent(message));
@@ -23,17 +19,18 @@ export const handler = define.handlers({
     if (!ctx.state.isAdmin) return ctx.redirect("/login");
 
     const formData = await ctx.req.formData();
-    const type = formData.get("type");
-    if (!isMediaType(type)) return fail("Invalid or missing type");
-
-    const altRaw = formData.get("alt");
-    const alt = altRaw && String(altRaw).trim() ? String(altRaw).trim() : null;
+    const parsed = parseMediaFormInput({
+      type: formData.get("type"),
+      alt: formData.get("alt"),
+    });
+    if ("error" in parsed) return fail(parsed.error);
+    const { type, alt } = parsed.value;
 
     try {
       if (type === "link") {
-        const src = String(formData.get("linkUrl") ?? "").trim();
-        if (!src) return fail("Missing link URL");
-        await createMedia({ type: "link", alt, src });
+        const linkResult = LinkUrlSchema.safeParse(formData.get("linkUrl"));
+        if (!linkResult.success) return fail("Missing link URL");
+        await createMedia({ type: "link", alt, src: linkResult.data });
         return redirectTo("/admin?tab=media&ok=Link+added");
       }
 

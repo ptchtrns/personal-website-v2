@@ -1,6 +1,12 @@
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { gallery, media } from "@/db/schema.ts";
+import {
+  nullableTrimmedString,
+  parseWithSchema,
+  requiredIntId,
+} from "@/lib/validation.ts";
 
 export type GalleryRow = typeof gallery.$inferSelect;
 export interface GalleryItem {
@@ -67,20 +73,13 @@ export async function deleteGalleryItem(id: number): Promise<void> {
   await getDb().delete(gallery).where(eq(gallery.id, id));
 }
 
+const GalleryInputSchema = z.object({
+  description: nullableTrimmedString,
+  imageId: requiredIntId("imageId is required"),
+}) satisfies z.ZodType<GalleryInput, z.ZodTypeDef, unknown>;
+
 export function parseGalleryInput(
   data: unknown,
 ): { value: GalleryInput } | { error: string } {
-  if (data === null || typeof data !== "object") {
-    return { error: "Invalid request body" };
-  }
-  const body = data as Record<string, unknown>;
-
-  const imageId = Number(body.imageId);
-  if (!Number.isInteger(imageId)) {
-    return { error: "imageId is required" };
-  }
-
-  const description = body.description ? String(body.description).trim() : null;
-
-  return { value: { description, imageId } };
+  return parseWithSchema(GalleryInputSchema, data);
 }

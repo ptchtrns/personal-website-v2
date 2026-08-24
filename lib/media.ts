@@ -1,11 +1,39 @@
 import { desc, eq } from "drizzle-orm";
+import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { media } from "@/db/schema.ts";
 import { PHOTO_BASE_URL } from "@/lib/config.ts";
 import { uploadObject } from "@/lib/storage.ts";
+import { nullableTrimmedString, parseWithSchema } from "@/lib/validation.ts";
 
 export type MediaType = (typeof media.$inferSelect)["type"];
 export type MediaItem = typeof media.$inferSelect;
+
+export const MEDIA_TYPES: MediaType[] = [
+  "image",
+  "pdf",
+  "audio",
+  "link",
+  "pfp",
+];
+
+export interface MediaFormInput {
+  type: MediaType;
+  alt: string | null;
+}
+
+const MediaFormSchema = z.object({
+  type: z.enum(MEDIA_TYPES as [MediaType, ...MediaType[]], {
+    errorMap: () => ({ message: "Invalid or missing type" }),
+  }),
+  alt: nullableTrimmedString,
+}) satisfies z.ZodType<MediaFormInput, z.ZodTypeDef, unknown>;
+
+export function parseMediaFormInput(
+  data: unknown,
+): { value: MediaFormInput } | { error: string } {
+  return parseWithSchema(MediaFormSchema, data);
+}
 
 const DEFAULT_EXTENSION_BY_TYPE: Record<MediaType, string> = {
   image: ".avif",
