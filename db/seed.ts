@@ -6,6 +6,7 @@ import {
   gallery,
   media,
   projects,
+  projectsToMedia,
   releases,
   tracks,
   workExperience,
@@ -70,19 +71,43 @@ const educationSeed:
     },
   ];
 
-const projectsSeed: (typeof projects.$inferInsert & { logoFile?: URL })[] = [
-  {
-    name: "SimPictures",
-    description: [
-      "Social media platform for sharing flight simulator screenshots.",
-      "Built with Next.js and PostgreSQL. ASP.NET, multiple AWS services (s3, CloudFront, App Runner, ECR, Rekognition), Vercel, Discord.Net and Appsmith are also utilized.",
-      "Implemented account management, image upload and processing, custom UI design and components.",
-      "To be open-sourced in 2026.",
-    ],
-    externalUrl: "https://www.simpictures.com/",
-    isPinned: true,
-  },
-];
+const projectsSeed:
+  (typeof projects.$inferInsert & { logoFile?: URL; screenshotFiles?: URL[] })[] = [
+    {
+      name: "SimPictures",
+      description: [
+        "Social media platform for sharing flight simulator screenshots.",
+        "Built with Next.js and PostgreSQL. ASP.NET, multiple AWS services (s3, CloudFront, App Runner, ECR, Rekognition), Vercel, Discord.Net and Appsmith are also utilized.",
+        "Implemented account management, image upload and processing, custom UI design and components.",
+        "To be open-sourced in 2026.",
+      ],
+      shortOverview:
+        "Social media platform for sharing flight simulator screenshots.",
+      externalUrl: "https://www.simpictures.com/",
+      isPinned: true,
+      screenshotFiles: [
+        new URL("../seed/SimPictures_home_page.avif", import.meta.url),
+        new URL("../seed/SimPictures_profile_page.avif", import.meta.url),
+        new URL("../seed/SimPictures_picture_view.avif", import.meta.url),
+        new URL("../seed/SimPictures_metadata_page.avif", import.meta.url),
+        new URL("../seed/SimPictures_crop_page.avif", import.meta.url),
+      ],
+    },
+    {
+      name: "slimew4re",
+      description: [
+        "Xbox NXE Dashboard-styled website for a music artist.",
+        "Supports creating and editing tiles and content.",
+      ],
+      shortOverview:
+        "Xbox NXE Dashboard-styled website for a music artist, with ability to create and edit tiles and content.",
+      externalUrl: "https://www.slimew4re.com/live",
+      screenshotFiles: [
+        new URL("../seed/slimew4re_1.avif", import.meta.url),
+        new URL("../seed/slimew4re_2.avif", import.meta.url),
+      ],
+    },
+  ];
 
 const gallerySeed: { description: string; file: URL }[] = [
   {
@@ -199,9 +224,9 @@ async function seedEducation(db: Db, bucket: LocalR2Bucket) {
   }
 }
 
-/** Inserts each seed project. */
-async function seedProjects(db: Db) {
-  for (const row of projectsSeed) {
+/** Inserts each seed project and uploads its screenshots as linked media. */
+async function seedProjects(db: Db, bucket: LocalR2Bucket) {
+  for (const { screenshotFiles, ...row } of projectsSeed) {
     const existing = await db
       .select({ id: projects.id })
       .from(projects)
@@ -209,7 +234,17 @@ async function seedProjects(db: Db) {
       .limit(1);
     if (existing.length > 0) continue;
 
-    await db.insert(projects).values(row);
+    const [projectRow] = await db.insert(projects).values(row).returning();
+
+    for (const file of screenshotFiles ?? []) {
+      const src = await uploadSeedFile(bucket, "projects", file);
+      const [mediaRow] = await db.insert(media).values({ src, type: "image" })
+        .returning();
+      await db.insert(projectsToMedia).values({
+        projectId: projectRow.id,
+        mediaId: mediaRow.id,
+      });
+    }
   }
 }
 
@@ -297,7 +332,7 @@ async function main() {
   const bucket = await getCdnBucket();
   await seedWorkExperience(db);
   await seedEducation(db, bucket);
-  await seedProjects(db);
+  await seedProjects(db, bucket);
   await seedGallery(db, bucket);
   await seedMusic(db, bucket);
   await seedPfp(db, bucket);

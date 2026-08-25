@@ -8,6 +8,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ImagesIcon,
+  ThumbtackIcon,
 } from "@/components/icons.tsx";
 import type { ProjectItem } from "@/lib/projects.ts";
 
@@ -141,7 +142,10 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
               onClick={() => setActive(project)}
               class="shrink-0 w-80 sm:w-96 snap-start text-left"
             >
-              <Card class="overflow-hidden py-0 gap-0 h-full hover:opacity-90 transition-opacity">
+              <Card class="relative overflow-hidden py-0 gap-0 h-full hover:opacity-90 transition-opacity">
+                {project.isPinned && (
+                  <ThumbtackIcon class="absolute top-2 right-2 z-10 text-stone-100 drop-shadow" />
+                )}
                 {image
                   ? (
                     <img
