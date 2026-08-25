@@ -5,6 +5,7 @@ import { getDb } from "@/db/local-client.ts";
 import { media, releases, tracks } from "@/db/schema.ts";
 import {
   multilineList,
+  nullableTrimmedString,
   optionalIntId,
   parseWithSchema,
   requiredIntId,
@@ -31,6 +32,7 @@ export interface ReleaseItem {
   type: ReleaseType;
   coverId: number | null;
   coverSrc: string | null;
+  description: string | null;
   links: string[] | null;
   tracks: TrackItem[];
 }
@@ -39,6 +41,7 @@ export interface ReleaseInput {
   title: string;
   type: ReleaseType;
   coverId: number | null;
+  description: string | null;
   links: string[] | null;
 }
 
@@ -114,6 +117,7 @@ export async function listReleases(): Promise<ReleaseItem[]> {
       type: releases.type,
       coverId: releases.coverId,
       coverSrc: cover.src,
+      description: releases.description,
       links: releases.links,
     })
     .from(releases)
@@ -171,6 +175,7 @@ const ReleaseInputSchema = z.object({
     }),
   ),
   coverId: optionalIntId("Invalid coverId"),
+  description: nullableTrimmedString,
   links: multilineList,
 }) satisfies z.ZodType<ReleaseInput, z.ZodTypeDef, unknown>;
 

@@ -141,6 +141,8 @@ const gallerySeed: { description: string; file: URL }[] = [
 const pfpSeed = { file: new URL("../seed/nikolai.avif", import.meta.url) };
 
 const ALBUM_TITLE = "public void";
+const ALBUM_DESCRIPTION =
+  "An album of glitchy, noise-leaning electronic tracks.";
 const albumCoverSeed = {
   file: new URL("../seed/Public-Void-cover-art.avif", import.meta.url),
 };
@@ -304,6 +306,7 @@ async function seedMusic(db: Db, bucket: LocalR2Bucket) {
       title: ALBUM_TITLE,
       type: "album",
       coverId: coverMediaRow.id,
+      description: ALBUM_DESCRIPTION,
       links: albumLinksSeed,
     }).returning();
   }

@@ -222,6 +222,19 @@ export default function MusicAdmin(
                   </Field>
 
                   <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="release-description">
+                      Description (optional)
+                    </FieldLabel>
+                    <Textarea
+                      id="release-description"
+                      name="description"
+                      rows={2}
+                      defaultValue={editing?.description ?? ""}
+                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                    />
+                  </Field>
+
+                  <Field class="flex flex-col gap-1.5">
                     <FieldLabel for="release-links">
                       Streaming links (one per line)
                     </FieldLabel>
