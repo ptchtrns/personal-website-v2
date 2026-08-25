@@ -10,6 +10,8 @@ _fresh/
 # npm + other dependencies
 node_modules/
 vendor/
+# Vite dep-optimization cache
+.vite/
 
 # Cloudflare Wrangler local state (local D1 sqlite files, etc.)
 .wrangler/
