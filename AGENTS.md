@@ -6,3 +6,4 @@
 - If you intend to write descriptions and other text related to UI, follow these standards:
   - Dots should not be used for separating info inline. Use commas instead or adjust the layout.
   - Em dashes should be used rarely.
+  - Don't write text in UPPER CASE.
