@@ -1,0 +1,5 @@
+- Keep comment short and precise, related to the codebase and not user's prompt
+- Don't test the project yourself, end user will do testing on their end themseleves
+- Follow existing project structure
+  - Use shadcn components whenever possible, add new components if needed
+  - Do server-side-rendering, minimize client-side JavaScript
