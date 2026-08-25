@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { media, releases, tracks } from "@/db/schema.ts";
 import {
+  multilineList,
   optionalIntId,
   parseWithSchema,
   requiredIntId,
@@ -30,6 +31,7 @@ export interface ReleaseItem {
   type: ReleaseType;
   coverId: number | null;
   coverSrc: string | null;
+  links: string[] | null;
   tracks: TrackItem[];
 }
 
@@ -37,12 +39,43 @@ export interface ReleaseInput {
   title: string;
   type: ReleaseType;
   coverId: number | null;
+  links: string[] | null;
 }
 
 export interface TrackInput {
   title: string;
   audioId: number;
   releaseId: number;
+}
+
+const LINK_LABELS_BY_HOSTNAME: Record<string, string> = {
+  "open.spotify.com": "Spotify",
+  "geo.music.apple.com": "Apple Music",
+  "music.apple.com": "Apple Music",
+  "www.tidal.com": "Tidal",
+  "tidal.com": "Tidal",
+  "www.youtube.com": "YouTube",
+  "music.youtube.com": "YouTube Music",
+  "bandcamp.com": "Bandcamp",
+  "www.deezer.com": "Deezer",
+  "deezer.com": "Deezer",
+  "music.amazon.com": "Amazon Music",
+  "pandora.app.link": "Pandora",
+  "www.pandora.com": "Pandora",
+};
+
+/** Maps a streaming link's hostname to a human-readable platform name, falling back to the hostname itself. */
+export function getLinkLabel(url: string): string {
+  try {
+    const { hostname } = new URL(url);
+    if (LINK_LABELS_BY_HOSTNAME[hostname]) {
+      return LINK_LABELS_BY_HOSTNAME[hostname];
+    }
+    if (hostname.endsWith(".bandcamp.com")) return "Bandcamp";
+    return hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
 }
 
 async function tracksByReleaseIds(
@@ -81,6 +114,7 @@ export async function listReleases(): Promise<ReleaseItem[]> {
       type: releases.type,
       coverId: releases.coverId,
       coverSrc: cover.src,
+      links: releases.links,
     })
     .from(releases)
     .leftJoin(cover, eq(releases.coverId, cover.id));
@@ -137,6 +171,7 @@ const ReleaseInputSchema = z.object({
     }),
   ),
   coverId: optionalIntId("Invalid coverId"),
+  links: multilineList,
 }) satisfies z.ZodType<ReleaseInput, z.ZodTypeDef, unknown>;
 
 export function parseReleaseInput(

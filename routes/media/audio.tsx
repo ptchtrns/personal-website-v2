@@ -3,7 +3,12 @@ import { define } from "../../utils.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
 import { MediaTabsNav } from "@/components/media/MediaTabsNav.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
-import { listReleases, type ReleaseItem } from "@/lib/releases.ts";
+import { Button } from "@/components/ui/button.tsx";
+import {
+  getLinkLabel,
+  listReleases,
+  type ReleaseItem,
+} from "@/lib/releases.ts";
 
 interface AudioData {
   releases: ReleaseItem[];
@@ -66,6 +71,22 @@ export default define.page<typeof handler>(function Audio({ data }) {
                           {RELEASE_TYPE_LABEL[release.type]}
                         </span>
                       </div>
+                      {release.links && release.links.length > 0 && (
+                        <div class="flex flex-wrap gap-2">
+                          {release.links.map((link) => (
+                            <Button
+                              key={link}
+                              href={link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              size="sm"
+                              variant="outline"
+                            >
+                              {getLinkLabel(link)}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
                       <div class="flex flex-col gap-2">
                         {release.tracks.map((track) => (
                           <div key={track.id} class="flex flex-col gap-1">

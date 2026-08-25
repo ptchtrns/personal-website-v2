@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Select, SelectItem } from "@/components/ui/select.tsx";
+import { Textarea } from "@/components/ui/textarea.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import {
   RELEASE_TYPES,
@@ -218,6 +219,19 @@ export default function MusicAdmin(
                         </SelectItem>
                       ))}
                     </Select>
+                  </Field>
+
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="release-links">
+                      Streaming links (one per line)
+                    </FieldLabel>
+                    <Textarea
+                      id="release-links"
+                      name="links"
+                      rows={4}
+                      defaultValue={(editing?.links ?? []).join("\n")}
+                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                    />
                   </Field>
                 </FieldGroup>
 

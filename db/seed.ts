@@ -71,43 +71,45 @@ const educationSeed:
     },
   ];
 
-const projectsSeed:
-  (typeof projects.$inferInsert & { logoFile?: URL; screenshotFiles?: URL[] })[] = [
-    {
-      name: "SimPictures",
-      description: [
-        "Social media platform for sharing flight simulator screenshots.",
-        "Built with Next.js and PostgreSQL. ASP.NET, multiple AWS services (s3, CloudFront, App Runner, ECR, Rekognition), Vercel, Discord.Net and Appsmith are also utilized.",
-        "Implemented account management, image upload and processing, custom UI design and components.",
-        "To be open-sourced in 2026.",
-      ],
-      shortOverview:
-        "Social media platform for sharing flight simulator screenshots.",
-      externalUrl: "https://www.simpictures.com/",
-      isPinned: true,
-      screenshotFiles: [
-        new URL("../seed/SimPictures_home_page.avif", import.meta.url),
-        new URL("../seed/SimPictures_profile_page.avif", import.meta.url),
-        new URL("../seed/SimPictures_picture_view.avif", import.meta.url),
-        new URL("../seed/SimPictures_metadata_page.avif", import.meta.url),
-        new URL("../seed/SimPictures_crop_page.avif", import.meta.url),
-      ],
-    },
-    {
-      name: "slimew4re",
-      description: [
-        "Xbox NXE Dashboard-styled website for a music artist.",
-        "Supports creating and editing tiles and content.",
-      ],
-      shortOverview:
-        "Xbox NXE Dashboard-styled website for a music artist, with ability to create and edit tiles and content.",
-      externalUrl: "https://www.slimew4re.com/live",
-      screenshotFiles: [
-        new URL("../seed/slimew4re_1.avif", import.meta.url),
-        new URL("../seed/slimew4re_2.avif", import.meta.url),
-      ],
-    },
-  ];
+const projectsSeed: (typeof projects.$inferInsert & {
+  logoFile?: URL;
+  screenshotFiles?: URL[];
+})[] = [
+  {
+    name: "SimPictures",
+    description: [
+      "Social media platform for sharing flight simulator screenshots.",
+      "Built with Next.js and PostgreSQL. ASP.NET, multiple AWS services (s3, CloudFront, App Runner, ECR, Rekognition), Vercel, Discord.Net and Appsmith are also utilized.",
+      "Implemented account management, image upload and processing, custom UI design and components.",
+      "To be open-sourced in 2026.",
+    ],
+    shortOverview:
+      "Social media platform for sharing flight simulator screenshots.",
+    externalUrl: "https://www.simpictures.com/",
+    isPinned: true,
+    screenshotFiles: [
+      new URL("../seed/SimPictures_home_page.avif", import.meta.url),
+      new URL("../seed/SimPictures_profile_page.avif", import.meta.url),
+      new URL("../seed/SimPictures_picture_view.avif", import.meta.url),
+      new URL("../seed/SimPictures_metadata_page.avif", import.meta.url),
+      new URL("../seed/SimPictures_crop_page.avif", import.meta.url),
+    ],
+  },
+  {
+    name: "slimew4re",
+    description: [
+      "Xbox NXE Dashboard-styled website for a music artist.",
+      "Supports creating and editing tiles and content.",
+    ],
+    shortOverview:
+      "Xbox NXE Dashboard-styled website for a music artist, with ability to create and edit tiles and content.",
+    externalUrl: "https://www.slimew4re.com/live",
+    screenshotFiles: [
+      new URL("../seed/slimew4re_1.avif", import.meta.url),
+      new URL("../seed/slimew4re_2.avif", import.meta.url),
+    ],
+  },
+];
 
 const gallerySeed: { description: string; file: URL }[] = [
   {
@@ -142,6 +144,18 @@ const ALBUM_TITLE = "public void";
 const albumCoverSeed = {
   file: new URL("../seed/Public-Void-cover-art.avif", import.meta.url),
 };
+const albumLinksSeed = [
+  "https://open.spotify.com/album/7vJvzJnPvjCsFcClsxCwL3?si=feNvqoQlR9afaUiH4G4i0A",
+  "https://geo.music.apple.com/au/album/public-void/1820747963?app=music&ls=1",
+  "https://geo.music.apple.com/au/album/public-void/1820747963?app=itunes&ls=1",
+  "http://www.tidal.com/album/442224873",
+  "https://www.youtube.com/playlist?list=OLAK5uy_kf3lqtpq1cgL3IjU3i9cjAgQ3QwvJewAM",
+  "https://music.youtube.com/playlist?list=OLAK5uy_kf3lqtpq1cgL3IjU3i9cjAgQ3QwvJewAM",
+  "https://pitchtransition.bandcamp.com/album/public-void",
+  "https://www.deezer.com/album/772875501",
+  "https://music.amazon.com/albums/B0FD8QWC7K?ref=dm_ff_amazonmusic_3p",
+  "https://pandora.app.link/?$desktop_url=https%3A%2F%2Fwww.pandora.com%2Fartist%2Fpitch-transition-and-m4lw4re%2Fpublic-void%2FALfJX4Kxbt9bnJ6&$ios_deeplink_path=pandorav4%3A%2F%2Fbackstage%2Falbum%3Ftoken%3DAL%3A49587170&$android_deeplink_path=pandorav4%3A%2F%2Fbackstage%2Falbum%3Ftoken%3DAL%3A49587170&~channel=Partner%20Catalog%20Search%20API",
+];
 
 /** All seed tracks belong to a single seed album. */
 const musicSeed: { title: string; file: URL }[] = [
@@ -290,6 +304,7 @@ async function seedMusic(db: Db, bucket: LocalR2Bucket) {
       title: ALBUM_TITLE,
       type: "album",
       coverId: coverMediaRow.id,
+      links: albumLinksSeed,
     }).returning();
   }
 

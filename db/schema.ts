@@ -112,6 +112,7 @@ export const releases = sqliteTable("releases", {
   coverId: integer("cover_id").references(() => media.id, {
     onDelete: "set null",
   }),
+  links: text("links", { mode: "json" }).$type<string[]>(),
 });
 
 export const tracks = sqliteTable("tracks", {

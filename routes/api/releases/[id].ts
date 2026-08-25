@@ -18,6 +18,7 @@ export const handler = define.handlers({
       title: formData.get("title"),
       type: formData.get("type"),
       coverId: formData.get("coverId"),
+      links: formData.get("links"),
     });
     if ("error" in parsed) {
       return redirectTo(
