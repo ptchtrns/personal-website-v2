@@ -10,14 +10,12 @@ import {
 } from "@/components/ui/card.tsx";
 import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
 import { type EducationItem, listEducation } from "@/lib/education.ts";
-import {
-  listPinnedProjects,
-  type ProjectRow as ProjectItem,
-} from "@/lib/projects.ts";
+import { listPinnedProjects, type ProjectItem } from "@/lib/projects.ts";
 import {
   listWorkExperience,
   type WorkExperienceItem,
 } from "@/lib/work-experience.ts";
+import ProjectsCarousel from "@/islands/ProjectsCarousel.tsx";
 
 interface HomeData {
   workExperience: WorkExperienceItem[];
@@ -76,6 +74,15 @@ export default define.page<typeof handler>(function Home({ data }) {
         </section>
 
         {error && <p class="text-red-600 dark:text-red-400">{error}</p>}
+
+        {projects.length > 0 && (
+          <section class="flex flex-col gap-6">
+            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
+              Projects
+            </h2>
+            <ProjectsCarousel projects={projects} />
+          </section>
+        )}
 
         {workExperience.length > 0 && (
           <section class="flex flex-col gap-6">
@@ -140,42 +147,6 @@ export default define.page<typeof handler>(function Home({ data }) {
                       {item.educationInstitution},{" "}
                       {formatDateRange(item.startedAt, item.finishedAt)}
                     </span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </section>
-        )}
-
-        {projects.length > 0 && (
-          <section class="flex flex-col gap-6">
-            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
-              Projects
-            </h2>
-            {projects.map((project) => (
-              <Card key={project.id}>
-                <CardContent class="flex flex-row gap-6 items-start">
-                  <div class="flex flex-col gap-3">
-                    <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
-                      {project.name}
-                    </h3>
-                    {project.description && project.description.length > 0 && (
-                      <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
-                        {project.description.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                      </ul>
-                    )}
-                    {project.externalUrl && (
-                      <a
-                        href={project.externalUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-blue-700 dark:text-blue-400 hover:underline inline-block"
-                      >
-                        Open the website <ArrowUpRightFromSquareIcon />
-                      </a>
-                    )}
                   </div>
                 </CardContent>
               </Card>

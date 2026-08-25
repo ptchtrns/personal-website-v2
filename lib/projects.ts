@@ -91,13 +91,14 @@ export async function listAllProjects(): Promise<ProjectItem[]> {
   return await withRelations(rows);
 }
 
-export async function listPinnedProjects(): Promise<ProjectRow[]> {
+export async function listPinnedProjects(): Promise<ProjectItem[]> {
   const db = await getDb();
-  return await db
+  const rows = await db
     .select()
     .from(projects)
     .where(eq(projects.isPinned, true))
     .orderBy(desc(projects.createdAt));
+  return await withRelations(rows);
 }
 
 async function syncProjectLinks(
