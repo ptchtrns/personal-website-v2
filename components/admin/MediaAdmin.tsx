@@ -112,7 +112,7 @@ export default function MediaAdmin(
                 />
               </Field>
 
-              <Button type="submit" class="w-full" variant="ghost">
+              <Button type="submit" class="w-full" variant="default">
                 Save
               </Button>
             </FieldSet>

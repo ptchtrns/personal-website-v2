@@ -172,7 +172,7 @@ export default function ProjectsAdmin(
                 </Field>
 
                 <div class="flex gap-2">
-                  <Button type="submit" variant="ghost">
+                  <Button type="submit" variant="default">
                     {editing ? "Save changes" : "Add project"}
                   </Button>
                   {editing && (

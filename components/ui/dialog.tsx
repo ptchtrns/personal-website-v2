@@ -52,26 +52,28 @@ export function DialogContent(
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={() => onOpenChange(false)}
     >
-      <div
-        data-slot="dialog-content"
-        class={cn(
-          "bg-background text-foreground relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border p-4 flex flex-col gap-4",
-          className,
-        )}
-        onClick={(event) => event.stopPropagation()}
-        {...props}
-      >
+      <div class="relative w-full max-w-2xl max-h-[90vh]">
         <Button
           type="button"
-          variant="ghost"
+          variant="default"
           size="icon-sm"
           onClick={() => onOpenChange(false)}
           aria-label="Close"
-          class="absolute top-2 right-2"
+          class="absolute -top-3 -right-3 rounded-full z-10"
         >
           <XmarkIcon />
         </Button>
-        {children}
+        <div
+          data-slot="dialog-content"
+          class={cn(
+            "bg-background text-foreground w-full max-h-[90vh] overflow-y-auto rounded-xl border p-4 flex flex-col gap-4",
+            className,
+          )}
+          onClick={(event) => event.stopPropagation()}
+          {...props}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

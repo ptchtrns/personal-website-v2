@@ -121,7 +121,7 @@ function TrackEditor(
               </Select>
             </div>
             <div class="flex gap-2">
-              <Button type="submit" size="sm" variant="ghost">
+              <Button type="submit" size="sm" variant="default">
                 {editingTrack ? "Save track" : "Add track"}
               </Button>
               {editingTrack && (
@@ -236,7 +236,7 @@ export default function MusicAdmin(
                 </FieldGroup>
 
                 <div class="flex gap-2">
-                  <Button type="submit" variant="ghost">
+                  <Button type="submit" variant="default">
                     {editing ? "Save changes" : "Add release"}
                   </Button>
                   {editing && (

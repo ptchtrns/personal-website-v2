@@ -52,7 +52,7 @@ export default define.page<typeof handler>(function Login({ data }) {
                 </FieldGroup>
               </FieldSet>
 
-              <Button type="submit" class="w-full" variant="ghost">
+              <Button type="submit" class="w-full" variant="default">
                 Log in
               </Button>
             </form>

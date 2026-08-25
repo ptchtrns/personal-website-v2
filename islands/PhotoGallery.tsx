@@ -30,14 +30,14 @@ export default function PhotoGallery({ gallery }: { gallery: GalleryItem[] }) {
 
       <Dialog open={active !== null} onOpenChange={() => setActive(null)}>
         {active && (
-          <DialogContent>
+          <DialogContent class="max-w-4xl bg-transparent border-0 p-0 shadow-none">
             <img
               src={active.src}
               alt={active.description ?? ""}
               class="w-full rounded-lg"
             />
             {active.description && (
-              <p class="text-stone-700 dark:text-stone-300">
+              <p class="text-stone-200 text-center">
                 {active.description}
               </p>
             )}

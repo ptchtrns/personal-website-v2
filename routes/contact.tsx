@@ -99,7 +99,7 @@ export default define.page<typeof handler>(function Contact({ data }) {
 
               {data.error && <FieldError>{data.error}</FieldError>}
 
-              <Button type="submit" class="w-full" variant="ghost">
+              <Button type="submit" class="w-full" variant="default">
                 Send message
               </Button>
             </form>

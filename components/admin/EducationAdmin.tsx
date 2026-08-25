@@ -137,7 +137,7 @@ export default function EducationAdmin(
                 </Field>
 
                 <div class="flex gap-2">
-                  <Button type="submit" variant="ghost">
+                  <Button type="submit" variant="default">
                     {editing ? "Save changes" : "Add education"}
                   </Button>
                   {editing && (

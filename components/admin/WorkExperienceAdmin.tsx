@@ -139,7 +139,7 @@ export default function WorkExperienceAdmin(
                 </Field>
 
                 <div class="flex gap-2">
-                  <Button type="submit" variant="ghost">
+                  <Button type="submit" variant="default">
                     {editing ? "Save changes" : "Add work experience"}
                   </Button>
                   {editing && (

@@ -84,7 +84,7 @@ export default function GalleryAdmin(
                 </FieldGroup>
 
                 <div class="flex gap-2">
-                  <Button type="submit" variant="ghost">
+                  <Button type="submit" variant="default">
                     {editing ? "Save changes" : "Add photo"}
                   </Button>
                   {editing && (
