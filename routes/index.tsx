@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card.tsx";
 import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
 import { type EducationItem, listEducation } from "@/lib/education.ts";
-import { listPinnedProjects, type ProjectItem } from "@/lib/projects.ts";
+import { listAllProjects, type ProjectItem } from "@/lib/projects.ts";
 import {
   listWorkExperience,
   type WorkExperienceItem,
@@ -38,7 +38,7 @@ export const handler = define.handlers({
       const [workExperience, education, projects] = await Promise.all([
         listWorkExperience(),
         listEducation(),
-        listPinnedProjects(),
+        listAllProjects(),
       ]);
       return page({ workExperience, education, projects, error: null });
     } catch (error) {
