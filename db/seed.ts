@@ -1,6 +1,6 @@
 import { extname } from "@std/path";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db/local-client.ts";
+import { type Db, getDb } from "@/db/local-client.ts";
 import {
   education,
   gallery,
@@ -10,14 +10,12 @@ import {
   tracks,
   workExperience,
 } from "@/db/schema.ts";
-import { PHOTO_BASE_URL } from "@/lib/config.ts";
+import { getConfig } from "@/lib/config.ts";
 import {
   disposeLocalStorage,
   getCdnBucket,
   type LocalR2Bucket,
 } from "@/lib/storage-local.ts";
-
-type Db = ReturnType<typeof getDb>;
 
 /** Puts a seed file into the local CDN bucket and returns its public URL. */
 async function uploadSeedFile(
@@ -29,6 +27,7 @@ async function uploadSeedFile(
     extname(file.pathname)
   }`;
   await bucket.put(key, await Deno.readFile(file));
+  const { PHOTO_BASE_URL } = await getConfig();
   return `${PHOTO_BASE_URL}/${key}`;
 }
 
@@ -294,7 +293,7 @@ async function seedPfp(db: Db, bucket: LocalR2Bucket) {
 }
 
 async function main() {
-  const db = getDb();
+  const db = await getDb();
   const bucket = await getCdnBucket();
   await seedWorkExperience(db);
   await seedEducation(db, bucket);

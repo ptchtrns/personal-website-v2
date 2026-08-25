@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { z } from "zod";
 import { define } from "@/utils.ts";
-import { CONTACT_TO_EMAIL, RESEND_API_KEY } from "@/lib/config.ts";
+import { getConfig } from "@/lib/config.ts";
 import { redirectTo } from "@/lib/http.ts";
 import { requiredTrimmedString } from "@/lib/validation.ts";
 
@@ -34,6 +34,7 @@ export const handler = define.handlers({
     }
     const { name, email, subject, message } = parsed.data;
 
+    const { RESEND_API_KEY, CONTACT_TO_EMAIL } = await getConfig();
     if (!RESEND_API_KEY) {
       console.error("RESEND_API_KEY is not set");
       return redirectTo(

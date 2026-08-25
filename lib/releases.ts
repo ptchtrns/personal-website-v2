@@ -51,7 +51,8 @@ async function tracksByReleaseIds(
   const byRelease = new Map<number, TrackItem[]>();
   if (releaseIds.length === 0) return byRelease;
 
-  const rows = await getDb()
+  const db = await getDb();
+  const rows = await db
     .select({
       id: tracks.id,
       title: tracks.title,
@@ -72,7 +73,8 @@ async function tracksByReleaseIds(
 }
 
 export async function listReleases(): Promise<ReleaseItem[]> {
-  const rows = await getDb()
+  const db = await getDb();
+  const rows = await db
     .select({
       id: releases.id,
       title: releases.title,
@@ -100,7 +102,8 @@ async function withTracks(id: number): Promise<ReleaseItem | null> {
 export async function createRelease(
   input: ReleaseInput,
 ): Promise<ReleaseItem> {
-  const [row] = await getDb().insert(releases).values(input).returning();
+  const db = await getDb();
+  const [row] = await db.insert(releases).values(input).returning();
   const item = await withTracks(row.id);
   if (!item) throw new Error("Failed to load created release");
   return item;
@@ -110,7 +113,8 @@ export async function updateRelease(
   id: number,
   input: ReleaseInput,
 ): Promise<ReleaseItem | null> {
-  const [row] = await getDb()
+  const db = await getDb();
+  const [row] = await db
     .update(releases)
     .set(input)
     .where(eq(releases.id, id))
@@ -120,7 +124,8 @@ export async function updateRelease(
 }
 
 export async function deleteRelease(id: number): Promise<void> {
-  await getDb().delete(releases).where(eq(releases.id, id));
+  const db = await getDb();
+  await db.delete(releases).where(eq(releases.id, id));
 }
 
 const ReleaseInputSchema = z.object({
@@ -141,7 +146,8 @@ export function parseReleaseInput(
 }
 
 async function trackWithMedia(id: number): Promise<TrackItem | null> {
-  const [row] = await getDb()
+  const db = await getDb();
+  const [row] = await db
     .select({
       id: tracks.id,
       title: tracks.title,
@@ -156,7 +162,8 @@ async function trackWithMedia(id: number): Promise<TrackItem | null> {
 }
 
 export async function createTrack(input: TrackInput): Promise<TrackItem> {
-  const [row] = await getDb().insert(tracks).values(input).returning();
+  const db = await getDb();
+  const [row] = await db.insert(tracks).values(input).returning();
   const item = await trackWithMedia(row.id);
   if (!item) throw new Error("Failed to load created track");
   return item;
@@ -166,7 +173,8 @@ export async function updateTrack(
   id: number,
   input: TrackInput,
 ): Promise<TrackItem | null> {
-  const [row] = await getDb()
+  const db = await getDb();
+  const [row] = await db
     .update(tracks)
     .set(input)
     .where(eq(tracks.id, id))
@@ -176,7 +184,8 @@ export async function updateTrack(
 }
 
 export async function deleteTrack(id: number): Promise<void> {
-  await getDb().delete(tracks).where(eq(tracks.id, id));
+  const db = await getDb();
+  await db.delete(tracks).where(eq(tracks.id, id));
 }
 
 const TrackInputSchema = z.object({

@@ -5,7 +5,8 @@ import { technologies } from "@/db/schema.ts";
 export type Technology = typeof technologies.$inferSelect;
 
 export async function listTechnologies(): Promise<Technology[]> {
-  return await getDb().select().from(technologies).orderBy(technologies.name);
+  const db = await getDb();
+  return await db.select().from(technologies).orderBy(technologies.name);
 }
 
 /** Finds existing technologies by name and creates any that don't exist yet, returning all of them by id. */
@@ -17,7 +18,7 @@ export async function findOrCreateTechnologies(
   ];
   if (trimmed.length === 0) return [];
 
-  const db = getDb();
+  const db = await getDb();
   const existing = await db
     .select()
     .from(technologies)

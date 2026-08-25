@@ -2,7 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { media } from "@/db/schema.ts";
-import { PHOTO_BASE_URL } from "@/lib/config.ts";
+import { getConfig } from "@/lib/config.ts";
 import { uploadObject } from "@/lib/storage.ts";
 import { nullableTrimmedString, parseWithSchema } from "@/lib/validation.ts";
 
@@ -74,7 +74,7 @@ export type NewMediaItem =
   );
 
 export async function listMedia(type?: MediaType): Promise<MediaItem[]> {
-  const db = getDb();
+  const db = await getDb();
   const query = db.select().from(media).orderBy(desc(media.id));
   if (!type) return await query;
   return await query.where(eq(media.type, type));
@@ -86,7 +86,7 @@ export async function listMedia(type?: MediaType): Promise<MediaItem[]> {
  * no file, so the row is created with the given `src` directly.
  */
 export async function createMedia(input: NewMediaItem): Promise<MediaItem> {
-  const db = getDb();
+  const db = await getDb();
 
   if (input.type === "link") {
     const [item] = await db.insert(media).values({
@@ -100,6 +100,7 @@ export async function createMedia(input: NewMediaItem): Promise<MediaItem> {
   const id = crypto.randomUUID();
   const ext = DEFAULT_EXTENSION_BY_TYPE[input.type];
   const key = `media/${input.type}/${id}/original${ext}`;
+  const { PHOTO_BASE_URL } = await getConfig();
   const src = `${PHOTO_BASE_URL}/${key}`;
   await uploadObject(key, input.bytes, input.contentType);
 
@@ -116,7 +117,7 @@ export async function updateMediaAlt(
   id: number,
   alt: string | null,
 ): Promise<MediaItem | null> {
-  const db = getDb();
+  const db = await getDb();
   const [item] = await db
     .update(media)
     .set({ alt })
@@ -127,6 +128,6 @@ export async function updateMediaAlt(
 
 /** Row-level delete only; the underlying storage object is left in place, matching the other admin resources. */
 export async function deleteMedia(id: number): Promise<void> {
-  const db = getDb();
+  const db = await getDb();
   await db.delete(media).where(eq(media.id, id));
 }

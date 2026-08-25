@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { define } from "@/utils.ts";
-import { ADMIN_PASSWORD } from "@/lib/config.ts";
+import { getConfig } from "@/lib/config.ts";
 import { createToken, setAuthCookie } from "@/lib/auth.ts";
 import { redirectTo } from "@/lib/http.ts";
 
@@ -25,6 +25,7 @@ export const handler = define.handlers({
     const { password } = parsed.data;
 
     // An unset ADMIN_PASSWORD must never authenticate an empty password.
+    const { ADMIN_PASSWORD } = await getConfig();
     if (!ADMIN_PASSWORD || password !== ADMIN_PASSWORD) {
       return redirectTo(
         "/login?error=" + encodeURIComponent("Invalid credentials"),
@@ -32,7 +33,7 @@ export const handler = define.handlers({
     }
 
     const response = redirectTo("/admin");
-    setAuthCookie(response.headers, await createToken());
+    await setAuthCookie(response.headers, await createToken());
     return response;
   },
 });

@@ -4,7 +4,8 @@ import { media } from "@/db/schema.ts";
 
 /** Returns the sidebar profile picture's URL, or null if none has been uploaded yet. */
 export async function getPfpSrc(): Promise<string | null> {
-  const [row] = await getDb()
+  const db = await getDb();
+  const [row] = await db
     .select({ src: media.src })
     .from(media)
     .where(eq(media.type, "pfp"))

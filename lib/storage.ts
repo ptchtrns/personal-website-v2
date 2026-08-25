@@ -1,45 +1,56 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { AWS_REGION, LOCAL_DEV, S3_BUCKET } from "@/lib/config.ts";
-import { getCdnBucket } from "@/lib/storage-local.ts";
+import { IS_WORKERS } from "@/lib/config.ts";
 
-let s3Client: S3Client | null = null;
-
-function getS3Client(): S3Client {
-  if (s3Client === null) {
-    s3Client = new S3Client({ region: AWS_REGION });
-  }
-  return s3Client;
+export interface StoredObject {
+  arrayBuffer(): Promise<ArrayBuffer>;
+  httpMetadata?: { contentType?: string };
 }
 
 /**
- * Uploads a file's bytes to storage under `key`, going through the Worker
- * (forms post the file to us directly, no client-side JS to talk to S3/R2
- * itself). In local dev there's no real S3/R2 endpoint, so this writes to
- * Miniflare's local R2 emulation instead (see `lib/storage-local.ts`),
- * matching the bucket `routes/media/[...key].ts` serves from.
+ * Narrow slice of the real Workers `R2Bucket` API, deliberately hand-rolled
+ * rather than importing `@cloudflare/workers-types` (same reasoning as
+ * `db/client.ts`'s D1 type — that package's ambient globals leak everywhere).
+ */
+interface R2Bucket {
+  put(
+    key: string,
+    value: Uint8Array,
+    options?: { httpMetadata?: { contentType?: string } },
+  ): Promise<unknown>;
+  get(key: string): Promise<StoredObject | null>;
+}
+
+/**
+ * Both branches import lazily so Vite never has to eagerly bundle a module
+ * that's only valid in the *other* runtime: `storage-local.ts` pulls in
+ * `wrangler` (Deno-only), and `cloudflare:workers` only resolves once
+ * actually deployed as a Worker.
+ */
+async function getBucket(): Promise<R2Bucket> {
+  if (!IS_WORKERS) {
+    const { getCdnBucket } = await import("@/lib/storage-local.ts");
+    return await getCdnBucket();
+  }
+  const { env } = await import("cloudflare:workers");
+  return (env as { CDN: R2Bucket }).CDN;
+}
+
+/**
+ * Uploads a file's bytes to the CDN bucket under `key` (forms post the file
+ * to us directly, no client-side JS to talk to R2 itself). Local dev writes
+ * to Miniflare's local R2 emulation; deployed on Workers, this writes to the
+ * real `CDN` binding.
  */
 export async function uploadObject(
   key: string,
   body: Uint8Array,
   contentType: string,
 ): Promise<void> {
-  if (LOCAL_DEV) {
-    const bucket = await getCdnBucket();
-    await bucket.put(key, body);
-    return;
-  }
+  const bucket = await getBucket();
+  await bucket.put(key, body, { httpMetadata: { contentType } });
+}
 
-  try {
-    await getS3Client().send(
-      new PutObjectCommand({
-        Bucket: S3_BUCKET,
-        Key: key,
-        Body: body,
-        ContentType: contentType,
-        Tagging: "OriginalPhoto=True",
-      }),
-    );
-  } catch (error) {
-    throw new Error(`Failed to upload object: ${error}`);
-  }
+/** Reads an object back out of the CDN bucket, or null if it doesn't exist. */
+export async function getObject(key: string): Promise<StoredObject | null> {
+  const bucket = await getBucket();
+  return await bucket.get(key);
 }

@@ -9,7 +9,7 @@ import {
   requiredTrimmedString,
   stringArray,
 } from "@/lib/validation.ts";
-import { getDb } from "@/db/local-client.ts";
+import { type Db, getDb } from "@/db/local-client.ts";
 import {
   media,
   projects,
@@ -44,7 +44,7 @@ export interface ProjectInput {
 /** Attaches each project's linked technologies and media, fetched in bulk and grouped in memory to avoid N+1 queries. */
 async function withRelations(rows: ProjectRow[]): Promise<ProjectItem[]> {
   if (rows.length === 0) return [];
-  const db = getDb();
+  const db = await getDb();
   const ids = rows.map((r) => r.id);
 
   const techRows = await db
@@ -84,14 +84,16 @@ async function withRelations(rows: ProjectRow[]): Promise<ProjectItem[]> {
 }
 
 export async function listAllProjects(): Promise<ProjectItem[]> {
-  const rows = await getDb().select().from(projects).orderBy(
+  const db = await getDb();
+  const rows = await db.select().from(projects).orderBy(
     desc(projects.createdAt),
   );
   return await withRelations(rows);
 }
 
 export async function listPinnedProjects(): Promise<ProjectRow[]> {
-  return await getDb()
+  const db = await getDb();
+  return await db
     .select()
     .from(projects)
     .where(eq(projects.isPinned, true))
@@ -99,7 +101,7 @@ export async function listPinnedProjects(): Promise<ProjectRow[]> {
 }
 
 async function syncProjectLinks(
-  db: ReturnType<typeof getDb>,
+  db: Db,
   projectId: number,
   technologyNames: string[],
   mediaIds: number[],
@@ -129,7 +131,7 @@ export async function createProject(
   input: ProjectInput,
 ): Promise<ProjectItem> {
   const { technologyNames, mediaIds, ...row } = input;
-  const db = getDb();
+  const db = await getDb();
   const [project] = await db.insert(projects).values(row).returning();
   await syncProjectLinks(db, project.id, technologyNames, mediaIds);
   const [item] = await withRelations([project]);
@@ -141,7 +143,7 @@ export async function updateProject(
   input: ProjectInput,
 ): Promise<ProjectItem | null> {
   const { technologyNames, mediaIds, ...row } = input;
-  const db = getDb();
+  const db = await getDb();
   const [project] = await db
     .update(projects)
     .set({ ...row, updatedAt: new Date() })
@@ -155,7 +157,8 @@ export async function updateProject(
 }
 
 export async function deleteProject(id: number): Promise<void> {
-  await getDb().delete(projects).where(eq(projects.id, id));
+  const db = await getDb();
+  await db.delete(projects).where(eq(projects.id, id));
 }
 
 const ProjectInputSchema = z.object({

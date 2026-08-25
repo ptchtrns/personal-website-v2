@@ -15,7 +15,8 @@ export type WorkExperienceItem = typeof workExperience.$inferSelect;
 export type WorkExperienceInput = typeof workExperience.$inferInsert;
 
 export async function listWorkExperience(): Promise<WorkExperienceItem[]> {
-  return await getDb()
+  const db = await getDb();
+  return await db
     .select()
     .from(workExperience)
     .orderBy(desc(workExperience.startedAt));
@@ -24,7 +25,8 @@ export async function listWorkExperience(): Promise<WorkExperienceItem[]> {
 export async function createWorkExperience(
   input: WorkExperienceInput,
 ): Promise<WorkExperienceItem> {
-  const [row] = await getDb().insert(workExperience).values(input)
+  const db = await getDb();
+  const [row] = await db.insert(workExperience).values(input)
     .returning();
   return row;
 }
@@ -33,7 +35,8 @@ export async function updateWorkExperience(
   id: number,
   input: WorkExperienceInput,
 ): Promise<WorkExperienceItem | null> {
-  const [row] = await getDb()
+  const db = await getDb();
+  const [row] = await db
     .update(workExperience)
     .set(input)
     .where(eq(workExperience.id, id))
@@ -42,7 +45,8 @@ export async function updateWorkExperience(
 }
 
 export async function deleteWorkExperience(id: number): Promise<void> {
-  await getDb().delete(workExperience).where(eq(workExperience.id, id));
+  const db = await getDb();
+  await db.delete(workExperience).where(eq(workExperience.id, id));
 }
 
 const WorkExperienceInputSchema = z.object({

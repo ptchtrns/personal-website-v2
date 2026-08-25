@@ -1,12 +1,12 @@
 import { jwtVerify, SignJWT } from "jose";
 import { setCookie } from "@std/http/cookie";
-import { JWT_EXPIRY_HOURS, JWT_SECRET } from "@/lib/config.ts";
+import { getConfig } from "@/lib/config.ts";
 
 const COOKIE_NAME = "auth_token";
-const secret = new TextEncoder().encode(JWT_SECRET);
-const maxAgeSeconds = JWT_EXPIRY_HOURS * 60 * 60;
 
 export async function createToken(): Promise<string> {
+  const { JWT_SECRET, JWT_EXPIRY_HOURS } = await getConfig();
+  const secret = new TextEncoder().encode(JWT_SECRET);
   return await new SignJWT()
     .setProtectedHeader({ alg: "HS256" })
     .setSubject("admin")
@@ -21,6 +21,8 @@ export async function validateToken(
   if (!token) return false;
 
   try {
+    const { JWT_SECRET } = await getConfig();
+    const secret = new TextEncoder().encode(JWT_SECRET);
     await jwtVerify(token, secret, { algorithms: ["HS256"] });
     return true;
   } catch {
@@ -28,14 +30,15 @@ export async function validateToken(
   }
 }
 
-export function setAuthCookie(headers: Headers, token: string) {
+export async function setAuthCookie(headers: Headers, token: string) {
+  const { JWT_EXPIRY_HOURS } = await getConfig();
   setCookie(headers, {
     name: COOKIE_NAME,
     value: token,
     httpOnly: true,
     secure: false, // HTTPS only
     sameSite: "Lax", // CSRF protection
-    maxAge: maxAgeSeconds,
+    maxAge: JWT_EXPIRY_HOURS * 60 * 60,
     path: "/",
   });
 }

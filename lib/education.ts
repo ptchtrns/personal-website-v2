@@ -14,7 +14,8 @@ export type EducationItem = typeof education.$inferSelect;
 export type EducationInput = typeof education.$inferInsert;
 
 export async function listEducation(): Promise<EducationItem[]> {
-  return await getDb()
+  const db = await getDb();
+  return await db
     .select()
     .from(education)
     .orderBy(desc(education.startedAt));
@@ -23,7 +24,8 @@ export async function listEducation(): Promise<EducationItem[]> {
 export async function createEducation(
   input: EducationInput,
 ): Promise<EducationItem> {
-  const [row] = await getDb().insert(education).values(input).returning();
+  const db = await getDb();
+  const [row] = await db.insert(education).values(input).returning();
   return row;
 }
 
@@ -31,7 +33,8 @@ export async function updateEducation(
   id: number,
   input: EducationInput,
 ): Promise<EducationItem | null> {
-  const [row] = await getDb()
+  const db = await getDb();
+  const [row] = await db
     .update(education)
     .set(input)
     .where(eq(education.id, id))
@@ -40,7 +43,8 @@ export async function updateEducation(
 }
 
 export async function deleteEducation(id: number): Promise<void> {
-  await getDb().delete(education).where(eq(education.id, id));
+  const db = await getDb();
+  await db.delete(education).where(eq(education.id, id));
 }
 
 const EducationInputSchema = z.object({

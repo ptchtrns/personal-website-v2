@@ -1,17 +1,19 @@
 import { defineConfig, type Plugin } from "vite";
 import { fresh } from "@fresh/plugin-vite";
+import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 
 /**
- * The AWS SDK is a CommonJS package whose interop breaks once Vite
- * transforms or bundles it. Keeping it external leaves the bare specifier
- * in place so Deno loads it at runtime, which means `deno install` has to
- * run before `deno task start`.
+ * `wrangler` is Deno-only tooling (local R2/D1 emulation, see
+ * `lib/storage-local.ts` / `db/local.ts`) and `cloudflare:workers` only
+ * resolves inside a deployed Worker's runtime. Both are reached exclusively
+ * through runtime-guarded dynamic `import()`s, so Vite must never try to
+ * eagerly resolve or bundle them itself — that would drag Deno-only or
+ * Workers-only code into the wrong build.
  */
 const serverOnlyDependencies = [
-  "@aws-sdk/client-s3",
-  "@aws-sdk/s3-request-presigner",
   "wrangler",
+  "cloudflare:workers",
 ];
 
 function externalizeServerDependencies(): Plugin {
@@ -27,7 +29,7 @@ function externalizeServerDependencies(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [externalizeServerDependencies(), fresh(), tailwindcss()],
+  plugins: [externalizeServerDependencies(), fresh(), cloudflare(), tailwindcss()],
   environments: {
     ssr: {
       resolve: {
