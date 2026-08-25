@@ -28,11 +28,18 @@ const socialMediaIcons: {
 const navItems: {
   title: string;
   url: string;
+  /** Prefix used to highlight this item for nested routes, e.g. media's tabs. */
+  matchPrefix?: string;
   icon: (props: IconProps) => JSX.Element;
 }[] = [
   { title: "About me", url: "/", icon: UserIcon },
   { title: "Contact me", url: "/contact", icon: IdCardClipIcon },
-  { title: "Media", url: "/media", icon: ImagesIcon },
+  {
+    title: "Media",
+    url: "/media/photos",
+    matchPrefix: "/media",
+    icon: ImagesIcon,
+  },
 ];
 
 const themes: { theme: Theme; icon: (props: IconProps) => JSX.Element }[] = [
@@ -100,13 +107,16 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
           <ul class="flex flex-col">
             {navItems.map((navItem) => {
               const Icon = navItem.icon;
+              const active = navItem.matchPrefix
+                ? path.startsWith(navItem.matchPrefix)
+                : path === navItem.url;
               return (
                 <li key={navItem.url}>
                   <a
                     href={navItem.url}
                     class={[
                       "w-full py-1.5 px-3 flex gap-4",
-                      path === navItem.url
+                      active
                         ? "font-bold text-stone-950 dark:text-white"
                         : "text-stone-700 dark:text-stone-300",
                       "hover:text-stone-950 dark:hover:text-white",
