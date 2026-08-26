@@ -13,7 +13,6 @@ export const MEDIA_TYPES: MediaType[] = [
   "image",
   "pdf",
   "audio",
-  "link",
   "pfp",
 ];
 
@@ -40,14 +39,10 @@ const DEFAULT_EXTENSION_BY_TYPE: Record<MediaType, string> = {
   pfp: ".avif",
   pdf: ".pdf",
   audio: ".mp3",
-  link: "",
 };
 
 /** Exact content-type required per uploadable type; presigned URLs pin this so storage rejects anything else. */
-export const ALLOWED_CONTENT_TYPE_BY_TYPE: Record<
-  Exclude<MediaType, "link">,
-  string
-> = {
+export const ALLOWED_CONTENT_TYPE_BY_TYPE: Record<MediaType, string> = {
   image: "image/avif",
   pfp: "image/avif",
   pdf: "application/pdf",
@@ -55,23 +50,19 @@ export const ALLOWED_CONTENT_TYPE_BY_TYPE: Record<
 };
 
 /** Max upload size per uploadable type, in bytes. */
-export const MAX_BYTES_BY_TYPE: Record<Exclude<MediaType, "link">, number> = {
+export const MAX_BYTES_BY_TYPE: Record<MediaType, number> = {
   image: 10 * 1024 * 1024,
   pfp: 5 * 1024 * 1024,
   pdf: 20 * 1024 * 1024,
   audio: 50 * 1024 * 1024,
 };
 
-export type NewMediaItem =
-  & { type: MediaType; alt: string | null }
-  & (
-    | { type: "link"; src: string }
-    | {
-      type: Exclude<MediaType, "link">;
-      contentType: string;
-      bytes: Uint8Array;
-    }
-  );
+export interface NewMediaItem {
+  type: MediaType;
+  alt: string | null;
+  contentType: string;
+  bytes: Uint8Array;
+}
 
 export async function listMedia(type?: MediaType): Promise<MediaItem[]> {
   const db = await getDb();
@@ -80,22 +71,9 @@ export async function listMedia(type?: MediaType): Promise<MediaItem[]> {
   return await query.where(eq(media.type, type));
 }
 
-/**
- * For uploadable types, uploads the file's bytes to storage (the form posts
- * the file straight to us) and stores the resulting media row. Links have
- * no file, so the row is created with the given `src` directly.
- */
+/** Uploads the file's bytes to storage (the form posts the file straight to us) and stores the resulting media row. */
 export async function createMedia(input: NewMediaItem): Promise<MediaItem> {
   const db = await getDb();
-
-  if (input.type === "link") {
-    const [item] = await db.insert(media).values({
-      src: input.src,
-      type: "link",
-      alt: input.alt,
-    }).returning();
-    return item;
-  }
 
   const id = crypto.randomUUID();
   const ext = DEFAULT_EXTENSION_BY_TYPE[input.type];

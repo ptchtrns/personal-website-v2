@@ -26,7 +26,6 @@ const MEDIA_TYPES: { value: MediaType; label: string }[] = [
   { value: "pfp", label: "Profile picture" },
   { value: "audio", label: "Audio" },
   { value: "pdf", label: "PDF" },
-  { value: "link", label: "Link" },
 ];
 
 const ACCEPT_BY_TYPE: Record<MediaType, string> = {
@@ -34,7 +33,6 @@ const ACCEPT_BY_TYPE: Record<MediaType, string> = {
   pfp: "image/avif",
   audio: "audio/mpeg",
   pdf: "application/pdf",
-  link: "",
 };
 
 interface MediaAdminProps {
@@ -54,8 +52,8 @@ export default function MediaAdmin(
           <div>
             <CardTitle>Media</CardTitle>
             <CardDescription>
-              Upload images, profile pictures, audio or PDF files, or links, to
-              the media library.
+              Upload images, profile pictures, audio or PDF files to the media
+              library.
             </CardDescription>
           </div>
           <Button href="/admin?tab=media&new=1" size="sm">Add media</Button>
@@ -65,7 +63,7 @@ export default function MediaAdmin(
           open={isNew}
           closeHref="/admin?tab=media"
           title="Add media"
-          description="For file uploads, select a file type and choose a file, for links, select 'Link' and fill in the URL"
+          description="Select a file type and choose a file to upload"
         >
           <form
             method="POST"
@@ -85,21 +83,7 @@ export default function MediaAdmin(
                 </Field>
 
                 <Field class="flex flex-col gap-1.5">
-                  <FieldLabel for="linkUrl">
-                    URL (only used when type is "Link")
-                  </FieldLabel>
-                  <Input
-                    id="linkUrl"
-                    type="url"
-                    name="linkUrl"
-                    placeholder="https://example.com"
-                  />
-                </Field>
-
-                <Field class="flex flex-col gap-1.5">
-                  <FieldLabel for="file">
-                    File (only used when type isn't "Link")
-                  </FieldLabel>
+                  <FieldLabel for="file">File</FieldLabel>
                   <Input
                     id="file"
                     type="file"

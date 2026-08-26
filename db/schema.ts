@@ -9,7 +9,7 @@ import {
 export const media = sqliteTable("media", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   src: text("src").notNull(),
-  type: text("type", { enum: ["image", "pdf", "audio", "link", "pfp"] })
+  type: text("type", { enum: ["image", "pdf", "audio", "pfp"] })
     .notNull(),
   alt: text("alt"),
 });
@@ -21,6 +21,7 @@ export const projects = sqliteTable("projects", {
   changelog: text("changelog"),
   shortOverview: text("short_overview"),
   externalUrl: text("external_url"),
+  links: text("links", { mode: "json" }).$type<string[]>(),
   isPinned: integer("is_pinned", { mode: "boolean" }).notNull().default(false),
   isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(
@@ -74,9 +75,12 @@ export const workExperience = sqliteTable("work_experience", {
   jobTitle: text("job_title").notNull(),
   companyName: text("company_name").notNull(),
   companyUrl: text("company_url"),
+  links: text("links", { mode: "json" }).$type<string[]>(),
   startedAt: integer("started_at", { mode: "timestamp" }).notNull(),
   finishedAt: integer("finished_at", { mode: "timestamp" }),
-  companyLogoSrc: text("company_logo_src"),
+  companyLogoId: integer("company_logo_id").references(() => media.id, {
+    onDelete: "set null",
+  }),
   description: text("description"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(
     sql`(unixepoch())`,
@@ -88,7 +92,11 @@ export const education = sqliteTable("education", {
   degreeTitle: text("degree_title").notNull(),
   degreeType: text("degree_type").notNull(),
   educationInstitution: text("education_institution").notNull(),
-  institutionLogoSrc: text("institution_logo_src"),
+  institutionLogoId: integer("institution_logo_id").references(
+    () => media.id,
+    { onDelete: "set null" },
+  ),
+  links: text("links", { mode: "json" }).$type<string[]>(),
   startedAt: integer("started_at", { mode: "timestamp" }).notNull(),
   finishedAt: integer("finished_at", { mode: "timestamp" }),
   description: text("description"),
@@ -167,6 +175,20 @@ export const dbRelations = defineRelations(tables, (r) => ({
     image: r.one.media({
       from: r.gallery.imageId,
       to: r.media.id,
+    }),
+  },
+  workExperience: {
+    logo: r.one.media({
+      from: r.workExperience.companyLogoId,
+      to: r.media.id,
+      optional: true,
+    }),
+  },
+  education: {
+    logo: r.one.media({
+      from: r.education.institutionLogoId,
+      to: r.media.id,
+      optional: true,
     }),
   },
   releases: {

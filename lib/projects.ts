@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   coercedBoolean,
   intIdArray,
+  multilineList,
   nullableTrimmedString,
   parseWithSchema,
   requiredTrimmedString,
@@ -36,6 +37,7 @@ export interface ProjectInput {
   changelog: string | null;
   shortOverview: string | null;
   externalUrl: string | null;
+  links: string[] | null;
   isPinned: boolean;
   isActive: boolean;
   technologyNames: string[];
@@ -161,6 +163,7 @@ const ProjectInputSchema = z.object({
   changelog: nullableTrimmedString,
   shortOverview: nullableTrimmedString,
   externalUrl: nullableTrimmedString,
+  links: multilineList,
   isPinned: coercedBoolean,
   isActive: z.preprocess(
     (v) => (v === undefined ? true : Boolean(v)),

@@ -1,24 +1,52 @@
 import { desc, eq } from "drizzle-orm";
+import { alias } from "drizzle-orm/sqlite-core";
 import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
-import { education } from "@/db/schema.ts";
+import { education, media } from "@/db/schema.ts";
 import {
+  multilineList,
   nullableTrimmedString,
   optionalDate,
+  optionalIntId,
   parseWithSchema,
   requiredDate,
   requiredTrimmedString,
 } from "@/lib/validation.ts";
 
-export type EducationItem = typeof education.$inferSelect;
-export type EducationInput = typeof education.$inferInsert;
+const logo = alias(media, "education_logo");
 
-export async function listEducation(): Promise<EducationItem[]> {
+export type EducationRow = typeof education.$inferSelect;
+export type EducationInput = typeof education.$inferInsert;
+export type EducationItem = EducationRow & { logoSrc: string | null };
+
+async function listRows(): Promise<EducationItem[]> {
   const db = await getDb();
   return await db
-    .select()
+    .select({
+      id: education.id,
+      degreeTitle: education.degreeTitle,
+      degreeType: education.degreeType,
+      educationInstitution: education.educationInstitution,
+      institutionLogoId: education.institutionLogoId,
+      logoSrc: logo.src,
+      links: education.links,
+      startedAt: education.startedAt,
+      finishedAt: education.finishedAt,
+      description: education.description,
+      createdAt: education.createdAt,
+    })
     .from(education)
+    .leftJoin(logo, eq(education.institutionLogoId, logo.id))
     .orderBy(desc(education.startedAt));
+}
+
+export async function listEducation(): Promise<EducationItem[]> {
+  return await listRows();
+}
+
+async function withLogo(id: number): Promise<EducationItem | null> {
+  const rows = await listRows();
+  return rows.find((row) => row.id === id) ?? null;
 }
 
 export async function createEducation(
@@ -26,7 +54,9 @@ export async function createEducation(
 ): Promise<EducationItem> {
   const db = await getDb();
   const [row] = await db.insert(education).values(input).returning();
-  return row;
+  const item = await withLogo(row.id);
+  if (!item) throw new Error("Failed to load created education");
+  return item;
 }
 
 export async function updateEducation(
@@ -39,7 +69,8 @@ export async function updateEducation(
     .set(input)
     .where(eq(education.id, id))
     .returning();
-  return row ?? null;
+  if (!row) return null;
+  return await withLogo(row.id);
 }
 
 export async function deleteEducation(id: number): Promise<void> {
@@ -53,7 +84,8 @@ const EducationInputSchema = z.object({
   educationInstitution: requiredTrimmedString(
     "educationInstitution is required",
   ),
-  institutionLogoSrc: nullableTrimmedString,
+  institutionLogoId: optionalIntId("Invalid institutionLogoId"),
+  links: multilineList,
   startedAt: requiredDate("Invalid or missing startedAt"),
   finishedAt: optionalDate("Invalid finishedAt"),
   description: nullableTrimmedString,

@@ -108,6 +108,20 @@ export default function ProjectsAdmin(
                     </Field>
                   </FieldGroup>
 
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="links">
+                      Additional links (one per line)
+                    </FieldLabel>
+                    <Textarea
+                      id="links"
+                      name="links"
+                      rows={3}
+                      defaultValue={(editing?.links ?? []).join("\n")}
+                      placeholder="https://github.com/user/repo"
+                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                    />
+                  </Field>
+
                   <Field>
                     <FieldLabel for="description">Description</FieldLabel>
                     <MarkdownEditor

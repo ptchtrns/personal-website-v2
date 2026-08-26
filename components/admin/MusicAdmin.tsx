@@ -17,6 +17,7 @@ import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
+import { ImagePicker } from "@/components/admin/ImagePicker.tsx";
 import {
   RELEASE_TYPES,
   type ReleaseItem,
@@ -254,26 +255,6 @@ export default function MusicAdmin(
                     </Field>
 
                     <Field class="flex flex-col gap-1.5">
-                      <FieldLabel for="release-cover">
-                        Cover image (optional)
-                      </FieldLabel>
-                      <Select id="release-cover" name="coverId">
-                        <SelectItem value="" selected={!editing?.coverId}>
-                          No cover
-                        </SelectItem>
-                        {images.map((image) => (
-                          <SelectItem
-                            key={image.id}
-                            value={image.id}
-                            selected={editing?.coverId === image.id}
-                          >
-                            {image.alt || image.src}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </Field>
-
-                    <Field class="flex flex-col gap-1.5">
                       <FieldLabel for="release-description">
                         Description (optional)
                       </FieldLabel>
@@ -299,6 +280,15 @@ export default function MusicAdmin(
                       />
                     </Field>
                   </FieldGroup>
+
+                  <Field>
+                    <FieldLabel>Cover image</FieldLabel>
+                    <ImagePicker
+                      name="coverId"
+                      images={images}
+                      selectedId={editing?.coverId ?? null}
+                    />
+                  </Field>
 
                   <div class="flex gap-2">
                     <Button type="submit" variant="default">

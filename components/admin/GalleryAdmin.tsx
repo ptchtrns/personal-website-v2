@@ -13,9 +13,9 @@ import {
   FieldSet,
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
+import { ImagePicker } from "@/components/admin/ImagePicker.tsx";
 import type { GalleryItem } from "@/lib/gallery.ts";
 import type { MediaItem } from "@/lib/media.ts";
 
@@ -74,25 +74,17 @@ export default function GalleryAdmin(
                         defaultValue={editing?.description ?? ""}
                       />
                     </Field>
-
-                    <Field class="flex flex-col gap-1.5">
-                      <FieldLabel for="imageId">Image</FieldLabel>
-                      <Select id="imageId" name="imageId" required>
-                        <SelectItem value="" disabled selected={!editing}>
-                          Choose an image…
-                        </SelectItem>
-                        {images.map((image) => (
-                          <SelectItem
-                            key={image.id}
-                            value={image.id}
-                            selected={editing?.imageId === image.id}
-                          >
-                            {image.alt || image.src}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </Field>
                   </FieldGroup>
+
+                  <Field>
+                    <FieldLabel>Image</FieldLabel>
+                    <ImagePicker
+                      name="imageId"
+                      images={images}
+                      selectedId={editing?.imageId ?? null}
+                      allowNoImage={false}
+                    />
+                  </Field>
 
                   <div class="flex gap-2">
                     <Button type="submit" variant="default">

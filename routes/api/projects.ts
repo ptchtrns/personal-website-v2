@@ -13,6 +13,7 @@ export const handler = define.handlers({
       changelog: formData.get("changelog"),
       shortOverview: formData.get("shortOverview"),
       externalUrl: formData.get("externalUrl"),
+      links: formData.get("links"),
       isPinned: formData.get("isPinned") === "on",
       isActive: formData.get("isActive") === "on",
       technologyNames: formData.get("technologyNames"),

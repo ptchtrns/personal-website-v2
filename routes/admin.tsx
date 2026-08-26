@@ -60,12 +60,14 @@ interface AdminData {
   };
   education?: {
     items: EducationItem[];
+    images: MediaItem[];
     editId: number | null;
     isNew: boolean;
     confirmDelete: boolean;
   };
   workExperience?: {
     items: WorkExperienceItem[];
+    images: MediaItem[];
     editId: number | null;
     isNew: boolean;
     confirmDelete: boolean;
@@ -148,18 +150,24 @@ export const handler = define.handlers({
         return { data };
       }
       case "education": {
-        const items = await listEducation();
+        const [items, images] = await Promise.all([
+          listEducation(),
+          listMedia("image"),
+        ]);
         const data: AdminData = {
           ...common,
-          education: { items, editId, isNew, confirmDelete },
+          education: { items, images, editId, isNew, confirmDelete },
         };
         return { data };
       }
       case "work-experience": {
-        const items = await listWorkExperience();
+        const [items, images] = await Promise.all([
+          listWorkExperience(),
+          listMedia("image"),
+        ]);
         const data: AdminData = {
           ...common,
-          workExperience: { items, editId, isNew, confirmDelete },
+          workExperience: { items, images, editId, isNew, confirmDelete },
         };
         return { data };
       }

@@ -3,22 +3,24 @@ import { define } from "../utils.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
 import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
+import { getLinkLabel } from "@/lib/links.shared.ts";
 import { type EducationItem, listEducation } from "@/lib/education.ts";
 import { listAllProjects, type ProjectItem } from "@/lib/projects.ts";
 import {
   listWorkExperience,
-  type WorkExperienceListItem,
+  type WorkExperienceItem,
 } from "@/lib/work-experience.ts";
 import ProjectsCarousel from "@/islands/ProjectsCarousel.tsx";
 
 interface HomeData {
-  workExperience: WorkExperienceListItem[];
+  workExperience: WorkExperienceItem[];
   education: EducationItem[];
   projects: ProjectItem[];
   error: string | null;
@@ -109,14 +111,43 @@ export default define.page<typeof handler>(function Home({ data }) {
                       )
                       : job.companyName}
                   </CardDescription>
+                  {job.logoSrc && (
+                    <CardAction>
+                      <img
+                        src={job.logoSrc}
+                        alt=""
+                        class="h-10 w-10 object-cover rounded"
+                      />
+                    </CardAction>
+                  )}
                 </CardHeader>
-                {job.descriptionHtml && (
-                  <CardContent>
-                    <div
-                      class="markdown-content text-stone-700 dark:text-stone-300"
-                      // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
-                      dangerouslySetInnerHTML={{ __html: job.descriptionHtml }}
-                    />
+                {(job.descriptionHtml || job.links?.length) && (
+                  <CardContent class="flex flex-col gap-3">
+                    {job.descriptionHtml && (
+                      <div
+                        class="markdown-content text-stone-700 dark:text-stone-300"
+                        // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
+                        dangerouslySetInnerHTML={{
+                          __html: job.descriptionHtml,
+                        }}
+                      />
+                    )}
+                    {job.links && job.links.length > 0 && (
+                      <div class="flex flex-wrap gap-3">
+                        {job.links.map((link) => (
+                          <a
+                            key={link}
+                            href={link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-blue-700 dark:text-blue-400 hover:underline inline-flex items-center gap-1 text-sm"
+                          >
+                            {getLinkLabel(link)}{" "}
+                            <ArrowUpRightFromSquareIcon class="text-xs" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 )}
               </Card>
@@ -132,9 +163,9 @@ export default define.page<typeof handler>(function Home({ data }) {
             {education.map((item) => (
               <Card key={item.id}>
                 <CardContent class="flex flex-row gap-6 items-center">
-                  {item.institutionLogoSrc && (
+                  {item.logoSrc && (
                     <img
-                      src={item.institutionLogoSrc}
+                      src={item.logoSrc}
                       alt={`${item.educationInstitution} Logo`}
                       class="w-16 md:w-24 my-2"
                     />
@@ -147,6 +178,22 @@ export default define.page<typeof handler>(function Home({ data }) {
                       {item.educationInstitution},{" "}
                       {formatDateRange(item.startedAt, item.finishedAt)}
                     </span>
+                    {item.links && item.links.length > 0 && (
+                      <div class="flex flex-wrap gap-3">
+                        {item.links.map((link) => (
+                          <a
+                            key={link}
+                            href={link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-blue-700 dark:text-blue-400 hover:underline inline-flex items-center gap-1 text-sm"
+                          >
+                            {getLinkLabel(link)}{" "}
+                            <ArrowUpRightFromSquareIcon class="text-xs" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

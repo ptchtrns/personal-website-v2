@@ -11,6 +11,7 @@ import {
   ThumbtackIcon,
 } from "@/components/icons.tsx";
 import type { ProjectItem } from "@/lib/projects.ts";
+import { getLinkLabel } from "@/lib/links.shared.ts";
 
 interface ProjectsCarouselProps {
   projects: ProjectItem[];
@@ -107,6 +108,22 @@ function ProjectModal(
             >
               Open the website <ArrowUpRightFromSquareIcon />
             </a>
+          )}
+
+          {project.links && project.links.length > 0 && (
+            <div class="flex flex-wrap gap-3">
+              {project.links.map((link) => (
+                <a
+                  key={link}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-blue-700 dark:text-blue-400 hover:underline inline-flex items-center gap-1 w-fit"
+                >
+                  {getLinkLabel(link)} <ArrowUpRightFromSquareIcon />
+                </a>
+              ))}
+            </div>
           )}
         </div>
       </DialogContent>

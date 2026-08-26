@@ -6,9 +6,6 @@ import {
   parseMediaFormInput,
 } from "@/lib/media.ts";
 import { redirectTo } from "@/lib/http.ts";
-import { requiredTrimmedString } from "@/lib/validation.ts";
-
-const LinkUrlSchema = requiredTrimmedString("Missing link URL");
 
 function fail(message: string) {
   return redirectTo("/admin?tab=media&error=" + encodeURIComponent(message));
@@ -27,13 +24,6 @@ export const handler = define.handlers({
     const { type, alt } = parsed.value;
 
     try {
-      if (type === "link") {
-        const linkResult = LinkUrlSchema.safeParse(formData.get("linkUrl"));
-        if (!linkResult.success) return fail("Missing link URL");
-        await createMedia({ type: "link", alt, src: linkResult.data });
-        return redirectTo("/admin?tab=media&ok=Link+added");
-      }
-
       const file = formData.get("file");
       if (!(file instanceof File) || file.size === 0) {
         return fail("Please choose a file");

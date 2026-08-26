@@ -16,18 +16,21 @@ import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
+import { ImagePicker } from "@/components/admin/ImagePicker.tsx";
 import { toDateInputValue } from "@/lib/utils.ts";
 import type { EducationItem } from "@/lib/education.ts";
+import type { MediaItem } from "@/lib/media.ts";
 
 interface EducationAdminProps {
   items: EducationItem[];
+  images: MediaItem[];
   editId: number | null;
   isNew: boolean;
   confirmDelete: boolean;
 }
 
 export default function EducationAdmin(
-  { items, editId, isNew, confirmDelete }: EducationAdminProps,
+  { items, images, editId, isNew, confirmDelete }: EducationAdminProps,
 ) {
   const editing = editId !== null
     ? items.find((item) => item.id === editId) ?? null
@@ -102,17 +105,6 @@ export default function EducationAdmin(
                     </Field>
 
                     <Field class="flex flex-col gap-1.5">
-                      <FieldLabel for="institutionLogoSrc">
-                        Logo URL
-                      </FieldLabel>
-                      <Input
-                        id="institutionLogoSrc"
-                        name="institutionLogoSrc"
-                        defaultValue={editing?.institutionLogoSrc ?? ""}
-                      />
-                    </Field>
-
-                    <Field class="flex flex-col gap-1.5">
                       <FieldLabel for="startedAt">Started at</FieldLabel>
                       <Input
                         id="startedAt"
@@ -139,6 +131,29 @@ export default function EducationAdmin(
                       />
                     </Field>
                   </FieldGroup>
+
+                  <Field>
+                    <FieldLabel>Logo</FieldLabel>
+                    <ImagePicker
+                      name="institutionLogoId"
+                      images={images}
+                      selectedId={editing?.institutionLogoId ?? null}
+                    />
+                  </Field>
+
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="links">
+                      Additional links (one per line)
+                    </FieldLabel>
+                    <Textarea
+                      id="links"
+                      name="links"
+                      rows={3}
+                      defaultValue={(editing?.links ?? []).join("\n")}
+                      placeholder="https://university.example.edu"
+                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                    />
+                  </Field>
 
                   <Field>
                     <FieldLabel for="description">Description</FieldLabel>
@@ -170,11 +185,20 @@ export default function EducationAdmin(
               key={item.id}
               class="flex items-center justify-between gap-3 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
             >
-              <div>
-                <p class="font-medium">{item.degreeTitle}</p>
-                <p class="text-sm text-stone-500">
-                  {item.educationInstitution}
-                </p>
+              <div class="flex items-center gap-3 min-w-0">
+                {item.logoSrc && (
+                  <img
+                    src={item.logoSrc}
+                    alt=""
+                    class="h-10 w-10 object-cover rounded shrink-0"
+                  />
+                )}
+                <div>
+                  <p class="font-medium">{item.degreeTitle}</p>
+                  <p class="text-sm text-stone-500">
+                    {item.educationInstitution}
+                  </p>
+                </div>
               </div>
               <div class="flex gap-2 shrink-0">
                 <Button

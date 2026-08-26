@@ -13,21 +13,25 @@ import {
   FieldSet,
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
+import { Textarea } from "@/components/ui/textarea.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
+import { ImagePicker } from "@/components/admin/ImagePicker.tsx";
 import MarkdownEditor from "@/islands/MarkdownEditor.tsx";
 import { toDateInputValue } from "@/lib/utils.ts";
 import type { WorkExperienceItem } from "@/lib/work-experience.ts";
+import type { MediaItem } from "@/lib/media.ts";
 
 interface WorkExperienceAdminProps {
   items: WorkExperienceItem[];
+  images: MediaItem[];
   editId: number | null;
   isNew: boolean;
   confirmDelete: boolean;
 }
 
 export default function WorkExperienceAdmin(
-  { items, editId, isNew, confirmDelete }: WorkExperienceAdminProps,
+  { items, images, editId, isNew, confirmDelete }: WorkExperienceAdminProps,
 ) {
   const editing = editId !== null
     ? items.find((item) => item.id === editId) ?? null
@@ -100,15 +104,6 @@ export default function WorkExperienceAdmin(
                     </Field>
 
                     <Field class="flex flex-col gap-1.5">
-                      <FieldLabel for="companyLogoSrc">Logo URL</FieldLabel>
-                      <Input
-                        id="companyLogoSrc"
-                        name="companyLogoSrc"
-                        defaultValue={editing?.companyLogoSrc ?? ""}
-                      />
-                    </Field>
-
-                    <Field class="flex flex-col gap-1.5">
                       <FieldLabel for="startedAt">Started at</FieldLabel>
                       <Input
                         id="startedAt"
@@ -135,6 +130,29 @@ export default function WorkExperienceAdmin(
                       />
                     </Field>
                   </FieldGroup>
+
+                  <Field>
+                    <FieldLabel>Logo</FieldLabel>
+                    <ImagePicker
+                      name="companyLogoId"
+                      images={images}
+                      selectedId={editing?.companyLogoId ?? null}
+                    />
+                  </Field>
+
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="links">
+                      Additional links (one per line)
+                    </FieldLabel>
+                    <Textarea
+                      id="links"
+                      name="links"
+                      rows={3}
+                      defaultValue={(editing?.links ?? []).join("\n")}
+                      placeholder="https://www.linkedin.com/company/..."
+                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                    />
+                  </Field>
 
                   <Field>
                     <FieldLabel for="description">Description</FieldLabel>
@@ -167,9 +185,18 @@ export default function WorkExperienceAdmin(
               key={item.id}
               class="flex items-center justify-between gap-3 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
             >
-              <div>
-                <p class="font-medium">{item.jobTitle}</p>
-                <p class="text-sm text-stone-500">{item.companyName}</p>
+              <div class="flex items-center gap-3 min-w-0">
+                {item.logoSrc && (
+                  <img
+                    src={item.logoSrc}
+                    alt=""
+                    class="h-10 w-10 object-cover rounded shrink-0"
+                  />
+                )}
+                <div>
+                  <p class="font-medium">{item.jobTitle}</p>
+                  <p class="text-sm text-stone-500">{item.companyName}</p>
+                </div>
               </div>
               <div class="flex gap-2 shrink-0">
                 <Button

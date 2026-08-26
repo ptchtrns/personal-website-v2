@@ -48,7 +48,7 @@ const workExperienceSeed: (typeof workExperience.$inferInsert)[] = [
 ];
 
 const educationSeed:
-  (Omit<typeof education.$inferInsert, "institutionLogoSrc"> & {
+  (Omit<typeof education.$inferInsert, "institutionLogoId"> & {
     logoFile: URL;
   })[] = [
     {
@@ -227,12 +227,15 @@ async function seedEducation(db: Db, bucket: LocalR2Bucket) {
       .limit(1);
     if (existing.length > 0) continue;
 
-    const institutionLogoSrc = await uploadSeedFile(
-      bucket,
-      "education",
-      logoFile,
-    );
-    await db.insert(education).values({ ...row, institutionLogoSrc });
+    const logoSrc = await uploadSeedFile(bucket, "education", logoFile);
+    const [logoMediaRow] = await db.insert(media).values({
+      src: logoSrc,
+      type: "image",
+    }).returning();
+    await db.insert(education).values({
+      ...row,
+      institutionLogoId: logoMediaRow.id,
+    });
   }
 }
 
