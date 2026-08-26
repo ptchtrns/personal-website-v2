@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "entry": [
+    "main.ts",
+    "client.ts",
+    "server.js",
+    "routes/**/*.{ts,tsx}",
+    "islands/**/*.{ts,tsx}",
+    "vite.config.ts",
+    "drizzle.config.ts",
+    "db/seed.ts"
+  ]
+}
