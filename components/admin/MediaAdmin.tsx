@@ -17,16 +17,10 @@ import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
+import { MEDIA_TYPE_LABELS, MEDIA_TYPES } from "@/lib/media.ts";
 import type { MediaItem, MediaType } from "@/lib/media.ts";
 
 const PREVIEWABLE_TYPES: MediaType[] = ["image", "pfp"];
-
-const MEDIA_TYPES: { value: MediaType; label: string }[] = [
-  { value: "image", label: "Image" },
-  { value: "pfp", label: "Profile picture" },
-  { value: "audio", label: "Audio" },
-  { value: "pdf", label: "PDF" },
-];
 
 const ACCEPT_BY_TYPE: Record<MediaType, string> = {
   image: "image/avif",
@@ -76,8 +70,10 @@ export default function MediaAdmin(
                 <Field class="flex flex-col gap-1.5">
                   <FieldLabel for="type">File type</FieldLabel>
                   <Select id="type" name="type">
-                    {MEDIA_TYPES.map(({ value, label }) => (
-                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    {MEDIA_TYPES.map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {MEDIA_TYPE_LABELS[value]}
+                      </SelectItem>
                     ))}
                   </Select>
                 </Field>

@@ -15,7 +15,8 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
-import { ImagePicker } from "@/components/admin/ImagePicker.tsx";
+import { ImagePickerField } from "@/components/admin/ImagePickerField.tsx";
+import { findById } from "@/lib/utils.ts";
 import type { GalleryItem } from "@/lib/gallery.ts";
 import type { MediaItem } from "@/lib/media.ts";
 
@@ -30,9 +31,7 @@ interface GalleryAdminProps {
 export default function GalleryAdmin(
   { items, images, editId, isNew, confirmDelete }: GalleryAdminProps,
 ) {
-  const editing = editId !== null
-    ? items.find((item) => item.id === editId) ?? null
-    : null;
+  const editing = findById(items, editId);
 
   return (
     <Card>
@@ -76,15 +75,13 @@ export default function GalleryAdmin(
                     </Field>
                   </FieldGroup>
 
-                  <Field>
-                    <FieldLabel>Image</FieldLabel>
-                    <ImagePicker
-                      name="imageId"
-                      images={images}
-                      selectedId={editing?.imageId ?? null}
-                      allowNoImage={false}
-                    />
-                  </Field>
+                  <ImagePickerField
+                    label="Image"
+                    name="imageId"
+                    images={images}
+                    selectedId={editing?.imageId ?? null}
+                    allowNoImage={false}
+                  />
 
                   <div class="flex gap-2">
                     <Button type="submit" variant="default">

@@ -27,6 +27,14 @@ export type {
 
 const cover = alias(media, "cover");
 
+const trackColumns = {
+  id: tracks.id,
+  title: tracks.title,
+  audioId: tracks.audioId,
+  audioSrc: media.src,
+  releaseId: tracks.releaseId,
+};
+
 export type ReleaseRow = typeof releases.$inferSelect;
 
 export interface ReleaseInput {
@@ -51,13 +59,7 @@ async function tracksByReleaseIds(
 
   const db = await getDb();
   const rows = await db
-    .select({
-      id: tracks.id,
-      title: tracks.title,
-      audioId: tracks.audioId,
-      audioSrc: media.src,
-      releaseId: tracks.releaseId,
-    })
+    .select(trackColumns)
     .from(tracks)
     .innerJoin(media, eq(tracks.audioId, media.id))
     .where(inArray(tracks.releaseId, releaseIds));
@@ -150,13 +152,7 @@ export function parseReleaseInput(
 async function trackWithMedia(id: number): Promise<TrackItem | null> {
   const db = await getDb();
   const [row] = await db
-    .select({
-      id: tracks.id,
-      title: tracks.title,
-      audioId: tracks.audioId,
-      audioSrc: media.src,
-      releaseId: tracks.releaseId,
-    })
+    .select(trackColumns)
     .from(tracks)
     .innerJoin(media, eq(tracks.audioId, media.id))
     .where(eq(tracks.id, id));

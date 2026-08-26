@@ -16,8 +16,10 @@ import { Input } from "@/components/ui/input.tsx";
 import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
+import { AdminListRow } from "@/components/admin/AdminListRow.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
-import { ImagePicker } from "@/components/admin/ImagePicker.tsx";
+import { ImagePickerField } from "@/components/admin/ImagePickerField.tsx";
+import { findById } from "@/lib/utils.ts";
 import {
   RELEASE_TYPES,
   type ReleaseItem,
@@ -53,8 +55,10 @@ function TrackEditor(
     trackConfirmDelete: boolean;
   },
 ) {
-  const editingTrack: TrackItem | null =
-    release.tracks.find((track) => track.id === trackEditId) ?? null;
+  const editingTrack: TrackItem | null = findById(
+    release.tracks,
+    trackEditId,
+  );
   const isNewTrack = trackNewReleaseId === release.id;
   const closeHref = `/admin?tab=music#release-${release.id}`;
 
@@ -189,9 +193,7 @@ export default function MusicAdmin(
     trackConfirmDelete,
   }: MusicAdminProps,
 ) {
-  const editing = editId !== null
-    ? releases.find((release) => release.id === editId) ?? null
-    : null;
+  const editing = findById(releases, editId);
 
   return (
     <Card>
@@ -281,14 +283,12 @@ export default function MusicAdmin(
                     </Field>
                   </FieldGroup>
 
-                  <Field>
-                    <FieldLabel>Cover image</FieldLabel>
-                    <ImagePicker
-                      name="coverId"
-                      images={images}
-                      selectedId={editing?.coverId ?? null}
-                    />
-                  </Field>
+                  <ImagePickerField
+                    label="Cover image"
+                    name="coverId"
+                    images={images}
+                    selectedId={editing?.coverId ?? null}
+                  />
 
                   <div class="flex gap-2">
                     <Button type="submit" variant="default">
@@ -310,39 +310,14 @@ export default function MusicAdmin(
               id={`release-${release.id}`}
               class="flex flex-col gap-3 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
             >
-              <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                  {release.coverSrc && (
-                    <img
-                      src={release.coverSrc}
-                      alt=""
-                      class="h-10 w-10 object-cover rounded shrink-0"
-                    />
-                  )}
-                  <div class="min-w-0">
-                    <p class="font-medium truncate">{release.title}</p>
-                    <p class="text-xs uppercase text-stone-500">
-                      {RELEASE_TYPE_LABEL[release.type]}
-                    </p>
-                  </div>
-                </div>
-                <div class="flex gap-2 shrink-0">
-                  <Button
-                    href={`/admin?tab=music&edit=${release.id}`}
-                    size="sm"
-                    variant="outline"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    href={`/admin?tab=music&edit=${release.id}&confirmDelete=1`}
-                    size="sm"
-                    variant="destructive"
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+              <AdminListRow
+                editHref={`/admin?tab=music&edit=${release.id}`}
+                deleteHref={`/admin?tab=music&edit=${release.id}&confirmDelete=1`}
+                logoSrc={release.coverSrc}
+                title={release.title}
+                subtitle={RELEASE_TYPE_LABEL[release.type]}
+                subtitleClass="text-xs uppercase text-stone-500"
+              />
 
               <TrackEditor
                 release={release}

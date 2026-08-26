@@ -11,10 +11,17 @@ export type MediaItem = typeof media.$inferSelect;
 
 export const MEDIA_TYPES: MediaType[] = [
   "image",
-  "pdf",
-  "audio",
   "pfp",
+  "audio",
+  "pdf",
 ];
+
+export const MEDIA_TYPE_LABELS: Record<MediaType, string> = {
+  image: "Image",
+  pfp: "Profile picture",
+  audio: "Audio",
+  pdf: "PDF",
+};
 
 export interface MediaFormInput {
   type: MediaType;

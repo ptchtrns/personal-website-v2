@@ -1,11 +1,5 @@
 import { z } from "zod";
 
-/** Coerces any FormData/JSON value to a trimmed string, treating null/undefined as "". */
-export const trimmedString = z.preprocess(
-  (v) => (v == null ? "" : String(v).trim()),
-  z.string(),
-);
-
 export function requiredTrimmedString(message: string) {
   return z.preprocess(
     (v) => (v == null ? "" : String(v).trim()),

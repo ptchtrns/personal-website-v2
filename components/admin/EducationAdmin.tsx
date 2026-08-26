@@ -15,9 +15,11 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
+import { AdminListRow } from "@/components/admin/AdminListRow.tsx";
+import { DateRangeFields } from "@/components/admin/DateRangeFields.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
-import { ImagePicker } from "@/components/admin/ImagePicker.tsx";
-import { toDateInputValue } from "@/lib/utils.ts";
+import { ImagePickerField } from "@/components/admin/ImagePickerField.tsx";
+import { findById } from "@/lib/utils.ts";
 import type { EducationItem } from "@/lib/education.ts";
 import type { MediaItem } from "@/lib/media.ts";
 
@@ -32,9 +34,7 @@ interface EducationAdminProps {
 export default function EducationAdmin(
   { items, images, editId, isNew, confirmDelete }: EducationAdminProps,
 ) {
-  const editing = editId !== null
-    ? items.find((item) => item.id === editId) ?? null
-    : null;
+  const editing = findById(items, editId);
 
   return (
     <Card>
@@ -104,42 +104,18 @@ export default function EducationAdmin(
                       />
                     </Field>
 
-                    <Field class="flex flex-col gap-1.5">
-                      <FieldLabel for="startedAt">Started at</FieldLabel>
-                      <Input
-                        id="startedAt"
-                        type="date"
-                        name="startedAt"
-                        defaultValue={toDateInputValue(
-                          editing?.startedAt ?? null,
-                        )}
-                        required
-                      />
-                    </Field>
-
-                    <Field class="flex flex-col gap-1.5">
-                      <FieldLabel for="finishedAt">
-                        Finished at (leave empty if ongoing)
-                      </FieldLabel>
-                      <Input
-                        id="finishedAt"
-                        type="date"
-                        name="finishedAt"
-                        defaultValue={toDateInputValue(
-                          editing?.finishedAt ?? null,
-                        )}
-                      />
-                    </Field>
+                    <DateRangeFields
+                      startedAt={editing?.startedAt}
+                      finishedAt={editing?.finishedAt}
+                    />
                   </FieldGroup>
 
-                  <Field>
-                    <FieldLabel>Logo</FieldLabel>
-                    <ImagePicker
-                      name="institutionLogoId"
-                      images={images}
-                      selectedId={editing?.institutionLogoId ?? null}
-                    />
-                  </Field>
+                  <ImagePickerField
+                    label="Logo"
+                    name="institutionLogoId"
+                    images={images}
+                    selectedId={editing?.institutionLogoId ?? null}
+                  />
 
                   <Field class="flex flex-col gap-1.5">
                     <FieldLabel for="links">
@@ -183,39 +159,15 @@ export default function EducationAdmin(
           {items.map((item) => (
             <div
               key={item.id}
-              class="flex items-center justify-between gap-3 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
+              class="border border-stone-200 dark:border-stone-700 rounded-lg p-3"
             >
-              <div class="flex items-center gap-3 min-w-0">
-                {item.logoSrc && (
-                  <img
-                    src={item.logoSrc}
-                    alt=""
-                    class="h-10 w-10 object-cover rounded shrink-0"
-                  />
-                )}
-                <div>
-                  <p class="font-medium">{item.degreeTitle}</p>
-                  <p class="text-sm text-stone-500">
-                    {item.educationInstitution}
-                  </p>
-                </div>
-              </div>
-              <div class="flex gap-2 shrink-0">
-                <Button
-                  href={`/admin?tab=education&edit=${item.id}`}
-                  size="sm"
-                  variant="outline"
-                >
-                  Edit
-                </Button>
-                <Button
-                  href={`/admin?tab=education&edit=${item.id}&confirmDelete=1`}
-                  size="sm"
-                  variant="destructive"
-                >
-                  Delete
-                </Button>
-              </div>
+              <AdminListRow
+                editHref={`/admin?tab=education&edit=${item.id}`}
+                deleteHref={`/admin?tab=education&edit=${item.id}&confirmDelete=1`}
+                logoSrc={item.logoSrc}
+                title={item.degreeTitle}
+                subtitle={item.educationInstitution}
+              />
             </div>
           ))}
         </div>

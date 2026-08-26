@@ -16,8 +16,10 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
+import { AdminListRow } from "@/components/admin/AdminListRow.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import MarkdownEditor from "@/islands/MarkdownEditor.tsx";
+import { findById } from "@/lib/utils.ts";
 import type { ProjectItem } from "@/lib/projects.ts";
 import type { MediaItem } from "@/lib/media.ts";
 import type { Technology } from "@/lib/technologies.ts";
@@ -35,9 +37,7 @@ export default function ProjectsAdmin(
   { items, images, technologies, editId, isNew, confirmDelete }:
     ProjectsAdminProps,
 ) {
-  const editing = editId !== null
-    ? items.find((item) => item.id === editId) ?? null
-    : null;
+  const editing = findById(items, editId);
   const editingMediaIds = new Set(
     (editing?.media ?? []).map((item) => item.id),
   );
@@ -223,30 +223,14 @@ export default function ProjectsAdmin(
           {items.map((item) => (
             <div
               key={item.id}
-              class="flex items-center justify-between gap-3 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
+              class="border border-stone-200 dark:border-stone-700 rounded-lg p-3"
             >
-              <div>
-                <p class="font-medium">{item.name}</p>
-                <p class="text-sm text-stone-500">
-                  {item.technologies.map((t) => t.name).join(", ")}
-                </p>
-              </div>
-              <div class="flex gap-2 shrink-0">
-                <Button
-                  href={`/admin?tab=projects&edit=${item.id}`}
-                  size="sm"
-                  variant="outline"
-                >
-                  Edit
-                </Button>
-                <Button
-                  href={`/admin?tab=projects&edit=${item.id}&confirmDelete=1`}
-                  size="sm"
-                  variant="destructive"
-                >
-                  Delete
-                </Button>
-              </div>
+              <AdminListRow
+                editHref={`/admin?tab=projects&edit=${item.id}`}
+                deleteHref={`/admin?tab=projects&edit=${item.id}&confirmDelete=1`}
+                title={item.name}
+                subtitle={item.technologies.map((t) => t.name).join(", ")}
+              />
             </div>
           ))}
         </div>
