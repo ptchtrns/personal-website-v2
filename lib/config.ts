@@ -54,10 +54,7 @@ export function getConfig(): Promise<Config> {
     configPromise = (async () => {
       const raw = {
         ADMIN_PASSWORD: await readEnv("ADMIN_PASSWORD", ""),
-        JWT_SECRET: await readEnv(
-          "JWT_SECRET",
-          "your-secret-key-change-in-production",
-        ),
+        JWT_SECRET: await readEnv("JWT_SECRET", ""),
         JWT_EXPIRY_HOURS: await readEnv("JWT_EXPIRY_HOURS", "24"),
         RESEND_API_KEY: await readEnv("RESEND_API_KEY", ""),
         CONTACT_TO_EMAIL: await readEnv(

@@ -1,9 +1,12 @@
 import { z } from "zod";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { define } from "../utils.ts";
 import { optionalIntId, queryFlag } from "@/lib/validation.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
 import { AdminNav } from "@/components/admin/AdminNav.tsx";
 import { FormMessage } from "@/components/admin/FormMessage.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { FaIcon } from "@/components/icon.tsx";
 import GalleryAdmin from "@/components/admin/GalleryAdmin.tsx";
 import MusicAdmin from "@/components/admin/MusicAdmin.tsx";
 import EducationAdmin from "@/components/admin/EducationAdmin.tsx";
@@ -209,7 +212,15 @@ export default define.page<typeof handler>(function Admin({ data }) {
   return (
     <MainDisplay>
       <div class="flex flex-col gap-4">
-        <AdminNav active={data.tab} />
+        <div class="flex items-center justify-between gap-4">
+          <AdminNav active={data.tab} />
+          <form method="POST" action="/api/logout">
+            <Button type="submit" variant="outline" size="sm">
+              <FaIcon icon={faRightFromBracket} />
+              Log out
+            </Button>
+          </form>
+        </div>
         <FormMessage error={data.error} ok={data.ok} />
         {data.tab === "media" && data.media && <MediaAdmin {...data.media} />}
         {data.tab === "gallery" && data.gallery && (
