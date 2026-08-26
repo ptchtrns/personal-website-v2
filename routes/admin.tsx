@@ -44,6 +44,7 @@ interface AdminData {
     items: GalleryItem[];
     images: MediaItem[];
     editId: number | null;
+    isNew: boolean;
     confirmDelete: boolean;
   };
   music?: {
@@ -51,18 +52,22 @@ interface AdminData {
     images: MediaItem[];
     audio: MediaItem[];
     editId: number | null;
+    isNew: boolean;
     confirmDelete: boolean;
     trackEditId: number | null;
+    trackNewReleaseId: number | null;
     trackConfirmDelete: boolean;
   };
   education?: {
     items: EducationItem[];
     editId: number | null;
+    isNew: boolean;
     confirmDelete: boolean;
   };
   workExperience?: {
     items: WorkExperienceItem[];
     editId: number | null;
+    isNew: boolean;
     confirmDelete: boolean;
   };
   projects?: {
@@ -70,11 +75,13 @@ interface AdminData {
     images: MediaItem[];
     technologies: Technology[];
     editId: number | null;
+    isNew: boolean;
     confirmDelete: boolean;
   };
   media?: {
     items: MediaItem[];
     deleteId: number | null;
+    isNew: boolean;
     confirmDelete: boolean;
   };
 }
@@ -89,9 +96,14 @@ export const handler = define.handlers({
 
     const editParam = url.searchParams.get("edit");
     const editId = editParam !== null ? Number(editParam) : null;
+    const isNew = url.searchParams.get("new") === "1";
     const confirmDelete = url.searchParams.get("confirmDelete") === "1";
     const trackEditParam = url.searchParams.get("trackEdit");
     const trackEditId = trackEditParam !== null ? Number(trackEditParam) : null;
+    const trackNewParam = url.searchParams.get("trackNew");
+    const trackNewReleaseId = trackNewParam !== null
+      ? Number(trackNewParam)
+      : null;
     const trackConfirmDelete =
       url.searchParams.get("trackConfirmDelete") === "1";
 
@@ -109,7 +121,7 @@ export const handler = define.handlers({
         ]);
         const data: AdminData = {
           ...common,
-          gallery: { items, images, editId, confirmDelete },
+          gallery: { items, images, editId, isNew, confirmDelete },
         };
         return { data };
       }
@@ -126,8 +138,10 @@ export const handler = define.handlers({
             images,
             audio,
             editId,
+            isNew,
             confirmDelete,
             trackEditId,
+            trackNewReleaseId,
             trackConfirmDelete,
           },
         };
@@ -137,7 +151,7 @@ export const handler = define.handlers({
         const items = await listEducation();
         const data: AdminData = {
           ...common,
-          education: { items, editId, confirmDelete },
+          education: { items, editId, isNew, confirmDelete },
         };
         return { data };
       }
@@ -145,7 +159,7 @@ export const handler = define.handlers({
         const items = await listWorkExperience();
         const data: AdminData = {
           ...common,
-          workExperience: { items, editId, confirmDelete },
+          workExperience: { items, editId, isNew, confirmDelete },
         };
         return { data };
       }
@@ -157,7 +171,14 @@ export const handler = define.handlers({
         ]);
         const data: AdminData = {
           ...common,
-          projects: { items, images, technologies, editId, confirmDelete },
+          projects: {
+            items,
+            images,
+            technologies,
+            editId,
+            isNew,
+            confirmDelete,
+          },
         };
         return { data };
       }
@@ -166,7 +187,7 @@ export const handler = define.handlers({
         const items = await listMedia();
         const data: AdminData = {
           ...common,
-          media: { items, deleteId: editId, confirmDelete },
+          media: { items, deleteId: editId, isNew, confirmDelete },
         };
         return { data };
       }

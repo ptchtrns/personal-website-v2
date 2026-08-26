@@ -13,6 +13,7 @@ import {
   FieldSet,
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
+import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import MarkdownEditor from "@/islands/MarkdownEditor.tsx";
 import { toDateInputValue } from "@/lib/utils.ts";
@@ -21,11 +22,12 @@ import type { WorkExperienceItem } from "@/lib/work-experience.ts";
 interface WorkExperienceAdminProps {
   items: WorkExperienceItem[];
   editId: number | null;
+  isNew: boolean;
   confirmDelete: boolean;
 }
 
 export default function WorkExperienceAdmin(
-  { items, editId, confirmDelete }: WorkExperienceAdminProps,
+  { items, editId, isNew, confirmDelete }: WorkExperienceAdminProps,
 ) {
   const editing = editId !== null
     ? items.find((item) => item.id === editId) ?? null
@@ -33,120 +35,131 @@ export default function WorkExperienceAdmin(
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>
-          {editing ? "Edit work experience" : "Add work experience"}
-        </CardTitle>
-        <CardDescription>Manage jobs and employers.</CardDescription>
+      <CardHeader class="flex flex-row items-center justify-between gap-4">
+        <div>
+          <CardTitle>Work experience</CardTitle>
+          <CardDescription>Manage jobs and employers.</CardDescription>
+        </div>
+        <Button href="/admin?tab=work-experience&new=1" size="sm">
+          Add work experience
+        </Button>
       </CardHeader>
-      <CardContent class="flex flex-col gap-6">
-        {editing && confirmDelete
-          ? (
-            <DeleteConfirm
-              label={editing.jobTitle}
-              action={`/api/work-experience/${editing.id}/delete`}
-              cancelHref={`/admin?tab=work-experience&edit=${editing.id}`}
-            />
-          )
-          : (
-            <form
-              method="POST"
-              action={editing
-                ? `/api/work-experience/${editing.id}`
-                : "/api/work-experience"}
-              class="flex flex-col gap-3"
-            >
-              <FieldSet>
-                <FieldGroup>
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="jobTitle">Job title</FieldLabel>
-                    <Input
-                      id="jobTitle"
-                      name="jobTitle"
-                      defaultValue={editing?.jobTitle ?? ""}
-                      required
+      <CardContent class="flex flex-col gap-2">
+        <AdminFormDialog
+          open={isNew || editing !== null}
+          closeHref="/admin?tab=work-experience"
+          title={editing ? "Edit work experience" : "Add work experience"}
+          description="Manage jobs and employers."
+        >
+          {editing && confirmDelete
+            ? (
+              <DeleteConfirm
+                label={editing.jobTitle}
+                action={`/api/work-experience/${editing.id}/delete`}
+                cancelHref={`/admin?tab=work-experience&edit=${editing.id}`}
+              />
+            )
+            : (
+              <form
+                method="POST"
+                action={editing
+                  ? `/api/work-experience/${editing.id}`
+                  : "/api/work-experience"}
+                class="flex flex-col gap-3"
+              >
+                <FieldSet>
+                  <FieldGroup>
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="jobTitle">Job title</FieldLabel>
+                      <Input
+                        id="jobTitle"
+                        name="jobTitle"
+                        defaultValue={editing?.jobTitle ?? ""}
+                        required
+                      />
+                    </Field>
+
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="companyName">Company name</FieldLabel>
+                      <Input
+                        id="companyName"
+                        name="companyName"
+                        defaultValue={editing?.companyName ?? ""}
+                        required
+                      />
+                    </Field>
+
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="companyUrl">Company URL</FieldLabel>
+                      <Input
+                        id="companyUrl"
+                        type="url"
+                        name="companyUrl"
+                        defaultValue={editing?.companyUrl ?? ""}
+                      />
+                    </Field>
+
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="companyLogoSrc">Logo URL</FieldLabel>
+                      <Input
+                        id="companyLogoSrc"
+                        name="companyLogoSrc"
+                        defaultValue={editing?.companyLogoSrc ?? ""}
+                      />
+                    </Field>
+
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="startedAt">Started at</FieldLabel>
+                      <Input
+                        id="startedAt"
+                        type="date"
+                        name="startedAt"
+                        defaultValue={toDateInputValue(
+                          editing?.startedAt ?? null,
+                        )}
+                        required
+                      />
+                    </Field>
+
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="finishedAt">
+                        Finished at (leave empty if ongoing)
+                      </FieldLabel>
+                      <Input
+                        id="finishedAt"
+                        type="date"
+                        name="finishedAt"
+                        defaultValue={toDateInputValue(
+                          editing?.finishedAt ?? null,
+                        )}
+                      />
+                    </Field>
+                  </FieldGroup>
+
+                  <Field>
+                    <FieldLabel for="description">Description</FieldLabel>
+                    <MarkdownEditor
+                      id="description"
+                      name="description"
+                      defaultValue={editing?.description}
                     />
                   </Field>
 
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="companyName">Company name</FieldLabel>
-                    <Input
-                      id="companyName"
-                      name="companyName"
-                      defaultValue={editing?.companyName ?? ""}
-                      required
-                    />
-                  </Field>
-
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="companyUrl">Company URL</FieldLabel>
-                    <Input
-                      id="companyUrl"
-                      type="url"
-                      name="companyUrl"
-                      defaultValue={editing?.companyUrl ?? ""}
-                    />
-                  </Field>
-
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="companyLogoSrc">Logo URL</FieldLabel>
-                    <Input
-                      id="companyLogoSrc"
-                      name="companyLogoSrc"
-                      defaultValue={editing?.companyLogoSrc ?? ""}
-                    />
-                  </Field>
-
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="startedAt">Started at</FieldLabel>
-                    <Input
-                      id="startedAt"
-                      type="date"
-                      name="startedAt"
-                      defaultValue={toDateInputValue(
-                        editing?.startedAt ?? null,
-                      )}
-                      required
-                    />
-                  </Field>
-
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="finishedAt">
-                      Finished at (leave empty if ongoing)
-                    </FieldLabel>
-                    <Input
-                      id="finishedAt"
-                      type="date"
-                      name="finishedAt"
-                      defaultValue={toDateInputValue(
-                        editing?.finishedAt ?? null,
-                      )}
-                    />
-                  </Field>
-                </FieldGroup>
-
-                <Field>
-                  <FieldLabel for="description">Description</FieldLabel>
-                  <MarkdownEditor
-                    id="description"
-                    name="description"
-                    defaultValue={editing?.description}
-                  />
-                </Field>
-
-                <div class="flex gap-2">
-                  <Button type="submit" variant="default">
-                    {editing ? "Save changes" : "Add work experience"}
-                  </Button>
-                  {editing && (
-                    <Button href="/admin?tab=work-experience" variant="outline">
+                  <div class="flex gap-2">
+                    <Button type="submit" variant="default">
+                      {editing ? "Save changes" : "Add work experience"}
+                    </Button>
+                    <Button
+                      href="/admin?tab=work-experience"
+                      variant="outline"
+                    >
                       Cancel
                     </Button>
-                  )}
-                </div>
-              </FieldSet>
-            </form>
-          )}
+                  </div>
+                </FieldSet>
+              </form>
+            )}
+        </AdminFormDialog>
 
         <div class="flex flex-col gap-2">
           {items.map((item) => (

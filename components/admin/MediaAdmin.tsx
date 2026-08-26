@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
+import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import type { MediaItem, MediaType } from "@/lib/media.ts";
 
@@ -39,24 +40,33 @@ const ACCEPT_BY_TYPE: Record<MediaType, string> = {
 interface MediaAdminProps {
   items: MediaItem[];
   deleteId: number | null;
+  isNew: boolean;
   confirmDelete: boolean;
 }
 
 export default function MediaAdmin(
-  { items, deleteId, confirmDelete }: MediaAdminProps,
+  { items, deleteId, isNew, confirmDelete }: MediaAdminProps,
 ) {
   return (
     <div class="flex flex-col gap-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Media</CardTitle>
-          <CardDescription>
-            Upload an image, profile picture, audio or PDF file, or add a link,
-            to the media library. For file uploads, select a file type and
-            choose a file; for links, select "Link" and fill in the URL.
-          </CardDescription>
+        <CardHeader class="flex flex-row items-center justify-between gap-4">
+          <div>
+            <CardTitle>Media</CardTitle>
+            <CardDescription>
+              Upload images, profile pictures, audio or PDF files, or links, to
+              the media library.
+            </CardDescription>
+          </div>
+          <Button href="/admin?tab=media&new=1" size="sm">Add media</Button>
         </CardHeader>
-        <CardContent>
+
+        <AdminFormDialog
+          open={isNew}
+          closeHref="/admin?tab=media"
+          title="Add media"
+          description="For file uploads, select a file type and choose a file, for links, select 'Link' and fill in the URL"
+        >
           <form
             method="POST"
             action="/api/media"
@@ -112,12 +122,15 @@ export default function MediaAdmin(
                 />
               </Field>
 
-              <Button type="submit" class="w-full" variant="default">
-                Save
-              </Button>
+              <div class="flex gap-2">
+                <Button type="submit" variant="default">Save</Button>
+                <Button href="/admin?tab=media" variant="outline">
+                  Cancel
+                </Button>
+              </div>
             </FieldSet>
           </form>
-        </CardContent>
+        </AdminFormDialog>
       </Card>
 
       <Card>

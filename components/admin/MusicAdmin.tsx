@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
+import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import {
   RELEASE_TYPES,
@@ -35,38 +36,54 @@ interface MusicAdminProps {
   images: MediaItem[];
   audio: MediaItem[];
   editId: number | null;
+  isNew: boolean;
   confirmDelete: boolean;
   trackEditId: number | null;
+  trackNewReleaseId: number | null;
   trackConfirmDelete: boolean;
 }
 
 function TrackEditor(
-  { release, audio, trackEditId, trackConfirmDelete }: {
+  { release, audio, trackEditId, trackNewReleaseId, trackConfirmDelete }: {
     release: ReleaseItem;
     audio: MediaItem[];
     trackEditId: number | null;
+    trackNewReleaseId: number | null;
     trackConfirmDelete: boolean;
   },
 ) {
   const editingTrack: TrackItem | null =
     release.tracks.find((track) => track.id === trackEditId) ?? null;
+  const isNewTrack = trackNewReleaseId === release.id;
+  const closeHref = `/admin?tab=music#release-${release.id}`;
 
   return (
     <div class="flex flex-col gap-3 border-t border-stone-200 dark:border-stone-700 pt-3">
+      <div class="flex items-center justify-between gap-3">
+        <p class="text-sm font-medium">Tracks</p>
+        <Button
+          href={`/admin?tab=music&trackNew=${release.id}#release-${release.id}`}
+          size="sm"
+          variant="outline"
+        >
+          Add track
+        </Button>
+      </div>
+
       <div class="flex flex-col gap-2">
         {release.tracks.map((track) => (
           <div key={track.id} class="flex items-center justify-between gap-3">
             <p class="text-sm truncate">{track.title}</p>
             <div class="flex gap-2 shrink-0">
               <Button
-                href={`/admin?tab=music&trackEdit=${track.id}`}
+                href={`/admin?tab=music&trackEdit=${track.id}#release-${release.id}`}
                 size="sm"
                 variant="outline"
               >
                 Edit
               </Button>
               <Button
-                href={`/admin?tab=music&trackEdit=${track.id}&trackConfirmDelete=1`}
+                href={`/admin?tab=music&trackEdit=${track.id}&trackConfirmDelete=1#release-${release.id}`}
                 size="sm"
                 variant="destructive"
               >
@@ -80,58 +97,80 @@ function TrackEditor(
         )}
       </div>
 
-      {editingTrack && trackConfirmDelete
-        ? (
-          <DeleteConfirm
-            label={editingTrack.title}
-            action={`/api/tracks/${editingTrack.id}/delete`}
-            cancelHref={`/admin?tab=music&trackEdit=${editingTrack.id}`}
-          />
-        )
-        : (
-          <form
-            method="POST"
-            action={editingTrack
-              ? `/api/tracks/${editingTrack.id}`
-              : "/api/tracks"}
-            class="flex flex-col gap-2"
-          >
-            <input type="hidden" name="releaseId" value={release.id} />
-            <div class="flex items-center gap-2">
-              <Input
-                name="title"
-                placeholder="Track title"
-                defaultValue={editingTrack?.title ?? ""}
-                required
-                class="flex-1"
-              />
-              <Select name="audioId" required class="max-w-56">
-                <SelectItem value="" disabled selected={!editingTrack}>
-                  Choose audio…
-                </SelectItem>
-                {audio.map((item) => (
-                  <SelectItem
-                    key={item.id}
-                    value={item.id}
-                    selected={editingTrack?.audioId === item.id}
-                  >
-                    {item.alt || item.src}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div class="flex gap-2">
-              <Button type="submit" size="sm" variant="default">
-                {editingTrack ? "Save track" : "Add track"}
-              </Button>
-              {editingTrack && (
-                <Button href="/admin?tab=music" size="sm" variant="outline">
-                  Cancel
-                </Button>
-              )}
-            </div>
-          </form>
-        )}
+      <AdminFormDialog
+        open={isNewTrack || editingTrack !== null}
+        closeHref={closeHref}
+        title={editingTrack ? "Edit track" : "Add track"}
+        description={release.title}
+      >
+        {editingTrack && trackConfirmDelete
+          ? (
+            <DeleteConfirm
+              label={editingTrack.title}
+              action={`/api/tracks/${editingTrack.id}/delete`}
+              cancelHref={`/admin?tab=music&trackEdit=${editingTrack.id}#release-${release.id}`}
+            />
+          )
+          : (
+            <form
+              method="POST"
+              action={editingTrack
+                ? `/api/tracks/${editingTrack.id}`
+                : "/api/tracks"}
+              class="flex flex-col gap-3"
+            >
+              <input type="hidden" name="releaseId" value={release.id} />
+              <FieldSet>
+                <FieldGroup>
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for={`track-title-${release.id}`}>
+                      Track title
+                    </FieldLabel>
+                    <Input
+                      id={`track-title-${release.id}`}
+                      name="title"
+                      defaultValue={editingTrack?.title ?? ""}
+                      required
+                    />
+                  </Field>
+
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for={`track-audio-${release.id}`}>
+                      Audio
+                    </FieldLabel>
+                    <Select
+                      id={`track-audio-${release.id}`}
+                      name="audioId"
+                      required
+                    >
+                      <SelectItem value="" disabled selected={!editingTrack}>
+                        Choose audio…
+                      </SelectItem>
+                      {audio.map((item) => (
+                        <SelectItem
+                          key={item.id}
+                          value={item.id}
+                          selected={editingTrack?.audioId === item.id}
+                        >
+                          {item.alt || item.src}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </Field>
+                </FieldGroup>
+
+                <div class="flex gap-2">
+                  <Button type="submit" variant="default">
+                    {editingTrack ? "Save track" : "Add track"}
+                  </Button>
+                  <Button href={closeHref} variant="outline">
+                    Cancel
+                  </Button>
+                </div>
+              </FieldSet>
+            </form>
+          )}
+      </AdminFormDialog>
     </div>
   );
 }
@@ -142,8 +181,10 @@ export default function MusicAdmin(
     images,
     audio,
     editId,
+    isNew,
     confirmDelete,
     trackEditId,
+    trackNewReleaseId,
     trackConfirmDelete,
   }: MusicAdminProps,
 ) {
@@ -153,119 +194,130 @@ export default function MusicAdmin(
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{editing ? "Edit release" : "Add release"}</CardTitle>
-        <CardDescription>
-          Manage albums, EPs and singles, and the tracks within them.
-        </CardDescription>
+      <CardHeader class="flex flex-row items-center justify-between gap-4">
+        <div>
+          <CardTitle>Music</CardTitle>
+          <CardDescription>
+            Manage albums, EPs and singles, and the tracks within them.
+          </CardDescription>
+        </div>
+        <Button href="/admin?tab=music&new=1" size="sm">Add release</Button>
       </CardHeader>
-      <CardContent class="flex flex-col gap-6">
-        {editing && confirmDelete
-          ? (
-            <DeleteConfirm
-              label={editing.title}
-              action={`/api/releases/${editing.id}/delete`}
-              cancelHref={`/admin?tab=music&edit=${editing.id}`}
-            />
-          )
-          : (
-            <form
-              method="POST"
-              action={editing ? `/api/releases/${editing.id}` : "/api/releases"}
-              class="flex flex-col gap-3"
-            >
-              <FieldSet>
-                <FieldGroup>
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="release-title">Title</FieldLabel>
-                    <Input
-                      id="release-title"
-                      name="title"
-                      defaultValue={editing?.title ?? ""}
-                      required
-                    />
-                  </Field>
+      <CardContent class="flex flex-col gap-2">
+        <AdminFormDialog
+          open={isNew || editing !== null}
+          closeHref="/admin?tab=music"
+          title={editing ? "Edit release" : "Add release"}
+          description="Manage albums, EPs and singles."
+        >
+          {editing && confirmDelete
+            ? (
+              <DeleteConfirm
+                label={editing.title}
+                action={`/api/releases/${editing.id}/delete`}
+                cancelHref={`/admin?tab=music&edit=${editing.id}`}
+              />
+            )
+            : (
+              <form
+                method="POST"
+                action={editing
+                  ? `/api/releases/${editing.id}`
+                  : "/api/releases"}
+                class="flex flex-col gap-3"
+              >
+                <FieldSet>
+                  <FieldGroup>
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="release-title">Title</FieldLabel>
+                      <Input
+                        id="release-title"
+                        name="title"
+                        defaultValue={editing?.title ?? ""}
+                        required
+                      />
+                    </Field>
 
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="release-type">Type</FieldLabel>
-                    <Select id="release-type" name="type">
-                      {RELEASE_TYPES.map((type) => (
-                        <SelectItem
-                          key={type}
-                          value={type}
-                          selected={(editing?.type ?? "album") === type}
-                        >
-                          {RELEASE_TYPE_LABEL[type]}
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="release-type">Type</FieldLabel>
+                      <Select id="release-type" name="type">
+                        {RELEASE_TYPES.map((type) => (
+                          <SelectItem
+                            key={type}
+                            value={type}
+                            selected={(editing?.type ?? "album") === type}
+                          >
+                            {RELEASE_TYPE_LABEL[type]}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </Field>
+
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="release-cover">
+                        Cover image (optional)
+                      </FieldLabel>
+                      <Select id="release-cover" name="coverId">
+                        <SelectItem value="" selected={!editing?.coverId}>
+                          No cover
                         </SelectItem>
-                      ))}
-                    </Select>
-                  </Field>
+                        {images.map((image) => (
+                          <SelectItem
+                            key={image.id}
+                            value={image.id}
+                            selected={editing?.coverId === image.id}
+                          >
+                            {image.alt || image.src}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </Field>
 
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="release-cover">
-                      Cover image (optional)
-                    </FieldLabel>
-                    <Select id="release-cover" name="coverId">
-                      <SelectItem value="" selected={!editing?.coverId}>
-                        No cover
-                      </SelectItem>
-                      {images.map((image) => (
-                        <SelectItem
-                          key={image.id}
-                          value={image.id}
-                          selected={editing?.coverId === image.id}
-                        >
-                          {image.alt || image.src}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </Field>
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="release-description">
+                        Description (optional)
+                      </FieldLabel>
+                      <Textarea
+                        id="release-description"
+                        name="description"
+                        rows={2}
+                        defaultValue={editing?.description ?? ""}
+                        class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                      />
+                    </Field>
 
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="release-description">
-                      Description (optional)
-                    </FieldLabel>
-                    <Textarea
-                      id="release-description"
-                      name="description"
-                      rows={2}
-                      defaultValue={editing?.description ?? ""}
-                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
-                    />
-                  </Field>
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="release-links">
+                        Streaming links (one per line)
+                      </FieldLabel>
+                      <Textarea
+                        id="release-links"
+                        name="links"
+                        rows={4}
+                        defaultValue={(editing?.links ?? []).join("\n")}
+                        class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                      />
+                    </Field>
+                  </FieldGroup>
 
-                  <Field class="flex flex-col gap-1.5">
-                    <FieldLabel for="release-links">
-                      Streaming links (one per line)
-                    </FieldLabel>
-                    <Textarea
-                      id="release-links"
-                      name="links"
-                      rows={4}
-                      defaultValue={(editing?.links ?? []).join("\n")}
-                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
-                    />
-                  </Field>
-                </FieldGroup>
-
-                <div class="flex gap-2">
-                  <Button type="submit" variant="default">
-                    {editing ? "Save changes" : "Add release"}
-                  </Button>
-                  {editing && (
+                  <div class="flex gap-2">
+                    <Button type="submit" variant="default">
+                      {editing ? "Save changes" : "Add release"}
+                    </Button>
                     <Button href="/admin?tab=music" variant="outline">
                       Cancel
                     </Button>
-                  )}
-                </div>
-              </FieldSet>
-            </form>
-          )}
+                  </div>
+                </FieldSet>
+              </form>
+            )}
+        </AdminFormDialog>
 
         <div class="flex flex-col gap-3">
           {releases.map((release) => (
             <div
               key={release.id}
+              id={`release-${release.id}`}
               class="flex flex-col gap-3 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
             >
               <div class="flex items-center justify-between gap-3">
@@ -306,6 +358,7 @@ export default function MusicAdmin(
                 release={release}
                 audio={audio}
                 trackEditId={trackEditId}
+                trackNewReleaseId={trackNewReleaseId}
                 trackConfirmDelete={trackConfirmDelete}
               />
             </div>
