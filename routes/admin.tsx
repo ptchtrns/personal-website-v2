@@ -1,4 +1,6 @@
+import { z } from "zod";
 import { define } from "../utils.ts";
+import { optionalIntId, queryFlag } from "@/lib/validation.ts";
 import { MainDisplay } from "@/components/layout/MainDisplay.tsx";
 import { AdminNav } from "@/components/admin/AdminNav.tsx";
 import { FormMessage } from "@/components/admin/FormMessage.tsx";
@@ -32,9 +34,17 @@ const TABS = [
 ] as const;
 type Tab = typeof TABS[number];
 
-function isTab(value: string | null): value is Tab {
-  return (TABS as readonly string[]).includes(value ?? "");
-}
+const querySchema = z.object({
+  tab: z.enum(TABS).catch("media"),
+  edit: optionalIntId("Invalid edit id"),
+  new: queryFlag,
+  confirmDelete: queryFlag,
+  trackEdit: optionalIntId("Invalid track edit id"),
+  trackNew: optionalIntId("Invalid track new id"),
+  trackConfirmDelete: queryFlag,
+  error: z.preprocess((v) => v ?? null, z.string().nullable()),
+  ok: z.preprocess((v) => v ?? null, z.string().nullable()),
+});
 
 interface AdminData {
   tab: Tab;
@@ -93,27 +103,19 @@ export const handler = define.handlers({
     if (!ctx.state.isAdmin) return ctx.redirect("/login");
 
     const url = new URL(ctx.req.url);
-    const tabParam = url.searchParams.get("tab");
-    const tab: Tab = isTab(tabParam) ? tabParam : "media";
-
-    const editParam = url.searchParams.get("edit");
-    const editId = editParam !== null ? Number(editParam) : null;
-    const isNew = url.searchParams.get("new") === "1";
-    const confirmDelete = url.searchParams.get("confirmDelete") === "1";
-    const trackEditParam = url.searchParams.get("trackEdit");
-    const trackEditId = trackEditParam !== null ? Number(trackEditParam) : null;
-    const trackNewParam = url.searchParams.get("trackNew");
-    const trackNewReleaseId = trackNewParam !== null
-      ? Number(trackNewParam)
-      : null;
-    const trackConfirmDelete =
-      url.searchParams.get("trackConfirmDelete") === "1";
-
-    const common = {
+    const {
       tab,
-      error: url.searchParams.get("error"),
-      ok: url.searchParams.get("ok"),
-    };
+      edit: editId,
+      new: isNew,
+      confirmDelete,
+      trackEdit: trackEditId,
+      trackNew: trackNewReleaseId,
+      trackConfirmDelete,
+      error,
+      ok,
+    } = querySchema.parse(Object.fromEntries(url.searchParams));
+
+    const common = { tab, error, ok };
 
     switch (tab) {
       case "gallery": {

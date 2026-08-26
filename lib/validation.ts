@@ -31,6 +31,9 @@ export const multilineList = z.preprocess((v) => {
 
 export const coercedBoolean = z.preprocess((v) => Boolean(v), z.boolean());
 
+/** Query-string flag: true only when the param is exactly "1". */
+export const queryFlag = z.preprocess((v) => v === "1", z.boolean());
+
 export function requiredDate(message: string) {
   return z.preprocess(
     (v) => (typeof v === "string" ? new Date(v) : v),
