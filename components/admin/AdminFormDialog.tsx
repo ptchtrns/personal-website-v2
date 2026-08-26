@@ -1,6 +1,7 @@
 import type { ComponentChildren } from "preact";
 import { Button } from "@/components/ui/button.tsx";
-import { XmarkIcon } from "@/components/icons.tsx";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FaIcon } from "@/components/icon.tsx";
 
 interface AdminFormDialogProps {
   open: boolean;
@@ -36,7 +37,7 @@ export function AdminFormDialog(
             aria-label="Close"
             class="absolute -top-3 -right-3 rounded-full z-10"
           >
-            <XmarkIcon />
+            <FaIcon icon={faXmark} />
           </Button>
           <div class="w-full max-h-[90vh] overflow-y-auto rounded-xl border bg-background text-foreground p-4 flex flex-col gap-4">
             <div>

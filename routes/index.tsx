@@ -9,7 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { FaIcon } from "@/components/icon.tsx";
 import { getLinkLabel } from "@/lib/links.shared.ts";
 import { type EducationItem, listEducation } from "@/lib/education.ts";
 import { listAllProjects, type ProjectItem } from "@/lib/projects.ts";
@@ -106,7 +107,10 @@ export default define.page<typeof handler>(function Home({ data }) {
                           class="text-blue-700 dark:text-blue-400 hover:underline"
                         >
                           {job.companyName}{" "}
-                          <ArrowUpRightFromSquareIcon class="text-xs" />
+                          <FaIcon
+                            icon={faArrowUpRightFromSquare}
+                            class="text-xs"
+                          />
                         </a>
                       )
                       : job.companyName}
@@ -143,7 +147,10 @@ export default define.page<typeof handler>(function Home({ data }) {
                             class="text-blue-700 dark:text-blue-400 hover:underline inline-flex items-center gap-1 text-sm"
                           >
                             {getLinkLabel(link)}{" "}
-                            <ArrowUpRightFromSquareIcon class="text-xs" />
+                            <FaIcon
+                              icon={faArrowUpRightFromSquare}
+                              class="text-xs"
+                            />
                           </a>
                         ))}
                       </div>
@@ -189,7 +196,10 @@ export default define.page<typeof handler>(function Home({ data }) {
                             class="text-blue-700 dark:text-blue-400 hover:underline inline-flex items-center gap-1 text-sm"
                           >
                             {getLinkLabel(link)}{" "}
-                            <ArrowUpRightFromSquareIcon class="text-xs" />
+                            <FaIcon
+                              icon={faArrowUpRightFromSquare}
+                              class="text-xs"
+                            />
                           </a>
                         ))}
                       </div>

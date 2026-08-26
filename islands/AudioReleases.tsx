@@ -3,7 +3,8 @@ import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Dialog, DialogContent } from "@/components/ui/dialog.tsx";
-import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { FaIcon } from "@/components/icon.tsx";
 import { getLinkLabel, type ReleaseItem } from "@/lib/releases.shared.ts";
 
 const RELEASE_TYPE_LABEL: Record<ReleaseItem["type"], string> = {
@@ -59,7 +60,7 @@ export default function AudioReleases({
                     onClick={() => setLinksOpenId(release.id)}
                   >
                     Streaming links
-                    <ArrowUpRightFromSquareIcon class="text-xs" />
+                    <FaIcon icon={faArrowUpRightFromSquare} class="text-xs" />
                   </Button>
                 </div>
               )}
@@ -102,7 +103,7 @@ export default function AudioReleases({
                   class="justify-between"
                 >
                   {getLinkLabel(link)}
-                  <ArrowUpRightFromSquareIcon class="text-xs" />
+                  <FaIcon icon={faArrowUpRightFromSquare} class="text-xs" />
                 </Button>
               ))}
             </div>

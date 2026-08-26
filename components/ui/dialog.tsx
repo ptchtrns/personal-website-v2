@@ -2,7 +2,8 @@ import { type ComponentChildren, createContext, type JSX } from "preact";
 import { useContext, useEffect } from "preact/hooks";
 import { cn } from "@/lib/utils.ts";
 import { Button } from "@/components/ui/button.tsx";
-import { XmarkIcon } from "@/components/icons.tsx";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FaIcon } from "@/components/icon.tsx";
 
 interface DialogContextValue {
   onOpenChange: (open: boolean) => void;
@@ -61,7 +62,7 @@ export function DialogContent(
           aria-label="Close"
           class="absolute -top-3 -right-3 rounded-full z-10"
         >
-          <XmarkIcon />
+          <FaIcon icon={faXmark} />
         </Button>
         <div
           data-slot="dialog-content"

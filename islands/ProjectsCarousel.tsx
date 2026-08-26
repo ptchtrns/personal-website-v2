@@ -4,12 +4,13 @@ import { Dialog, DialogContent } from "@/components/ui/dialog.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import {
-  ArrowUpRightFromSquareIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ImagesIcon,
-  ThumbtackIcon,
-} from "@/components/icons.tsx";
+  faArrowUpRightFromSquare,
+  faChevronLeft,
+  faChevronRight,
+  faImages,
+  faThumbtack,
+} from "@fortawesome/free-solid-svg-icons";
+import { FaIcon } from "@/components/icon.tsx";
 import type { ProjectItem } from "@/lib/projects.ts";
 import { getLinkLabel } from "@/lib/links.shared.ts";
 
@@ -106,7 +107,7 @@ function ProjectModal(
               rel="noopener noreferrer"
               class="text-blue-700 dark:text-blue-400 hover:underline inline-flex items-center gap-1 w-fit"
             >
-              Open the website <ArrowUpRightFromSquareIcon />
+              Open the website <FaIcon icon={faArrowUpRightFromSquare} />
             </a>
           )}
 
@@ -120,7 +121,8 @@ function ProjectModal(
                   rel="noopener noreferrer"
                   class="text-blue-700 dark:text-blue-400 hover:underline inline-flex items-center gap-1 w-fit"
                 >
-                  {getLinkLabel(link)} <ArrowUpRightFromSquareIcon />
+                  {getLinkLabel(link)}{" "}
+                  <FaIcon icon={faArrowUpRightFromSquare} />
                 </a>
               ))}
             </div>
@@ -163,7 +165,10 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
             >
               <Card class="relative overflow-hidden py-0 gap-0 h-full hover:opacity-90 transition-opacity">
                 {project.isPinned && (
-                  <ThumbtackIcon class="absolute top-2 right-2 z-10 text-stone-100 drop-shadow" />
+                  <FaIcon
+                    icon={faThumbtack}
+                    class="absolute top-2 right-2 z-10 text-stone-100 drop-shadow"
+                  />
                 )}
                 {image
                   ? (
@@ -176,7 +181,7 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
                   )
                   : (
                     <div class="w-full aspect-video flex items-center justify-center bg-stone-100 dark:bg-stone-800 text-stone-400">
-                      <ImagesIcon class="text-3xl" />
+                      <FaIcon icon={faImages} class="text-3xl" />
                     </div>
                   )}
                 <CardContent class="flex flex-col gap-1.5 py-4">
@@ -205,7 +210,7 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
             aria-label="Scroll left"
             class="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 rounded-full"
           >
-            <ChevronLeftIcon />
+            <FaIcon icon={faChevronLeft} />
           </Button>
           <Button
             type="button"
@@ -215,7 +220,7 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
             aria-label="Scroll right"
             class="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 rounded-full"
           >
-            <ChevronRightIcon />
+            <FaIcon icon={faChevronRight} />
           </Button>
         </>
       )}

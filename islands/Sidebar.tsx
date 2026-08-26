@@ -1,28 +1,24 @@
-import type { JSX } from "preact";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import {
+  faBars,
+  faCircleHalfStroke,
+  faIdCardClip,
+  faImages,
+  faMoon,
+  faSun,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "preact/hooks";
 import { Button } from "@/components/ui/button.tsx";
 import { Card } from "@/components/ui/card.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
-import {
-  BarsIcon,
-  CircleHalfStrokeIcon,
-  GithubIcon,
-  type IconProps,
-  IdCardClipIcon,
-  ImagesIcon,
-  LinkedinIcon,
-  MoonIcon,
-  SunIcon,
-  UserIcon,
-} from "@/components/icons.tsx";
+import { FaIcon } from "@/components/icon.tsx";
 import { type Theme, updateTheme, watchSystemTheme } from "@/lib/theme.ts";
 
-const socialMediaIcons: {
-  url: string;
-  icon: (props: IconProps) => JSX.Element;
-}[] = [
-  { url: "https://github.com/ptchtrns", icon: GithubIcon },
-  { url: "https://www.linkedin.com/in/ptchtrns/", icon: LinkedinIcon },
+const socialMediaIcons: { url: string; icon: IconDefinition }[] = [
+  { url: "https://github.com/ptchtrns", icon: faGithub },
+  { url: "https://www.linkedin.com/in/ptchtrns/", icon: faLinkedin },
 ];
 
 const navItems: {
@@ -30,22 +26,22 @@ const navItems: {
   url: string;
   /** Prefix used to highlight this item for nested routes, e.g. media's tabs. */
   matchPrefix?: string;
-  icon: (props: IconProps) => JSX.Element;
+  icon: IconDefinition;
 }[] = [
-  { title: "About me", url: "/", icon: UserIcon },
-  { title: "Contact me", url: "/contact", icon: IdCardClipIcon },
+  { title: "About me", url: "/", icon: faUser },
+  { title: "Contact me", url: "/contact", icon: faIdCardClip },
   {
     title: "Media",
     url: "/media/photos",
     matchPrefix: "/media",
-    icon: ImagesIcon,
+    icon: faImages,
   },
 ];
 
-const themes: { theme: Theme; icon: (props: IconProps) => JSX.Element }[] = [
-  { theme: "dark", icon: MoonIcon },
-  { theme: "light", icon: SunIcon },
-  { theme: "system", icon: CircleHalfStrokeIcon },
+const themes: { theme: Theme; icon: IconDefinition }[] = [
+  { theme: "dark", icon: faMoon },
+  { theme: "light", icon: faSun },
+  { theme: "system", icon: faCircleHalfStroke },
 ];
 
 interface SidebarProps {
@@ -69,7 +65,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
         aria-label="Open menu"
         class="md:hidden fixed top-6 left-0 z-50 rounded-l-none rounded-r-lg border-l-0 bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600 active:scale-95"
       >
-        <BarsIcon class="text-stone-800 dark:text-stone-200" />
+        <FaIcon icon={faBars} class="text-stone-800 dark:text-stone-200" />
       </Button>
 
       <div
@@ -106,7 +102,6 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
 
           <ul class="flex flex-col">
             {navItems.map((navItem) => {
-              const Icon = navItem.icon;
               const active = navItem.matchPrefix
                 ? path.startsWith(navItem.matchPrefix)
                 : path === navItem.url;
@@ -126,7 +121,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
                     ].join(" ")}
                   >
                     <span class="w-4">
-                      <Icon />
+                      <FaIcon icon={navItem.icon} />
                     </span>
                     <span>{navItem.title}</span>
                   </a>
@@ -139,41 +134,35 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
 
           <footer class="flex flex-col gap-2">
             <div class="flex">
-              {socialMediaIcons.map((socialMediaIcon) => {
-                const Icon = socialMediaIcon.icon;
-                return (
-                  <Button
-                    key={socialMediaIcon.url}
-                    variant="ghost"
-                    size="icon"
-                    href={socialMediaIcon.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Icon class="text-lg" />
-                  </Button>
-                );
-              })}
+              {socialMediaIcons.map((socialMediaIcon) => (
+                <Button
+                  key={socialMediaIcon.url}
+                  variant="ghost"
+                  size="icon"
+                  href={socialMediaIcon.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaIcon icon={socialMediaIcon.icon} class="text-lg" />
+                </Button>
+              ))}
             </div>
           </footer>
         </Card>
 
         <div class="flex justify-between mt-4">
           <Card class="bg-white dark:bg-stone-900 rounded-[17px] flex flex-row p-1 border border-stone-300 dark:border-stone-700 gap-0">
-            {themes.map((theme) => {
-              const Icon = theme.icon;
-              return (
-                <Button
-                  key={theme.theme}
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={`Use ${theme.theme} theme`}
-                  onClick={() => updateTheme(theme.theme)}
-                >
-                  <Icon />
-                </Button>
-              );
-            })}
+            {themes.map((theme) => (
+              <Button
+                key={theme.theme}
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Use ${theme.theme} theme`}
+                onClick={() => updateTheme(theme.theme)}
+              >
+                <FaIcon icon={theme.icon} />
+              </Button>
+            ))}
           </Card>
 
           <div class="flex gap-2">

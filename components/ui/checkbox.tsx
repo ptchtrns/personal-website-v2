@@ -1,6 +1,7 @@
 import type { JSX } from "preact";
 import { cn } from "@/lib/utils.ts";
-import { CheckIcon } from "@/components/icons.tsx";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FaIcon } from "@/components/icon.tsx";
 
 /**
  * A real `<input type="checkbox">` (visually hidden via `appearance-none`)
@@ -27,7 +28,10 @@ export function Checkbox(
         )}
         {...props}
       />
-      <CheckIcon class="pointer-events-none absolute size-3 text-primary-foreground opacity-0 peer-checked:opacity-100" />
+      <FaIcon
+        icon={faCheck}
+        class="pointer-events-none absolute size-3 text-primary-foreground opacity-0 peer-checked:opacity-100"
+      />
     </span>
   );
 }
