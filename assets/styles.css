@@ -133,3 +133,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .markdown-content :is(h1, h2, h3, h4) {
+    @apply font-bold text-stone-900 dark:text-stone-100;
+  }
+  .markdown-content :is(p, ul, ol) {
+    @apply leading-relaxed;
+  }
+  .markdown-content :is(ul, ol) {
+    @apply ml-6;
+  }
+  .markdown-content ul {
+    @apply list-disc;
+  }
+  .markdown-content ol {
+    @apply list-decimal;
+  }
+  .markdown-content a {
+    @apply text-blue-700 dark:text-blue-400 hover:underline;
+  }
+  .markdown-content :is(p, h1, h2, h3, h4, ul, ol) + :is(p, h1, h2, h3, h4, ul, ol) {
+    @apply mt-3;
+  }
+}

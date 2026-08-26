@@ -17,7 +17,7 @@ export const media = sqliteTable("media", {
 export const projects = sqliteTable("projects", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
-  description: text("description", { mode: "json" }).$type<string[]>(),
+  description: text("description"),
   changelog: text("changelog"),
   shortOverview: text("short_overview"),
   externalUrl: text("external_url"),
@@ -77,7 +77,7 @@ export const workExperience = sqliteTable("work_experience", {
   startedAt: integer("started_at", { mode: "timestamp" }).notNull(),
   finishedAt: integer("finished_at", { mode: "timestamp" }),
   companyLogoSrc: text("company_logo_src"),
-  description: text("description", { mode: "json" }).$type<string[]>(),
+  description: text("description"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(
     sql`(unixepoch())`,
   ),

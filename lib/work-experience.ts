@@ -3,23 +3,30 @@ import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { workExperience } from "@/db/schema.ts";
 import {
-  multilineList,
   nullableTrimmedString,
   optionalDate,
   parseWithSchema,
   requiredDate,
   requiredTrimmedString,
 } from "@/lib/validation.ts";
+import { markdownToHtml } from "@/lib/markdown.ts";
 
 export type WorkExperienceItem = typeof workExperience.$inferSelect;
 export type WorkExperienceInput = typeof workExperience.$inferInsert;
+export type WorkExperienceListItem = WorkExperienceItem & {
+  descriptionHtml: string | null;
+};
 
-export async function listWorkExperience(): Promise<WorkExperienceItem[]> {
+export async function listWorkExperience(): Promise<WorkExperienceListItem[]> {
   const db = await getDb();
-  return await db
+  const rows = await db
     .select()
     .from(workExperience)
     .orderBy(desc(workExperience.startedAt));
+  return rows.map((row) => ({
+    ...row,
+    descriptionHtml: markdownToHtml(row.description),
+  }));
 }
 
 export async function createWorkExperience(
@@ -56,7 +63,7 @@ const WorkExperienceInputSchema = z.object({
   companyLogoSrc: nullableTrimmedString,
   startedAt: requiredDate("Invalid or missing startedAt"),
   finishedAt: optionalDate("Invalid finishedAt"),
-  description: multilineList,
+  description: nullableTrimmedString,
 }) satisfies z.ZodType<WorkExperienceInput, z.ZodTypeDef, unknown>;
 
 export function parseWorkExperienceInput(

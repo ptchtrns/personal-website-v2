@@ -13,12 +13,12 @@ import { type EducationItem, listEducation } from "@/lib/education.ts";
 import { listAllProjects, type ProjectItem } from "@/lib/projects.ts";
 import {
   listWorkExperience,
-  type WorkExperienceItem,
+  type WorkExperienceListItem,
 } from "@/lib/work-experience.ts";
 import ProjectsCarousel from "@/islands/ProjectsCarousel.tsx";
 
 interface HomeData {
-  workExperience: WorkExperienceItem[];
+  workExperience: WorkExperienceListItem[];
   education: EducationItem[];
   projects: ProjectItem[];
   error: string | null;
@@ -110,13 +110,13 @@ export default define.page<typeof handler>(function Home({ data }) {
                       : job.companyName}
                   </CardDescription>
                 </CardHeader>
-                {job.description && job.description.length > 0 && (
+                {job.descriptionHtml && (
                   <CardContent>
-                    <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
-                      {job.description.map((line) => (
-                        <li key={line}>{line}</li>
-                      ))}
-                    </ul>
+                    <div
+                      class="markdown-content text-stone-700 dark:text-stone-300"
+                      // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
+                      dangerouslySetInnerHTML={{ __html: job.descriptionHtml }}
+                    />
                   </CardContent>
                 )}
               </Card>

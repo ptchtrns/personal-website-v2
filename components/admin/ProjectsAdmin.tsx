@@ -14,9 +14,9 @@ import {
   FieldSet,
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { Select, SelectItem } from "@/components/ui/select.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
+import MarkdownEditor from "@/islands/MarkdownEditor.tsx";
 import type { ProjectItem } from "@/lib/projects.ts";
 import type { MediaItem } from "@/lib/media.ts";
 import type { Technology } from "@/lib/technologies.ts";
@@ -93,15 +93,11 @@ export default function ProjectsAdmin(
                 </FieldGroup>
 
                 <Field>
-                  <FieldLabel for="description">
-                    Description (one bullet per line)
-                  </FieldLabel>
-                  <Textarea
+                  <FieldLabel for="description">Description</FieldLabel>
+                  <MarkdownEditor
                     id="description"
                     name="description"
-                    rows={4}
-                    defaultValue={(editing?.description ?? []).join("\n")}
-                    class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                    defaultValue={editing?.description}
                   />
                 </Field>
 
@@ -155,20 +151,29 @@ export default function ProjectsAdmin(
                 </Field>
 
                 <Field>
-                  <FieldLabel for="mediaIds">
-                    Linked images (ctrl/cmd-click to select multiple)
-                  </FieldLabel>
-                  <Select id="mediaIds" name="mediaIds" multiple class="h-32">
+                  <FieldLabel>Linked images</FieldLabel>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
                     {images.map((image) => (
-                      <SelectItem
+                      <label
                         key={image.id}
-                        value={image.id}
-                        selected={editingMediaIds.has(image.id)}
+                        class="relative block cursor-pointer rounded-md overflow-hidden border-2 border-transparent has-[:checked]:border-primary"
                       >
-                        {image.alt || image.src}
-                      </SelectItem>
+                        <img
+                          src={image.src}
+                          alt={image.alt ?? ""}
+                          class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
+                        />
+                        <div class="absolute top-1.5 right-1.5">
+                          <Checkbox
+                            name="mediaIds"
+                            value={image.id}
+                            checked={editingMediaIds.has(image.id)}
+                            class="bg-white/90 dark:bg-stone-900/90"
+                          />
+                        </div>
+                      </label>
                     ))}
-                  </Select>
+                  </div>
                 </Field>
 
                 <div class="flex gap-2">

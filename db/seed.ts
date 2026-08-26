@@ -39,12 +39,11 @@ const workExperienceSeed: (typeof workExperience.$inferInsert)[] = [
     companyUrl: "https://www.peikko.com/",
     startedAt: new Date("2024-10-01T00:00:00Z"),
     finishedAt: new Date("2025-05-01T00:00:00Z"),
-    description: [
-      "Built UI layout and components, accurately following company's design guidelines and ensuring accessibility.",
-      "Used Blazor (C#) and Azure DevOps.",
-      "Used Three.js library to display 3D objects.",
-      "Worked in group and collaborated with students from LAB University of Applied Sciences.",
-    ],
+    description:
+      "- Built UI layout and components, accurately following company's design guidelines and ensuring accessibility.\n" +
+      "- Used Blazor (C#) and Azure DevOps.\n" +
+      "- Used Three.js library to display 3D objects.\n" +
+      "- Worked in group and collaborated with students from LAB University of Applied Sciences.",
   },
 ];
 
@@ -77,12 +76,11 @@ const projectsSeed: (typeof projects.$inferInsert & {
 })[] = [
   {
     name: "SimPictures",
-    description: [
-      "Social media platform for sharing flight simulator screenshots.",
-      "Built with Next.js and PostgreSQL. ASP.NET, multiple AWS services (s3, CloudFront, App Runner, ECR, Rekognition), Vercel, Discord.Net and Appsmith are also utilized.",
-      "Implemented account management, image upload and processing, custom UI design and components.",
-      "To be open-sourced in 2026.",
-    ],
+    description:
+      "- Social media platform for sharing flight simulator screenshots.\n" +
+      "- Built with Next.js and PostgreSQL. ASP.NET, multiple AWS services (s3, CloudFront, App Runner, ECR, Rekognition), Vercel, Discord.Net and Appsmith are also utilized.\n" +
+      "- Implemented account management, image upload and processing, custom UI design and components.\n" +
+      "- To be open-sourced in 2026.",
     shortOverview:
       "Social media platform for sharing flight simulator screenshots.",
     externalUrl: "https://www.simpictures.com/",
@@ -97,10 +95,8 @@ const projectsSeed: (typeof projects.$inferInsert & {
   },
   {
     name: "slimew4re",
-    description: [
-      "Xbox NXE Dashboard-styled website for a music artist.",
-      "Supports creating and editing tiles and content.",
-    ],
+    description: "- Xbox NXE Dashboard-styled website for a music artist.\n" +
+      "- Supports creating and editing tiles and content.",
     shortOverview:
       "Xbox NXE Dashboard-styled website for a music artist, with ability to create and edit tiles and content.",
     externalUrl: "https://www.slimew4re.com/live",

@@ -38,6 +38,7 @@
     "clsx": "npm:clsx@^2.1.1",
     "jose": "npm:jose@^6.2.9",
     "resend": "npm:resend@^4.8.0",
+    "marked": "npm:marked@^16.4.1",
     "drizzle-orm": "npm:drizzle-orm@1.0.0-rc.4",
     "drizzle-orm/": "npm:drizzle-orm@1.0.0-rc.4/",
     "drizzle-kit": "npm:drizzle-kit@1.0.0-rc.4",

@@ -76,10 +76,12 @@ function ProjectModal(
             </p>
           )}
 
-          {project.description && project.description.length > 0 && (
-            <ul class="list-disc ml-6 text-stone-700 dark:text-stone-300 leading-relaxed">
-              {project.description.map((line) => <li key={line}>{line}</li>)}
-            </ul>
+          {project.descriptionHtml && (
+            <div
+              class="markdown-content text-stone-700 dark:text-stone-300"
+              // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
+              dangerouslySetInnerHTML={{ __html: project.descriptionHtml }}
+            />
           )}
 
           {project.changelog && (

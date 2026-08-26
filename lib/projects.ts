@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   coercedBoolean,
   intIdArray,
-  multilineList,
   nullableTrimmedString,
   parseWithSchema,
   requiredTrimmedString,
@@ -22,16 +21,18 @@ import {
   type Technology,
 } from "@/lib/technologies.ts";
 import type { MediaItem } from "@/lib/media.ts";
+import { markdownToHtml } from "@/lib/markdown.ts";
 
 export type ProjectRow = typeof projects.$inferSelect;
 export type ProjectItem = ProjectRow & {
   technologies: Technology[];
   media: MediaItem[];
+  descriptionHtml: string | null;
 };
 
 export interface ProjectInput {
   name: string;
-  description: string[] | null;
+  description: string | null;
   changelog: string | null;
   shortOverview: string | null;
   externalUrl: string | null;
@@ -80,6 +81,7 @@ async function withRelations(rows: ProjectRow[]): Promise<ProjectItem[]> {
     ...row,
     technologies: techByProject.get(row.id) ?? [],
     media: mediaByProject.get(row.id) ?? [],
+    descriptionHtml: markdownToHtml(row.description),
   }));
 }
 
@@ -155,7 +157,7 @@ export async function deleteProject(id: number): Promise<void> {
 
 const ProjectInputSchema = z.object({
   name: requiredTrimmedString("name is required"),
-  description: multilineList,
+  description: nullableTrimmedString,
   changelog: nullableTrimmedString,
   shortOverview: nullableTrimmedString,
   externalUrl: nullableTrimmedString,

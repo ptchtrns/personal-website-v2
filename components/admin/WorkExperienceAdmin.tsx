@@ -13,8 +13,8 @@ import {
   FieldSet,
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { Textarea } from "@/components/ui/textarea.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
+import MarkdownEditor from "@/islands/MarkdownEditor.tsx";
 import { toDateInputValue } from "@/lib/utils.ts";
 import type { WorkExperienceItem } from "@/lib/work-experience.ts";
 
@@ -126,15 +126,11 @@ export default function WorkExperienceAdmin(
                 </FieldGroup>
 
                 <Field>
-                  <FieldLabel for="description">
-                    Description (one bullet per line)
-                  </FieldLabel>
-                  <Textarea
+                  <FieldLabel for="description">Description</FieldLabel>
+                  <MarkdownEditor
                     id="description"
                     name="description"
-                    rows={4}
-                    defaultValue={(editing?.description ?? []).join("\n")}
-                    class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                    defaultValue={editing?.description}
                   />
                 </Field>
 
