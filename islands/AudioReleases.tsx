@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Dialog, DialogContent } from "@/components/ui/dialog.tsx";
 import { ArrowUpRightFromSquareIcon } from "@/components/icons.tsx";
-import { getLinkLabel, type ReleaseItem } from "@/lib/releases.ts";
+import { getLinkLabel, type ReleaseItem } from "@/lib/releases.shared.ts";
 
 const RELEASE_TYPE_LABEL: Record<ReleaseItem["type"], string> = {
   album: "Album",

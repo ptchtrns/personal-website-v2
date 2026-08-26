@@ -21,7 +21,7 @@ import {
   type ReleaseItem,
   type ReleaseType,
   type TrackItem,
-} from "@/lib/releases.ts";
+} from "@/lib/releases.shared.ts";
 import type { MediaItem } from "@/lib/media.ts";
 
 const RELEASE_TYPE_LABEL: Record<ReleaseType, string> = {

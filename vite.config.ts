@@ -29,7 +29,7 @@ function externalizeServerDependencies(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [externalizeServerDependencies(), fresh(), cloudflare(), tailwindcss()],
+  plugins: [externalizeServerDependencies(), fresh(), /* cloudflare(), */ tailwindcss()],
   environments: {
     ssr: {
       resolve: {
