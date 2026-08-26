@@ -14,7 +14,12 @@ import { Button } from "@/components/ui/button.tsx";
 import { Card } from "@/components/ui/card.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
 import { FaIcon } from "@/components/icon.tsx";
-import { type Theme, updateTheme, watchSystemTheme } from "@/lib/theme.ts";
+import {
+  getStoredTheme,
+  type Theme,
+  updateTheme,
+  watchSystemTheme,
+} from "@/lib/theme.ts";
 
 const socialMediaIcons: { url: string; icon: IconDefinition }[] = [
   { url: "https://github.com/ptchtrns", icon: faGithub },
@@ -53,8 +58,21 @@ interface SidebarProps {
 
 export default function Sidebar({ path, pfpSrc }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  // Content nav is swapped via a Fresh Partial, so the layout (and this
+  // island) never re-renders on navigation — track the active path ourselves.
+  const [activePath, setActivePath] = useState(path);
+  const [activeTheme, setActiveTheme] = useState<Theme>("system");
 
-  useEffect(() => watchSystemTheme(() => {}), []);
+  useEffect(() => {
+    setActiveTheme(getStoredTheme());
+    return watchSystemTheme(setActiveTheme);
+  }, []);
+
+  useEffect(() => {
+    const onPopState = () => setActivePath(globalThis.location.pathname);
+    addEventListener("popstate", onPopState);
+    return () => removeEventListener("popstate", onPopState);
+  }, []);
 
   return (
     <>
@@ -103,12 +121,13 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
           <ul class="flex flex-col">
             {navItems.map((navItem) => {
               const active = navItem.matchPrefix
-                ? path.startsWith(navItem.matchPrefix)
-                : path === navItem.url;
+                ? activePath.startsWith(navItem.matchPrefix)
+                : activePath === navItem.url;
               return (
                 <li key={navItem.url}>
                   <a
                     href={navItem.url}
+                    onClick={() => setActivePath(navItem.url)}
                     class={[
                       "w-full py-1.5 px-3 flex gap-4",
                       active
@@ -157,8 +176,14 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
                 key={theme.theme}
                 variant="ghost"
                 size="icon-sm"
+                class={activeTheme === theme.theme
+                  ? "font-bold text-stone-950 dark:text-white"
+                  : undefined}
                 aria-label={`Use ${theme.theme} theme`}
-                onClick={() => updateTheme(theme.theme)}
+                onClick={() => {
+                  updateTheme(theme.theme);
+                  setActiveTheme(theme.theme);
+                }}
               >
                 <FaIcon icon={theme.icon} />
               </Button>

@@ -29,7 +29,7 @@ export default define.page(function App({ Component }) {
           dangerouslySetInnerHTML={{ __html: themeScript }}
         />
       </head>
-      <body class="bg-white dark:bg-stone-800 min-h-screen">
+      <body class="bg-white dark:bg-stone-800 min-h-screen" f-client-nav>
         <Component />
       </body>
     </html>
