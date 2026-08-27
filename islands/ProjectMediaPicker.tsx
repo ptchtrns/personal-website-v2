@@ -98,26 +98,28 @@ export default function ProjectMediaPicker(
         </div>
       )}
 
-      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-x-2 gap-y-3 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
-        {images.map((image) => {
-          const isSelected = selectedIds.includes(image.id);
-          return (
-            <button
-              type="button"
-              key={image.id}
-              onClick={() => toggle(image.id)}
-              class={`relative block aspect-square rounded-md overflow-hidden border-2 ${
-                isSelected ? "border-primary" : "border-transparent"
-              }`}
-            >
-              <img
-                src={image.src}
-                alt={image.alt ?? ""}
-                class="absolute inset-0 w-full h-full object-cover bg-stone-100 dark:bg-stone-800"
-              />
-            </button>
-          );
-        })}
+      <div class="@container">
+        <div class="grid grid-cols-3 @sm:grid-cols-4 @md:grid-cols-6 gap-x-2 gap-y-3 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
+          {images.map((image) => {
+            const isSelected = selectedIds.includes(image.id);
+            return (
+              <button
+                type="button"
+                key={image.id}
+                onClick={() => toggle(image.id)}
+                class={`relative block aspect-square rounded-md overflow-hidden border-2 ${
+                  isSelected ? "border-primary" : "border-transparent"
+                }`}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt ?? ""}
+                  class="absolute inset-0 w-full h-full object-cover bg-stone-100 dark:bg-stone-800"
+                />
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {selectedIds.map((id) => (
