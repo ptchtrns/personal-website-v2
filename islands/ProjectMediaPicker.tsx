@@ -56,7 +56,7 @@ export default function ProjectMediaPicker(
               <img
                 src={image.src}
                 alt={image.alt ?? ""}
-                class="aspect-video w-full object-cover bg-stone-100 dark:bg-stone-800"
+                class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
               />
               {index === 0 && (
                 <span class="absolute top-1 left-1 flex items-center gap-1 rounded bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5">
@@ -117,7 +117,7 @@ export default function ProjectMediaPicker(
               <img
                 src={image.src}
                 alt={image.alt ?? ""}
-                class="aspect-video w-full object-cover bg-stone-100 dark:bg-stone-800"
+                class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
               />
             </button>
           );
