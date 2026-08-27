@@ -14,8 +14,8 @@ jobs:
         with:
           deno-version: lts
       - run: deno install
-      - run: deno task check
       - run: deno task build
+      - run: deno task check
 
   deploy:
     needs: check
