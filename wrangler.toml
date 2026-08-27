@@ -7,10 +7,17 @@ compatibility_flags = ["nodejs_compat"]
 binding = "DB"
 database_name = "personal-website-v2-db"
 database_id = "32c54904-af01-4aae-aa0d-f6e1832de361"
+migrations_dir = "db/migrations"
 
 [[r2_buckets]]
 binding = "CDN"
 bucket_name = "personal-website-v2-cdn"
+
+# `lib/storage-local.ts` imports the `wrangler` package for local Deno dev
+# only; swapped for a stub here so wrangler's own build doesn't try to bundle
+# itself into the Worker (see `wrangler-stub.ts`).
+[alias]
+wrangler = "./wrangler-stub.ts"
 
 # Secrets (ADMIN_PASSWORD, JWT_SECRET, RESEND_API_KEY) are provisioned once
 # via `wrangler secret put <NAME>`, not stored here or in CI.
