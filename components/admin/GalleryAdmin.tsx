@@ -71,7 +71,10 @@ export default function GalleryAdmin(
                     <FieldLabel for="createdAt">Date</FieldLabel>
                     <Input
                       id="createdAt"
-                      type="date"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="DD-MM-YYYY"
+                      pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"
                       name="createdAt"
                       defaultValue={toDateInputValue(
                         editing?.createdAt ?? new Date(),

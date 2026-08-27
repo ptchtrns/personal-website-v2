@@ -286,7 +286,10 @@ export default function MusicAdmin(
                       <FieldLabel for="release-createdAt">Date</FieldLabel>
                       <Input
                         id="release-createdAt"
-                        type="date"
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="DD-MM-YYYY"
+                        pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"
                         name="createdAt"
                         defaultValue={toDateInputValue(
                           editing?.createdAt ?? new Date(),

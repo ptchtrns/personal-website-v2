@@ -17,7 +17,10 @@ export function DateRangeFields(
         <FieldLabel for="startedAt">Started at</FieldLabel>
         <Input
           id="startedAt"
-          type="date"
+          type="text"
+          inputMode="numeric"
+          placeholder="DD-MM-YYYY"
+          pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"
           name="startedAt"
           defaultValue={toDateInputValue(startedAt ?? null)}
           required
@@ -30,7 +33,10 @@ export function DateRangeFields(
         </FieldLabel>
         <Input
           id="finishedAt"
-          type="date"
+          type="text"
+          inputMode="numeric"
+          placeholder="DD-MM-YYYY"
+          pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"
           name="finishedAt"
           defaultValue={toDateInputValue(finishedAt ?? null)}
         />
