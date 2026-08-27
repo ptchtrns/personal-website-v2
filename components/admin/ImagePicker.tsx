@@ -34,12 +34,12 @@ export function ImagePicker(
       {images.map((image) => (
         <label
           key={image.id}
-          class="relative block cursor-pointer rounded-md overflow-hidden border-2 border-transparent has-[:checked]:border-primary"
+          class="relative block aspect-square cursor-pointer rounded-md overflow-hidden border-2 border-transparent has-[:checked]:border-primary"
         >
           <img
             src={image.src}
             alt={image.alt ?? ""}
-            class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
+            class="absolute inset-0 w-full h-full object-cover bg-stone-100 dark:bg-stone-800"
           />
           <div class="absolute top-1.5 right-1.5">
             <Radio

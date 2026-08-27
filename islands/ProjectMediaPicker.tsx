@@ -59,7 +59,7 @@ export default function ProjectMediaPicker(
                 setDragIndex(index);
               }}
               onDragEnd={() => setDragIndex(null)}
-              class={`relative w-28 rounded-md overflow-hidden border-2 cursor-grab active:cursor-grabbing ${
+              class={`relative w-28 aspect-square rounded-md overflow-hidden border-2 cursor-grab active:cursor-grabbing ${
                 dragIndex === index
                   ? "border-primary opacity-50"
                   : "border-primary"
@@ -68,7 +68,7 @@ export default function ProjectMediaPicker(
               <img
                 src={image.src}
                 alt={image.alt ?? ""}
-                class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800 pointer-events-none"
+                class="absolute inset-0 w-full h-full object-cover bg-stone-100 dark:bg-stone-800 pointer-events-none"
               />
               {index === 0 && (
                 <span class="absolute top-1 left-1 flex items-center gap-1 rounded bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5">
@@ -106,14 +106,14 @@ export default function ProjectMediaPicker(
               type="button"
               key={image.id}
               onClick={() => toggle(image.id)}
-              class={`relative block rounded-md overflow-hidden border-2 ${
+              class={`relative block aspect-square rounded-md overflow-hidden border-2 ${
                 isSelected ? "border-primary" : "border-transparent"
               }`}
             >
               <img
                 src={image.src}
                 alt={image.alt ?? ""}
-                class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
+                class="absolute inset-0 w-full h-full object-cover bg-stone-100 dark:bg-stone-800"
               />
             </button>
           );
