@@ -6,7 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "personal-website-v2-db"
-database_id = "32c54904-af01-4aae-aa0d-f6e1832de361"
+database_id = "0eb345f7-7ddd-4673-8f74-d75dfbc166e1"
 migrations_dir = "db/migrations"
 
 [[r2_buckets]]
