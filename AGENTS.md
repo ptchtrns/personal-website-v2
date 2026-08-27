@@ -1,4 +1,4 @@
-- Keep comment short and precise, related to the codebase and not user's prompt
+- Keep comments short and precise, related to the codebase and not user's prompt
 - Don't test the project yourself, end user will do testing on their end
   themseleves
 - Follow existing project structure
