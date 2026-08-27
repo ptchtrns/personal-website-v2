@@ -1,7 +1,6 @@
 import { useState } from "preact/hooks";
 import {
-  faChevronDown,
-  faChevronUp,
+  faGripVertical,
   faThumbtack,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -15,13 +14,14 @@ interface ProjectMediaPickerProps {
   initialSelectedIds: number[];
 }
 
-/** Multi-select image picker with manual reordering, used to set a project's linked photos and main photo. */
+/** Multi-select image picker with drag-to-reorder, used to set a project's linked photos and main photo. */
 export default function ProjectMediaPicker(
   { images, initialSelectedIds }: ProjectMediaPickerProps,
 ) {
   const [selectedIds, setSelectedIds] = useState<number[]>(
     initialSelectedIds,
   );
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   function toggle(id: number) {
     setSelectedIds((prev) =>
@@ -29,13 +29,12 @@ export default function ProjectMediaPicker(
     );
   }
 
-  function move(id: number, direction: -1 | 1) {
+  function reorder(from: number, to: number) {
+    if (from === to) return;
     setSelectedIds((prev) => {
-      const index = prev.indexOf(id);
-      const target = index + direction;
-      if (target < 0 || target >= prev.length) return prev;
       const next = [...prev];
-      [next[index], next[target]] = [next[target], next[index]];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
       return next;
     });
   }
@@ -51,12 +50,25 @@ export default function ProjectMediaPicker(
           {selected.map((image, index) => (
             <div
               key={image.id}
-              class="relative w-28 rounded-md overflow-hidden border-2 border-primary"
+              draggable
+              onDragStart={() => setDragIndex(index)}
+              onDragOver={(event: DragEvent) => {
+                event.preventDefault();
+                if (dragIndex === null || dragIndex === index) return;
+                reorder(dragIndex, index);
+                setDragIndex(index);
+              }}
+              onDragEnd={() => setDragIndex(null)}
+              class={`relative w-28 rounded-md overflow-hidden border-2 cursor-grab active:cursor-grabbing ${
+                dragIndex === index
+                  ? "border-primary opacity-50"
+                  : "border-primary"
+              }`}
             >
               <img
                 src={image.src}
                 alt={image.alt ?? ""}
-                class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
+                class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800 pointer-events-none"
               />
               {index === 0 && (
                 <span class="absolute top-1 left-1 flex items-center gap-1 rounded bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5">
@@ -64,28 +76,12 @@ export default function ProjectMediaPicker(
                 </span>
               )}
               <div class="absolute bottom-1 right-1 flex gap-1">
-                <Button
-                  type="button"
-                  variant="default"
-                  size="icon-sm"
-                  class="size-6"
-                  disabled={index === 0}
-                  onClick={() => move(image.id, -1)}
-                  aria-label="Move earlier"
+                <span
+                  class="flex items-center justify-center size-6 rounded bg-black/60 text-white"
+                  aria-hidden="true"
                 >
-                  <FaIcon icon={faChevronUp} class="text-xs" />
-                </Button>
-                <Button
-                  type="button"
-                  variant="default"
-                  size="icon-sm"
-                  class="size-6"
-                  disabled={index === selected.length - 1}
-                  onClick={() => move(image.id, 1)}
-                  aria-label="Move later"
-                >
-                  <FaIcon icon={faChevronDown} class="text-xs" />
-                </Button>
+                  <FaIcon icon={faGripVertical} class="text-xs" />
+                </span>
                 <Button
                   type="button"
                   variant="destructive"
