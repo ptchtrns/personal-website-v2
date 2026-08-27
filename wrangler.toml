@@ -3,6 +3,13 @@ main = "./server.js"
 compatibility_date = "2026-08-22"
 compatibility_flags = ["nodejs_compat"]
 
+# Fresh's own `staticFiles()` middleware reads assets off disk (`Deno.stat`/
+# `Deno.open`), which doesn't exist in the Workers runtime; Cloudflare's
+# Assets binding serves `_fresh/client` directly instead, ahead of the Worker.
+[assets]
+directory = "./_fresh/client"
+binding = "ASSETS"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "personal-website-v2-db"
