@@ -6,11 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import { FieldSet } from "@/components/ui/field.tsx";
+import { Field, FieldLabel, FieldSet } from "@/components/ui/field.tsx";
+import { Input } from "@/components/ui/input.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import { ImagePickerField } from "@/components/admin/ImagePickerField.tsx";
-import { findById } from "@/lib/utils.ts";
+import { findById, toDateInputValue } from "@/lib/utils.ts";
 import type { GalleryItem } from "@/lib/gallery.ts";
 import type { MediaItem } from "@/lib/media.ts";
 
@@ -65,6 +66,19 @@ export default function GalleryAdmin(
                     selectedId={editing?.imageId ?? null}
                     allowNoImage={false}
                   />
+
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="createdAt">Date</FieldLabel>
+                    <Input
+                      id="createdAt"
+                      type="date"
+                      name="createdAt"
+                      defaultValue={toDateInputValue(
+                        editing?.createdAt ?? new Date(),
+                      )}
+                      required
+                    />
+                  </Field>
 
                   <div class="flex gap-2">
                     <Button type="submit" variant="default">

@@ -9,6 +9,7 @@ export const handler = define.handlers({
     successMessage: "Photo updated",
     buildInput: (formData) => ({
       imageId: formData.get("imageId"),
+      createdAt: formData.get("createdAt"),
     }),
     parseInput: parseGalleryInput,
     updateFn: updateGalleryItem,

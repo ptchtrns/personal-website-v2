@@ -2,7 +2,11 @@ import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { gallery, media } from "@/db/schema.ts";
-import { parseWithSchema, requiredIntId } from "@/lib/validation.ts";
+import {
+  parseWithSchema,
+  requiredDate,
+  requiredIntId,
+} from "@/lib/validation.ts";
 
 export type GalleryRow = typeof gallery.$inferSelect;
 export interface GalleryItem {
@@ -15,6 +19,7 @@ export interface GalleryItem {
 
 export interface GalleryInput {
   imageId: number;
+  createdAt: Date;
 }
 
 export async function listGallery(): Promise<GalleryItem[]> {
@@ -79,6 +84,7 @@ export async function deleteGalleryItem(id: number): Promise<void> {
 
 const GalleryInputSchema = z.object({
   imageId: requiredIntId("imageId is required"),
+  createdAt: requiredDate("Invalid or missing createdAt"),
 }) satisfies z.ZodType<GalleryInput, z.ZodTypeDef, unknown>;
 
 export function parseGalleryInput(
