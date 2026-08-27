@@ -1,0 +1,20 @@
+name = "personal-website-v2"
+main = "./server.js"
+compatibility_date = "2026-08-22"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "personal-website-v2-db"
+database_id = "32c54904-af01-4aae-aa0d-f6e1832de361"
+
+[[r2_buckets]]
+binding = "CDN"
+bucket_name = "personal-website-v2-cdn"
+
+# Secrets (ADMIN_PASSWORD, JWT_SECRET, RESEND_API_KEY) are provisioned once
+# via `wrangler secret put <NAME>`, not stored here or in CI.
+[vars]
+CONTACT_TO_EMAIL = "ptchtrns@gmail.com"
+JWT_EXPIRY_HOURS = "6"
+PHOTO_BASE_URL = "https://cdn.ptchtrns.com"

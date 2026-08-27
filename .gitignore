@@ -1,0 +1,18 @@
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Fresh build directory
+_fresh/
+# npm + other dependencies
+node_modules/
+vendor/
+# Vite dep-optimization cache
+.vite/
+
+# Cloudflare Wrangler local state (local D1 sqlite files, etc.)
+.wrangler/
+
