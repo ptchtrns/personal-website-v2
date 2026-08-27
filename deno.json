@@ -82,5 +82,11 @@
       "vite/client"
     ]
   },
-  "allowScripts": ["npm:esbuild@0.25.12", "npm:esbuild@0.25.7", "npm:esbuild@0.28.1", "npm:esbuild@0.28.2", "npm:workerd@1.20260820.1"]
+  "allowScripts": [
+    "npm:esbuild@0.25.12",
+    "npm:esbuild@0.25.7",
+    "npm:esbuild@0.28.1",
+    "npm:esbuild@0.28.2",
+    "npm:workerd@1.20260820.1"
+  ]
 }
