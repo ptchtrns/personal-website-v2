@@ -86,7 +86,7 @@ export async function listReleases(): Promise<ReleaseItem[]> {
     })
     .from(releases)
     .leftJoin(cover, eq(releases.coverId, cover.id))
-    .orderBy(desc(releases.id));
+    .orderBy(desc(releases.createdAt), desc(releases.id));
 
   const tracksByRelease = await tracksByReleaseIds(rows.map((r) => r.id));
 

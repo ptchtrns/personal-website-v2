@@ -60,10 +60,15 @@ async function withRelations(rows: ProjectRow[]): Promise<ProjectItem[]> {
     .where(inArray(projectsToTechnologies.projectId, ids));
 
   const mediaRows = await db
-    .select({ projectId: projectsToMedia.projectId, media })
+    .select({
+      projectId: projectsToMedia.projectId,
+      order: projectsToMedia.order,
+      media,
+    })
     .from(projectsToMedia)
     .innerJoin(media, eq(projectsToMedia.mediaId, media.id))
-    .where(inArray(projectsToMedia.projectId, ids));
+    .where(inArray(projectsToMedia.projectId, ids))
+    .orderBy(projectsToMedia.order);
 
   const techByProject = new Map<number, Technology[]>();
   for (const row of techRows) {
@@ -100,6 +105,7 @@ async function syncProjectLinks(
   db: Db,
   projectId: number,
   technologyNames: string[],
+  /** Linked media, in display order; the first entry is the project's main photo. */
   mediaIds: number[],
 ) {
   await db.delete(projectsToTechnologies).where(
@@ -118,7 +124,7 @@ async function syncProjectLinks(
 
   if (mediaIds.length > 0) {
     await db.insert(projectsToMedia).values(
-      mediaIds.map((mediaId) => ({ projectId, mediaId })),
+      mediaIds.map((mediaId, order) => ({ projectId, mediaId, order })),
     );
   }
 }

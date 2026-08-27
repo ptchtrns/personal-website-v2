@@ -19,6 +19,7 @@ import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { AdminListRow } from "@/components/admin/AdminListRow.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import MarkdownEditor from "@/islands/MarkdownEditor.tsx";
+import ProjectMediaPicker from "@/islands/ProjectMediaPicker.tsx";
 import { findById } from "@/lib/utils.ts";
 import type { ProjectItem } from "@/lib/projects.ts";
 import type { MediaItem } from "@/lib/media.ts";
@@ -38,9 +39,6 @@ export default function ProjectsAdmin(
     ProjectsAdminProps,
 ) {
   const editing = findById(items, editId);
-  const editingMediaIds = new Set(
-    (editing?.media ?? []).map((item) => item.id),
-  );
 
   return (
     <Card>
@@ -182,28 +180,12 @@ export default function ProjectsAdmin(
 
                   <Field>
                     <FieldLabel>Linked images</FieldLabel>
-                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
-                      {images.map((image) => (
-                        <label
-                          key={image.id}
-                          class="relative block cursor-pointer rounded-md overflow-hidden border-2 border-transparent has-[:checked]:border-primary"
-                        >
-                          <img
-                            src={image.src}
-                            alt={image.alt ?? ""}
-                            class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
-                          />
-                          <div class="absolute top-1.5 right-1.5">
-                            <Checkbox
-                              name="mediaIds"
-                              value={image.id}
-                              checked={editingMediaIds.has(image.id)}
-                              class="bg-white/90 dark:bg-stone-900/90"
-                            />
-                          </div>
-                        </label>
-                      ))}
-                    </div>
+                    <ProjectMediaPicker
+                      images={images}
+                      initialSelectedIds={(editing?.media ?? []).map((item) =>
+                        item.id
+                      )}
+                    />
                   </Field>
 
                   <div class="flex gap-2">

@@ -251,13 +251,14 @@ async function seedProjects(db: Db, bucket: LocalR2Bucket) {
 
     const [projectRow] = await db.insert(projects).values(row).returning();
 
-    for (const file of screenshotFiles ?? []) {
+    for (const [order, file] of (screenshotFiles ?? []).entries()) {
       const src = await uploadSeedFile(bucket, "projects", file);
       const [mediaRow] = await db.insert(media).values({ src, type: "image" })
         .returning();
       await db.insert(projectsToMedia).values({
         projectId: projectRow.id,
         mediaId: mediaRow.id,
+        order,
       });
     }
   }

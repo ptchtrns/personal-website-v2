@@ -10,6 +10,7 @@ export interface GalleryItem {
   alt: string | null;
   imageId: number;
   src: string;
+  createdAt: Date;
 }
 
 export interface GalleryInput {
@@ -24,10 +25,11 @@ export async function listGallery(): Promise<GalleryItem[]> {
       alt: media.alt,
       imageId: gallery.imageId,
       src: media.src,
+      createdAt: gallery.createdAt,
     })
     .from(gallery)
     .innerJoin(media, eq(gallery.imageId, media.id))
-    .orderBy(desc(gallery.id));
+    .orderBy(desc(gallery.createdAt), desc(gallery.id));
 }
 
 async function withImage(id: number): Promise<GalleryItem | null> {
@@ -38,6 +40,7 @@ async function withImage(id: number): Promise<GalleryItem | null> {
       alt: media.alt,
       imageId: gallery.imageId,
       src: media.src,
+      createdAt: gallery.createdAt,
     })
     .from(gallery)
     .innerJoin(media, eq(gallery.imageId, media.id))
