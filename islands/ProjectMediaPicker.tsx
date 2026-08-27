@@ -98,7 +98,7 @@ export default function ProjectMediaPicker(
         </div>
       )}
 
-      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-x-2 gap-y-3 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
         {images.map((image) => {
           const isSelected = selectedIds.includes(image.id);
           return (

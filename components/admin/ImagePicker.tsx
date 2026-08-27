@@ -16,7 +16,7 @@ export function ImagePicker(
   { name, images, selectedId, allowNoImage = true }: ImagePickerProps,
 ) {
   return (
-    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-x-2 gap-y-3 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
       {allowNoImage && (
         <label class="relative flex aspect-square min-h-0 flex-col items-center justify-center gap-1 rounded-md border-2 border-transparent bg-stone-100 text-stone-400 cursor-pointer overflow-hidden has-[:checked]:border-primary dark:bg-stone-800">
           <FaIcon icon={faImages} />
