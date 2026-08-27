@@ -1,23 +1,18 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
 import { gallery, media } from "@/db/schema.ts";
-import {
-  nullableTrimmedString,
-  parseWithSchema,
-  requiredIntId,
-} from "@/lib/validation.ts";
+import { parseWithSchema, requiredIntId } from "@/lib/validation.ts";
 
 export type GalleryRow = typeof gallery.$inferSelect;
 export interface GalleryItem {
   id: number;
-  description: string | null;
+  alt: string | null;
   imageId: number;
   src: string;
 }
 
 export interface GalleryInput {
-  description: string | null;
   imageId: number;
 }
 
@@ -26,12 +21,13 @@ export async function listGallery(): Promise<GalleryItem[]> {
   return await db
     .select({
       id: gallery.id,
-      description: gallery.description,
+      alt: media.alt,
       imageId: gallery.imageId,
       src: media.src,
     })
     .from(gallery)
-    .innerJoin(media, eq(gallery.imageId, media.id));
+    .innerJoin(media, eq(gallery.imageId, media.id))
+    .orderBy(desc(gallery.id));
 }
 
 async function withImage(id: number): Promise<GalleryItem | null> {
@@ -39,7 +35,7 @@ async function withImage(id: number): Promise<GalleryItem | null> {
   const [row] = await db
     .select({
       id: gallery.id,
-      description: gallery.description,
+      alt: media.alt,
       imageId: gallery.imageId,
       src: media.src,
     })
@@ -79,7 +75,6 @@ export async function deleteGalleryItem(id: number): Promise<void> {
 }
 
 const GalleryInputSchema = z.object({
-  description: nullableTrimmedString,
   imageId: requiredIntId("imageId is required"),
 }) satisfies z.ZodType<GalleryInput, z.ZodTypeDef, unknown>;
 

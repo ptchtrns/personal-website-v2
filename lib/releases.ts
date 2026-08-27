@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { alias } from "drizzle-orm/sqlite-core";
 import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
@@ -85,7 +85,8 @@ export async function listReleases(): Promise<ReleaseItem[]> {
       links: releases.links,
     })
     .from(releases)
-    .leftJoin(cover, eq(releases.coverId, cover.id));
+    .leftJoin(cover, eq(releases.coverId, cover.id))
+    .orderBy(desc(releases.id));
 
   const tracksByRelease = await tracksByReleaseIds(rows.map((r) => r.id));
 

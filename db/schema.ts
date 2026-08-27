@@ -107,7 +107,6 @@ export const education = sqliteTable("education", {
 
 export const gallery = sqliteTable("gallery", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  description: text("description"),
   imageId: integer("image_id").notNull().references(() => media.id, {
     onDelete: "cascade",
   }),

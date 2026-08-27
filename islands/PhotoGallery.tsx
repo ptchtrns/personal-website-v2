@@ -19,7 +19,7 @@ export default function PhotoGallery({ gallery }: { gallery: GalleryItem[] }) {
             <Card class="overflow-hidden py-0 gap-0 hover:opacity-90 transition-opacity">
               <img
                 src={item.src}
-                alt={item.description ?? ""}
+                alt={item.alt ?? ""}
                 class="w-full"
                 loading="lazy"
               />
@@ -33,12 +33,12 @@ export default function PhotoGallery({ gallery }: { gallery: GalleryItem[] }) {
           <DialogContent class="max-w-4xl bg-transparent border-0 p-0 shadow-none">
             <img
               src={active.src}
-              alt={active.description ?? ""}
+              alt={active.alt ?? ""}
               class="w-full rounded-lg"
             />
-            {active.description && (
+            {active.alt && (
               <p class="text-stone-200 text-center">
-                {active.description}
+                {active.alt}
               </p>
             )}
           </DialogContent>
