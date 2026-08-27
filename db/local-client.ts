@@ -25,8 +25,9 @@ export async function getDb(): Promise<Db> {
 
   if (IS_WORKERS) {
     const { env } = await import("cloudflare:workers");
-    db = createDb((env as { DB: Parameters<typeof createDb>[0] }).DB) as
-      unknown as Db;
+    db = createDb(
+      (env as { DB: Parameters<typeof createDb>[0] }).DB,
+    ) as unknown as Db;
     return db;
   }
 

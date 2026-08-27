@@ -37,8 +37,8 @@ export default define.page<typeof handler>(function Contact({ data }) {
         <section class="flex flex-col gap-3">
           <h1 class="text-4xl font-bold dark:text-stone-100">Contact me</h1>
           <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-            Got a project in mind, a question or just want to say hi? Drop me
-            a message below, I read every one and try to reply quickly.
+            Got a project in mind, a question or just want to say hi? Drop me a
+            message below, I read every one and try to reply quickly.
           </p>
         </section>
 
