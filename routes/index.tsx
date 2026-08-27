@@ -18,12 +18,19 @@ import {
   listWorkExperience,
   type WorkExperienceItem,
 } from "@/lib/work-experience.ts";
+import { getSiteSetting } from "@/lib/site-settings.ts";
 import ProjectsCarousel from "@/islands/ProjectsCarousel.tsx";
+
+const DEFAULT_DESCRIPTION =
+  "Software Development student with solid experience in different " +
+  "programming languages and frameworks, gained through practical work " +
+  "on various projects.";
 
 interface HomeData {
   workExperience: WorkExperienceItem[];
   education: EducationItem[];
   projects: ProjectItem[];
+  description: string;
   error: string | null;
 }
 
@@ -38,18 +45,27 @@ function formatDateRange(startedAt: Date, finishedAt: Date | null): string {
 export const handler = define.handlers({
   async GET(): Promise<ReturnType<typeof page<HomeData>>> {
     try {
-      const [workExperience, education, projects] = await Promise.all([
-        listWorkExperience(),
-        listEducation(),
-        listAllProjects(),
-      ]);
-      return page({ workExperience, education, projects, error: null });
+      const [workExperience, education, projects, description] = await Promise
+        .all([
+          listWorkExperience(),
+          listEducation(),
+          listAllProjects(),
+          getSiteSetting("home_description"),
+        ]);
+      return page({
+        workExperience,
+        education,
+        projects,
+        description: description ?? DEFAULT_DESCRIPTION,
+        error: null,
+      });
     } catch (error) {
       console.error("Failed to load homepage data", error);
       return page({
         workExperience: [],
         education: [],
         projects: [],
+        description: DEFAULT_DESCRIPTION,
         error: "Failed to load homepage data",
       });
     }
@@ -57,7 +73,7 @@ export const handler = define.handlers({
 });
 
 export default define.page<typeof handler>(function Home({ data }) {
-  const { workExperience, education, projects, error } = data;
+  const { workExperience, education, projects, description, error } = data;
 
   return (
     <MainDisplay>
@@ -70,9 +86,7 @@ export default define.page<typeof handler>(function Home({ data }) {
             &#x1F1EB;&#x1F1EE; Espoo, Finland
           </p>
           <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-            Software Development student with solid experience in different
-            programming languages and frameworks, gained through practical work
-            on various projects.
+            {description}
           </p>
         </section>
 

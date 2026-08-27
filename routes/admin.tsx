@@ -13,6 +13,7 @@ import EducationAdmin from "@/components/admin/EducationAdmin.tsx";
 import WorkExperienceAdmin from "@/components/admin/WorkExperienceAdmin.tsx";
 import ProjectsAdmin from "@/components/admin/ProjectsAdmin.tsx";
 import MediaAdmin from "@/components/admin/MediaAdmin.tsx";
+import SiteSettingsAdmin from "@/components/admin/SiteSettingsAdmin.tsx";
 import { listGallery } from "@/lib/gallery.ts";
 import { listReleases } from "@/lib/releases.ts";
 import { listEducation } from "@/lib/education.ts";
@@ -20,12 +21,14 @@ import { listWorkExperience } from "@/lib/work-experience.ts";
 import { listAllProjects } from "@/lib/projects.ts";
 import { listTechnologies } from "@/lib/technologies.ts";
 import { listMedia, type MediaItem } from "@/lib/media.ts";
+import { listSiteSettings } from "@/lib/site-settings.ts";
 import type { GalleryItem } from "@/lib/gallery.ts";
 import type { ReleaseItem } from "@/lib/releases.ts";
 import type { EducationItem } from "@/lib/education.ts";
 import type { WorkExperienceItem } from "@/lib/work-experience.ts";
 import type { ProjectItem } from "@/lib/projects.ts";
 import type { Technology } from "@/lib/technologies.ts";
+import type { SiteSetting } from "@/lib/site-settings.ts";
 
 const TABS = [
   "media",
@@ -34,6 +37,7 @@ const TABS = [
   "education",
   "work-experience",
   "projects",
+  "site-settings",
 ] as const;
 type Tab = typeof TABS[number];
 
@@ -45,6 +49,7 @@ const querySchema = z.object({
   trackEdit: optionalIntId("Invalid track edit id"),
   trackNew: optionalIntId("Invalid track new id"),
   trackConfirmDelete: queryFlag,
+  settingsEdit: z.preprocess((v) => v ?? null, z.string().nullable()),
   error: z.preprocess((v) => v ?? null, z.string().nullable()),
   ok: z.preprocess((v) => v ?? null, z.string().nullable()),
 });
@@ -99,6 +104,12 @@ interface AdminData {
     isNew: boolean;
     confirmDelete: boolean;
   };
+  siteSettings?: {
+    items: SiteSetting[];
+    editKey: string | null;
+    isNew: boolean;
+    confirmDelete: boolean;
+  };
 }
 
 export const handler = define.handlers({
@@ -114,6 +125,7 @@ export const handler = define.handlers({
       trackEdit: trackEditId,
       trackNew: trackNewReleaseId,
       trackConfirmDelete,
+      settingsEdit,
       error,
       ok,
     } = querySchema.parse(Object.fromEntries(url.searchParams));
@@ -195,6 +207,14 @@ export const handler = define.handlers({
         };
         return { data };
       }
+      case "site-settings": {
+        const items = await listSiteSettings();
+        const data: AdminData = {
+          ...common,
+          siteSettings: { items, editKey: settingsEdit, isNew, confirmDelete },
+        };
+        return { data };
+      }
       case "media":
       default: {
         const items = await listMedia();
@@ -235,6 +255,9 @@ export default define.page<typeof handler>(function Admin({ data }) {
         )}
         {data.tab === "projects" && data.projects && (
           <ProjectsAdmin {...data.projects} />
+        )}
+        {data.tab === "site-settings" && data.siteSettings && (
+          <SiteSettingsAdmin {...data.siteSettings} />
         )}
       </div>
     </MainDisplay>

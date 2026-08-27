@@ -7,6 +7,7 @@ const TABS = [
   { value: "education", label: "Education" },
   { value: "work-experience", label: "Work experience" },
   { value: "projects", label: "Projects" },
+  { value: "site-settings", label: "Site settings" },
 ] as const;
 
 /**

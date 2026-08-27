@@ -135,6 +135,14 @@ export const tracks = sqliteTable("tracks", {
   }),
 });
 
+export const siteSettings = sqliteTable("site_settings", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().default(
+    sql`(unixepoch())`,
+  ),
+});
+
 const tables = {
   media,
   projects,
@@ -146,6 +154,7 @@ const tables = {
   gallery,
   releases,
   tracks,
+  siteSettings,
 };
 
 export const dbRelations = defineRelations(tables, (r) => ({
