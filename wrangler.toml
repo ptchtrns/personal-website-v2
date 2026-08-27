@@ -17,4 +17,4 @@ bucket_name = "personal-website-v2-cdn"
 [vars]
 CONTACT_TO_EMAIL = "ptchtrns@gmail.com"
 JWT_EXPIRY_HOURS = "6"
-PHOTO_BASE_URL = "https://ptchtrns.com"
+PHOTO_BASE_URL = "https://cdn.ptchtrns.com"
