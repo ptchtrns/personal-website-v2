@@ -53,7 +53,7 @@ export function DialogContent(
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={() => onOpenChange(false)}
     >
-      <div class="relative w-full max-w-2xl max-h-[90vh]">
+      <div class={cn("relative w-full max-w-2xl max-h-[90vh]", className)}>
         <Button
           type="button"
           variant="default"

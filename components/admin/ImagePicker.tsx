@@ -18,7 +18,7 @@ export function ImagePicker(
   return (
     <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
       {allowNoImage && (
-        <label class="relative flex aspect-square flex-col items-center justify-center gap-1 rounded-md border-2 border-transparent bg-stone-100 text-stone-400 cursor-pointer overflow-hidden has-[:checked]:border-primary dark:bg-stone-800">
+        <label class="relative flex aspect-video flex-col items-center justify-center gap-1 rounded-md border-2 border-transparent bg-stone-100 text-stone-400 cursor-pointer overflow-hidden has-[:checked]:border-primary dark:bg-stone-800">
           <FaIcon icon={faImages} />
           <span class="text-[10px]">No image</span>
           <div class="absolute top-1.5 right-1.5">
@@ -39,7 +39,7 @@ export function ImagePicker(
           <img
             src={image.src}
             alt={image.alt ?? ""}
-            class="aspect-square w-full object-cover bg-stone-100 dark:bg-stone-800"
+            class="aspect-video w-full object-cover bg-stone-100 dark:bg-stone-800"
           />
           <div class="absolute top-1.5 right-1.5">
             <Radio
