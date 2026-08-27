@@ -12,5 +12,6 @@
     adjust the layout.
   - Em dashes should be used rarely.
   - Don't write text in UPPER CASE.
+  - Date and time should not be American, a good format is HH:MM:SS for time and DD.MM.YYYY for date.
 - If appropriate, suggest user to commit the changes with suggested commit
-  message
+  message. Do not commit yourself - always ask first.
