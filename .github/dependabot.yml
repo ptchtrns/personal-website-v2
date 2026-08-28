@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: "deno"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      deno-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      deno-majors:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+    ignore:
+      - dependency-name: "vite"
+        update-types:
+          - "version-update:semver-major"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
