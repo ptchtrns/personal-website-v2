@@ -4,7 +4,13 @@ import { Dialog, DialogContent } from "@/components/ui/dialog.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible.tsx";
+import {
   faArrowUpRightFromSquare,
+  faChevronDown,
   faChevronLeft,
   faChevronRight,
   faImages,
@@ -31,6 +37,7 @@ function ProjectModal(
   const images = project.media.filter((item) => item.type === "image");
   const [activeIndex, setActiveIndex] = useState(0);
   const active = images[activeIndex] ?? null;
+  const [changelogOpen, setChangelogOpen] = useState(false);
 
   return (
     <Dialog open onOpenChange={onOpenChange}>
@@ -87,9 +94,22 @@ function ProjectModal(
           )}
 
           {project.changelog && (
-            <p class="text-sm text-stone-500 dark:text-stone-400 whitespace-pre-line">
-              {project.changelog}
-            </p>
+            <Collapsible open={changelogOpen} onOpenChange={setChangelogOpen}>
+              <CollapsibleTrigger class="flex items-center gap-1.5 text-sm font-medium text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100">
+                <FaIcon
+                  icon={faChevronDown}
+                  class={`text-xs transition-transform ${
+                    changelogOpen ? "rotate-180" : ""
+                  }`}
+                />
+                Changelog
+              </CollapsibleTrigger>
+              <CollapsibleContent class="pt-2">
+                <p class="text-sm text-stone-500 dark:text-stone-400 whitespace-pre-line">
+                  {project.changelog}
+                </p>
+              </CollapsibleContent>
+            </Collapsible>
           )}
 
           {project.technologies.length > 0 && (
