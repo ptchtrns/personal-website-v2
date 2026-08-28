@@ -48,7 +48,7 @@
     "npm:@types/node@24": "24.13.3",
     "npm:class-variance-authority@~0.7.1": "0.7.1",
     "npm:clsx@^2.1.1": "2.1.1",
-    "npm:drizzle-kit@1.0.0-rc.4-5d5b77c": "1.0.0-rc.4-5d5b77c",
+    "npm:drizzle-kit@1.0.0-rc.5-ab785fc": "1.0.0-rc.5-ab785fc",
     "npm:drizzle-orm@1.0.0-rc.4-5d5b77c": "1.0.0-rc.4-5d5b77c_@opentelemetry+api@1.9.1",
     "npm:esbuild-wasm@~0.25.11": "0.25.12",
     "npm:esbuild@0.25.7": "0.25.7",
@@ -421,8 +421,8 @@
         "@jridgewell/trace-mapping@0.3.9"
       ]
     },
-    "@drizzle-team/brocli@0.11.0": {
-      "integrity": "sha512-hD3pekGiPg0WPCCGAZmusBBJsDqGUR66Y452YgQsZOnkdQ7ViEPKuyP4huUGEZQefp8g34RRodXYmJ2TbCH+tg=="
+    "@drizzle-team/brocli@0.12.0": {
+      "integrity": "sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ=="
     },
     "@emnapi/runtime@1.11.3": {
       "integrity": "sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==",
@@ -1562,8 +1562,8 @@
     "detect-libc@2.1.2": {
       "integrity": "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="
     },
-    "drizzle-kit@1.0.0-rc.4-5d5b77c": {
-      "integrity": "sha512-cDQOQXacxeaQl0Ib18EfPwVMyfvvybuOBj/f/WclmuGZtxHOTOMTpJ/3qEpoXe8+lCDRagCpS3w1wYQyUmT9wg==",
+    "drizzle-kit@1.0.0-rc.5-ab785fc": {
+      "integrity": "sha512-TSg7sK1finOxdo48O9mDfyMY3lhi/aHCVIil5TFhthyq/H/89H/3nwX5V9Gdp7HYMUGFHyWJD5iowSn98l0elw==",
       "dependencies": [
         "@drizzle-team/brocli",
         "@js-temporal/polyfill",
@@ -2174,7 +2174,7 @@
       "npm:@types/node@24",
       "npm:class-variance-authority@~0.7.1",
       "npm:clsx@^2.1.1",
-      "npm:drizzle-kit@1.0.0-rc.4-5d5b77c",
+      "npm:drizzle-kit@1.0.0-rc.5-ab785fc",
       "npm:drizzle-orm@1.0.0-rc.4-5d5b77c",
       "npm:jose@^6.2.10",
       "npm:marked@^18.0.1",

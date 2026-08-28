@@ -39,7 +39,7 @@
     "marked": "npm:marked@^18.0.1",
     "drizzle-orm": "npm:drizzle-orm@1.0.0-rc.4-5d5b77c",
     "drizzle-orm/": "npm:drizzle-orm@1.0.0-rc.4-5d5b77c/",
-    "drizzle-kit": "npm:drizzle-kit@1.0.0-rc.4-5d5b77c",
+    "drizzle-kit": "npm:drizzle-kit@1.0.0-rc.5-ab785fc",
     "wrangler": "npm:wrangler@4.127.0",
     "tailwind-merge": "npm:tailwind-merge@^3.6.0",
     "@std/dotenv/load": "jsr:@std/dotenv@^0.225.8/load",
