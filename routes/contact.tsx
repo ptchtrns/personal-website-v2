@@ -17,14 +17,21 @@ import {
 } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
+import { getSiteSetting } from "@/lib/site-settings.ts";
+
+const DEFAULT_CONTACT_INFO =
+  "I'm open to freelance work, collaborations and full-time opportunities. " +
+  "Reach out with your project details and I'll get back to you with rates and availability.";
 
 export const handler = define.handlers({
-  GET(ctx) {
+  async GET(ctx) {
     const params = new URL(ctx.req.url).searchParams;
+    const contactInfo = await getSiteSetting("contact_info");
     return {
       data: {
         error: params.get("error"),
         success: params.get("success") === "1",
+        contactInfo: contactInfo ?? DEFAULT_CONTACT_INFO,
       },
     };
   },
@@ -41,6 +48,10 @@ export default define.page<typeof handler>(function Contact({ data }) {
             message below, I read every one and try to reply quickly.
           </p>
         </section>
+
+        <div class="text-base leading-relaxed text-stone-700 dark:text-stone-300">
+          {data.contactInfo}
+        </div>
 
         <Card>
           <CardHeader>
@@ -110,6 +121,11 @@ export default define.page<typeof handler>(function Contact({ data }) {
               <Button type="submit" class="w-full" variant="default">
                 Send message
               </Button>
+
+              <p class="text-sm text-stone-500 dark:text-stone-400">
+                By sending this message, you agree that your info will be
+                used only to reply to you.
+              </p>
             </form>
           </CardContent>
         </Card>
