@@ -28,18 +28,32 @@ export const coercedBoolean = z.preprocess((v) => Boolean(v), z.boolean());
 /** Query-string flag: true only when the param is exactly "1". */
 export const queryFlag = z.preprocess((v) => v === "1", z.boolean());
 
+/** Parses a strict `DD-MM-YYYY` string into a UTC date, or an invalid Date if it doesn't match. */
+function parseDdMmYyyy(value: string): Date {
+  const match = /^(\d{2})-(\d{2})-(\d{4})$/.exec(value.trim());
+  if (!match) return new Date(NaN);
+  const [, day, month, year] = match;
+  const date = new Date(
+    Date.UTC(Number(year), Number(month) - 1, Number(day)),
+  );
+  const valid = date.getUTCFullYear() === Number(year) &&
+    date.getUTCMonth() === Number(month) - 1 &&
+    date.getUTCDate() === Number(day);
+  return valid ? date : new Date(NaN);
+}
+
 export function requiredDate(message: string) {
   return z.preprocess(
-    (v) => (typeof v === "string" ? new Date(v) : v),
+    (v) => (typeof v === "string" ? parseDdMmYyyy(v) : v),
     z.date({ error: message }),
   ).refine((d) => !isNaN(d.getTime()), message);
 }
 
-/** Empty/missing string becomes null; a non-empty string must parse to a valid date. */
+/** Empty/missing string becomes null; a non-empty string must parse as strict DD-MM-YYYY. */
 export function optionalDate(message: string) {
   return z.preprocess((v) => {
     if (typeof v !== "string" || !v.trim()) return null;
-    return new Date(v);
+    return parseDdMmYyyy(v);
   }, z.date().nullable()).refine(
     (d) => d === null || !isNaN(d.getTime()),
     message,

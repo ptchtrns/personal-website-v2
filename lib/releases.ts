@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { alias } from "drizzle-orm/sqlite-core";
 import { z } from "zod";
 import { getDb } from "@/db/local-client.ts";
@@ -8,6 +8,7 @@ import {
   nullableTrimmedString,
   optionalIntId,
   parseWithSchema,
+  requiredDate,
   requiredIntId,
   requiredTrimmedString,
 } from "@/lib/validation.ts";
@@ -43,6 +44,7 @@ export interface ReleaseInput {
   coverId: number | null;
   description: string | null;
   links: string[] | null;
+  createdAt: Date;
 }
 
 export interface TrackInput {
@@ -83,9 +85,11 @@ export async function listReleases(): Promise<ReleaseItem[]> {
       coverSrc: cover.src,
       description: releases.description,
       links: releases.links,
+      createdAt: releases.createdAt,
     })
     .from(releases)
-    .leftJoin(cover, eq(releases.coverId, cover.id));
+    .leftJoin(cover, eq(releases.coverId, cover.id))
+    .orderBy(desc(releases.createdAt), desc(releases.id));
 
   const tracksByRelease = await tracksByReleaseIds(rows.map((r) => r.id));
 
@@ -141,6 +145,7 @@ const ReleaseInputSchema = z.object({
   coverId: optionalIntId("Invalid coverId"),
   description: nullableTrimmedString,
   links: multilineList,
+  createdAt: requiredDate("Invalid or missing createdAt"),
 }) satisfies z.ZodType<ReleaseInput>;
 
 export function parseReleaseInput(

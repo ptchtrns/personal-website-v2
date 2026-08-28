@@ -88,7 +88,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
 
       <div
         class={[
-          "fixed top-0 left-0 bottom-0 right-0 backdrop-blur-3xl bg-gradient",
+          "fixed top-0 left-0 bottom-0 right-0 z-40 backdrop-blur-3xl bg-gradient",
           "bg-linear-to-br via-transparent from-black/25 to-transparent dark:from-white/10 dark:to-white/5",
           isOpen ? "block md:hidden fixed" : "hidden",
         ].join(" ")}
@@ -97,7 +97,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
 
       <nav
         class={[
-          "fixed w-64 xl:w-72 my-6 mx-12 transition-transform duration-300 md:translate-x-0",
+          "fixed z-40 w-64 xl:w-72 my-6 mx-12 transition-transform duration-300 md:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-120",
         ].join(" ")}
       >
@@ -127,7 +127,10 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
                 <li key={navItem.url}>
                   <a
                     href={navItem.url}
-                    onClick={() => setActivePath(navItem.url)}
+                    onClick={() => {
+                      setActivePath(navItem.url);
+                      setIsOpen(false);
+                    }}
                     class={[
                       "w-full py-1.5 px-3 flex gap-4",
                       active
@@ -177,8 +180,8 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
                 variant="ghost"
                 size="icon-sm"
                 class={activeTheme === theme.theme
-                  ? "font-bold text-stone-950 dark:text-white"
-                  : undefined}
+                  ? "bg-stone-200 dark:bg-stone-700 font-bold text-stone-950 dark:text-white"
+                  : "text-stone-400 dark:text-stone-500"}
                 aria-label={`Use ${theme.theme} theme`}
                 onClick={() => {
                   updateTheme(theme.theme);

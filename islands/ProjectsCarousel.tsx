@@ -1,4 +1,4 @@
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Dialog, DialogContent } from "@/components/ui/dialog.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -135,7 +135,30 @@ function ProjectModal(
 
 export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
   const [active, setActive] = useState<ProjectItem | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+
+  function updateScrollability() {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    setCanScrollLeft(scroller.scrollLeft > 1);
+    setCanScrollRight(
+      scroller.scrollLeft + scroller.clientWidth < scroller.scrollWidth - 1,
+    );
+  }
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    updateScrollability();
+    scroller.addEventListener("scroll", updateScrollability);
+    globalThis.addEventListener("resize", updateScrollability);
+    return () => {
+      scroller.removeEventListener("scroll", updateScrollability);
+      globalThis.removeEventListener("resize", updateScrollability);
+    };
+  }, [projects]);
 
   function scrollByCard(direction: 1 | -1) {
     const scroller = scrollerRef.current;
@@ -200,29 +223,29 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
         })}
       </div>
 
-      {projects.length > 1 && (
-        <>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            onClick={() => scrollByCard(-1)}
-            aria-label="Scroll left"
-            class="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 rounded-full"
-          >
-            <FaIcon icon={faChevronLeft} />
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            onClick={() => scrollByCard(1)}
-            aria-label="Scroll right"
-            class="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 rounded-full"
-          >
-            <FaIcon icon={faChevronRight} />
-          </Button>
-        </>
+      {canScrollLeft && (
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          onClick={() => scrollByCard(-1)}
+          aria-label="Scroll left"
+          class="flex absolute -left-4 top-1/2 -translate-y-1/2 rounded-full"
+        >
+          <FaIcon icon={faChevronLeft} />
+        </Button>
+      )}
+      {canScrollRight && (
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-sm"
+          onClick={() => scrollByCard(1)}
+          aria-label="Scroll right"
+          class="flex absolute -right-4 top-1/2 -translate-y-1/2 rounded-full"
+        >
+          <FaIcon icon={faChevronRight} />
+        </Button>
       )}
 
       {active && (

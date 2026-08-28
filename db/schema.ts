@@ -66,6 +66,7 @@ export const projectsToMedia = sqliteTable(
       () => media.id,
       { onDelete: "cascade" },
     ),
+    order: integer("order").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.projectId, t.mediaId] })],
 );
@@ -107,10 +108,12 @@ export const education = sqliteTable("education", {
 
 export const gallery = sqliteTable("gallery", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  description: text("description"),
   imageId: integer("image_id").notNull().references(() => media.id, {
     onDelete: "cascade",
   }),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(
+    sql`(unixepoch())`,
+  ),
 });
 
 export const releases = sqliteTable("releases", {
@@ -122,6 +125,9 @@ export const releases = sqliteTable("releases", {
   }),
   description: text("description"),
   links: text("links", { mode: "json" }).$type<string[]>(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(
+    sql`(unixepoch())`,
+  ),
 });
 
 export const tracks = sqliteTable("tracks", {

@@ -107,29 +107,29 @@ const projectsSeed: (typeof projects.$inferInsert & {
   },
 ];
 
-const gallerySeed: { description: string; file: URL }[] = [
+const gallerySeed: { alt: string; file: URL }[] = [
   {
-    description: "20240828_152407",
+    alt: "20240828_152407",
     file: new URL("../seed/20240828_152407.avif", import.meta.url),
   },
   {
-    description: "20240831_185046",
+    alt: "20240831_185046",
     file: new URL("../seed/20240831_185046.avif", import.meta.url),
   },
   {
-    description: "20240919_220651_862",
+    alt: "20240919_220651_862",
     file: new URL("../seed/20240919_220651_862.avif", import.meta.url),
   },
   {
-    description: "20241127_150530",
+    alt: "20241127_150530",
     file: new URL("../seed/20241127_150530.avif", import.meta.url),
   },
   {
-    description: "20250518_192239",
+    alt: "20250518_192239",
     file: new URL("../seed/20250518_192239.avif", import.meta.url),
   },
   {
-    description: "20260705_123908",
+    alt: "20260705_123908",
     file: new URL("../seed/20260705_123908.avif", import.meta.url),
   },
 ];
@@ -251,13 +251,14 @@ async function seedProjects(db: Db, bucket: LocalR2Bucket) {
 
     const [projectRow] = await db.insert(projects).values(row).returning();
 
-    for (const file of screenshotFiles ?? []) {
+    for (const [order, file] of (screenshotFiles ?? []).entries()) {
       const src = await uploadSeedFile(bucket, "projects", file);
       const [mediaRow] = await db.insert(media).values({ src, type: "image" })
         .returning();
       await db.insert(projectsToMedia).values({
         projectId: projectRow.id,
         mediaId: mediaRow.id,
+        order,
       });
     }
   }
@@ -273,17 +274,18 @@ async function seedGallery(db: Db, bucket: LocalR2Bucket) {
     const existing = await db
       .select({ id: gallery.id })
       .from(gallery)
-      .where(eq(gallery.description, item.description))
+      .innerJoin(media, eq(gallery.imageId, media.id))
+      .where(eq(media.alt, item.alt))
       .limit(1);
     if (existing.length > 0) continue;
 
     const src = await uploadSeedFile(bucket, "gallery", item.file);
-    const [mediaRow] = await db.insert(media).values({ src, type: "image" })
-      .returning();
-    await db.insert(gallery).values({
-      description: item.description,
-      imageId: mediaRow.id,
-    });
+    const [mediaRow] = await db.insert(media).values({
+      src,
+      type: "image",
+      alt: item.alt,
+    }).returning();
+    await db.insert(gallery).values({ imageId: mediaRow.id });
   }
 }
 

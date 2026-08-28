@@ -1,5 +1,3 @@
-> ⚠️ This is currently work in progress
-
 # Personal Website v2
 
 Personal website and media repository: an about-me / portfolio page (work

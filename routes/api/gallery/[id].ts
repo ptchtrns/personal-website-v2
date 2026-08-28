@@ -8,8 +8,8 @@ export const handler = define.handlers({
     entityName: "gallery item",
     successMessage: "Photo updated",
     buildInput: (formData) => ({
-      description: formData.get("description"),
       imageId: formData.get("imageId"),
+      createdAt: formData.get("createdAt"),
     }),
     parseInput: parseGalleryInput,
     updateFn: updateGalleryItem,

@@ -19,7 +19,7 @@ import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { AdminListRow } from "@/components/admin/AdminListRow.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import { ImagePickerField } from "@/components/admin/ImagePickerField.tsx";
-import { findById } from "@/lib/utils.ts";
+import { findById, toDateInputValue } from "@/lib/utils.ts";
 import {
   RELEASE_TYPES,
   type ReleaseItem,
@@ -279,6 +279,22 @@ export default function MusicAdmin(
                         rows={4}
                         defaultValue={(editing?.links ?? []).join("\n")}
                         class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                      />
+                    </Field>
+
+                    <Field class="flex flex-col gap-1.5">
+                      <FieldLabel for="release-createdAt">Date</FieldLabel>
+                      <Input
+                        id="release-createdAt"
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="DD-MM-YYYY"
+                        pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"
+                        name="createdAt"
+                        defaultValue={toDateInputValue(
+                          editing?.createdAt ?? new Date(),
+                        )}
+                        required
                       />
                     </Field>
                   </FieldGroup>

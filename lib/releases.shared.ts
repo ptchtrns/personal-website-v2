@@ -19,5 +19,6 @@ export interface ReleaseItem {
   coverSrc: string | null;
   description: string | null;
   links: string[] | null;
+  createdAt: Date;
   tracks: TrackItem[];
 }

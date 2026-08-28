@@ -8,8 +8,8 @@ export const handler = define.handlers({
 
     const formData = await ctx.req.formData();
     const parsed = parseGalleryInput({
-      description: formData.get("description"),
       imageId: formData.get("imageId"),
+      createdAt: formData.get("createdAt"),
     });
     if ("error" in parsed) {
       return redirectTo(

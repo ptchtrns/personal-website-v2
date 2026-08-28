@@ -6,17 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldSet,
-} from "@/components/ui/field.tsx";
+import { Field, FieldLabel, FieldSet } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { AdminFormDialog } from "@/components/admin/AdminFormDialog.tsx";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm.tsx";
 import { ImagePickerField } from "@/components/admin/ImagePickerField.tsx";
-import { findById } from "@/lib/utils.ts";
+import { findById, toDateInputValue } from "@/lib/utils.ts";
 import type { GalleryItem } from "@/lib/gallery.ts";
 import type { MediaItem } from "@/lib/media.ts";
 
@@ -52,7 +47,7 @@ export default function GalleryAdmin(
           {editing && confirmDelete
             ? (
               <DeleteConfirm
-                label={editing.description || "this photo"}
+                label={editing.alt || "this photo"}
                 action={`/api/gallery/${editing.id}/delete`}
                 cancelHref={`/admin?tab=gallery&edit=${editing.id}`}
               />
@@ -64,17 +59,6 @@ export default function GalleryAdmin(
                 class="flex flex-col gap-3"
               >
                 <FieldSet>
-                  <FieldGroup>
-                    <Field class="flex flex-col gap-1.5">
-                      <FieldLabel for="description">Description</FieldLabel>
-                      <Input
-                        id="description"
-                        name="description"
-                        defaultValue={editing?.description ?? ""}
-                      />
-                    </Field>
-                  </FieldGroup>
-
                   <ImagePickerField
                     label="Image"
                     name="imageId"
@@ -82,6 +66,22 @@ export default function GalleryAdmin(
                     selectedId={editing?.imageId ?? null}
                     allowNoImage={false}
                   />
+
+                  <Field class="flex flex-col gap-1.5">
+                    <FieldLabel for="createdAt">Date</FieldLabel>
+                    <Input
+                      id="createdAt"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="DD-MM-YYYY"
+                      pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"
+                      name="createdAt"
+                      defaultValue={toDateInputValue(
+                        editing?.createdAt ?? new Date(),
+                      )}
+                      required
+                    />
+                  </Field>
 
                   <div class="flex gap-2">
                     <Button type="submit" variant="default">
@@ -104,10 +104,10 @@ export default function GalleryAdmin(
             >
               <img
                 src={item.src}
-                alt={item.description ?? ""}
+                alt={item.alt ?? ""}
                 class="h-32 w-full object-cover rounded"
               />
-              <p class="text-sm truncate">{item.description || "—"}</p>
+              <p class="text-sm truncate">{item.alt || "—"}</p>
               <div class="flex gap-2">
                 <Button
                   href={`/admin?tab=gallery&edit=${item.id}`}

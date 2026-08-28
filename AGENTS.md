@@ -1,4 +1,4 @@
-- Keep comment short and precise, related to the codebase and not user's prompt
+- Keep comments short and precise, related to the codebase and not user's prompt
 - Don't test the project yourself, end user will do testing on their end
   themseleves
 - Follow existing project structure
@@ -12,5 +12,7 @@
     adjust the layout.
   - Em dashes should be used rarely.
   - Don't write text in UPPER CASE.
+  - Date and time should not be American, a good format is HH:MM:SS for time and
+    DD.MM.YYYY for date.
 - If appropriate, suggest user to commit the changes with suggested commit
-  message
+  message. Do not commit yourself - always ask first.
