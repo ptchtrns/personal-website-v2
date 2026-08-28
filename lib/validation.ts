@@ -31,7 +31,7 @@ export const queryFlag = z.preprocess((v) => v === "1", z.boolean());
 export function requiredDate(message: string) {
   return z.preprocess(
     (v) => (typeof v === "string" ? new Date(v) : v),
-    z.date({ invalid_type_error: message }),
+    z.date({ error: message }),
   ).refine((d) => !isNaN(d.getTime()), message);
 }
 

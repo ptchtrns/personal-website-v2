@@ -49,7 +49,7 @@ export async function deleteSiteSetting(key: string): Promise<void> {
 const SiteSettingInputSchema = z.object({
   key: requiredTrimmedString("key is required"),
   value: requiredTrimmedString("value is required"),
-}) satisfies z.ZodType<SiteSettingInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<SiteSettingInput>;
 
 export function parseSiteSettingInput(
   data: unknown,

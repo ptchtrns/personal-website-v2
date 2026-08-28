@@ -89,7 +89,7 @@ const EducationInputSchema = z.object({
   startedAt: requiredDate("Invalid or missing startedAt"),
   finishedAt: optionalDate("Invalid finishedAt"),
   description: nullableTrimmedString,
-}) satisfies z.ZodType<EducationInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<EducationInput>;
 
 export function parseEducationInput(
   data: unknown,

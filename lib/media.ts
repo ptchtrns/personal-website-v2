@@ -30,10 +30,10 @@ export interface MediaFormInput {
 
 const MediaFormSchema = z.object({
   type: z.enum(MEDIA_TYPES as [MediaType, ...MediaType[]], {
-    errorMap: () => ({ message: "Invalid or missing type" }),
+    error: "Invalid or missing type",
   }),
   alt: nullableTrimmedString,
-}) satisfies z.ZodType<MediaFormInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<MediaFormInput>;
 
 export function parseMediaFormInput(
   data: unknown,

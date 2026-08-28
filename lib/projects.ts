@@ -171,7 +171,7 @@ const ProjectInputSchema = z.object({
   ),
   technologyNames: stringArray,
   mediaIds: intIdArray,
-}) satisfies z.ZodType<ProjectInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<ProjectInput>;
 
 export function parseProjectInput(
   data: unknown,

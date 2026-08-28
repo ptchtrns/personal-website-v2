@@ -81,7 +81,7 @@ export async function deleteGalleryItem(id: number): Promise<void> {
 const GalleryInputSchema = z.object({
   description: nullableTrimmedString,
   imageId: requiredIntId("imageId is required"),
-}) satisfies z.ZodType<GalleryInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<GalleryInput>;
 
 export function parseGalleryInput(
   data: unknown,

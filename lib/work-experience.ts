@@ -96,7 +96,7 @@ const WorkExperienceInputSchema = z.object({
   startedAt: requiredDate("Invalid or missing startedAt"),
   finishedAt: optionalDate("Invalid finishedAt"),
   description: nullableTrimmedString,
-}) satisfies z.ZodType<WorkExperienceInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<WorkExperienceInput>;
 
 export function parseWorkExperienceInput(
   data: unknown,

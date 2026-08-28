@@ -23,7 +23,7 @@ const ConfigSchema = z.object({
   ADMIN_PASSWORD: z.string(),
   JWT_SECRET: z.string(),
   JWT_EXPIRY_HOURS: z.coerce.number({
-    invalid_type_error: "JWT_EXPIRY_HOURS must be a number",
+    error: "JWT_EXPIRY_HOURS must be a number",
   }).int().positive(),
   RESEND_API_KEY: z.string(),
   CONTACT_TO_EMAIL: z.string().email(

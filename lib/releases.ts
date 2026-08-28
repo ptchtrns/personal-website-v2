@@ -135,13 +135,13 @@ const ReleaseInputSchema = z.object({
   type: z.preprocess(
     (v) => String(v ?? ""),
     z.enum(RELEASE_TYPES as [ReleaseType, ...ReleaseType[]], {
-      errorMap: () => ({ message: "type must be one of album, ep, single" }),
+      error: "type must be one of album, ep, single",
     }),
   ),
   coverId: optionalIntId("Invalid coverId"),
   description: nullableTrimmedString,
   links: multilineList,
-}) satisfies z.ZodType<ReleaseInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<ReleaseInput>;
 
 export function parseReleaseInput(
   data: unknown,
@@ -190,7 +190,7 @@ const TrackInputSchema = z.object({
   title: requiredTrimmedString("title is required"),
   audioId: requiredIntId("audioId is required"),
   releaseId: requiredIntId("releaseId is required"),
-}) satisfies z.ZodType<TrackInput, z.ZodTypeDef, unknown>;
+}) satisfies z.ZodType<TrackInput>;
 
 export function parseTrackInput(
   data: unknown,
