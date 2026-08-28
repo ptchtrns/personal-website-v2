@@ -199,6 +199,15 @@ export default define.page<typeof handler>(function Home({ data }) {
                       {item.educationInstitution},{" "}
                       {formatDateRange(item.startedAt, item.finishedAt)}
                     </span>
+                    {item.descriptionHtml && (
+                      <div
+                        class="markdown-content text-stone-700 dark:text-stone-300"
+                        // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
+                        dangerouslySetInnerHTML={{
+                          __html: item.descriptionHtml,
+                        }}
+                      />
+                    )}
                     {item.links && item.links.length > 0 && (
                       <div class="flex flex-wrap gap-3">
                         {item.links.map((link) => (

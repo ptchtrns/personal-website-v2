@@ -12,16 +12,20 @@ import {
   requiredDate,
   requiredTrimmedString,
 } from "@/lib/validation.ts";
+import { markdownToHtml } from "@/lib/markdown.ts";
 
 const logo = alias(media, "education_logo");
 
 export type EducationRow = typeof education.$inferSelect;
 export type EducationInput = typeof education.$inferInsert;
-export type EducationItem = EducationRow & { logoSrc: string | null };
+export type EducationItem = EducationRow & {
+  logoSrc: string | null;
+  descriptionHtml: string | null;
+};
 
 async function listRows(): Promise<EducationItem[]> {
   const db = await getDb();
-  return await db
+  const rows = await db
     .select({
       id: education.id,
       degreeTitle: education.degreeTitle,
@@ -38,6 +42,10 @@ async function listRows(): Promise<EducationItem[]> {
     .from(education)
     .leftJoin(logo, eq(education.institutionLogoId, logo.id))
     .orderBy(desc(education.startedAt));
+  return rows.map((row) => ({
+    ...row,
+    descriptionHtml: markdownToHtml(row.description),
+  }));
 }
 
 export async function listEducation(): Promise<EducationItem[]> {
