@@ -54,7 +54,7 @@
     "npm:esbuild@0.25.7": "0.25.7",
     "npm:esbuild@~0.25.5": "0.25.12",
     "npm:jose@^6.2.10": "6.2.10",
-    "npm:marked@^18.0.1": "18.0.11",
+    "npm:marked@^18.0.11": "18.0.11",
     "npm:preact-render-to-string@^6.6.3": "6.7.0_preact@10.29.8",
     "npm:preact@^10.28.2": "10.29.8_preact-render-to-string@6.7.0",
     "npm:preact@^10.29.1": "10.29.8_preact-render-to-string@6.7.0",
@@ -64,6 +64,7 @@
     "npm:tailwind-merge@^3.6.0": "3.6.0",
     "npm:tailwindcss@^4.3.3": "4.3.3",
     "npm:vite@^7.1.4": "7.3.6_@types+node@24.13.3",
+    "npm:vite@^7.3.6": "7.3.6_@types+node@24.13.3",
     "npm:wrangler@4.127.0": "4.127.0"
   },
   "jsr": {
@@ -128,7 +129,7 @@
         "npm:@remix-run/node-fetch-server",
         "npm:@types/babel__core",
         "npm:rollup",
-        "npm:vite"
+        "npm:vite@^7.1.4"
       ]
     },
     "@std/bytes@1.0.6": {
@@ -2177,12 +2178,12 @@
       "npm:drizzle-kit@1.0.0-rc.4-5d5b77c",
       "npm:drizzle-orm@1.0.0-rc.4-5d5b77c",
       "npm:jose@^6.2.10",
-      "npm:marked@^18.0.1",
+      "npm:marked@^18.0.11",
       "npm:preact@^10.29.8",
       "npm:resend@^6.24.0",
       "npm:tailwind-merge@^3.6.0",
       "npm:tailwindcss@^4.3.3",
-      "npm:vite@^7.1.4",
+      "npm:vite@^7.3.6",
       "npm:wrangler@4.127.0"
     ]
   }
