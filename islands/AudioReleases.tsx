@@ -31,7 +31,7 @@ export default function AudioReleases({
               <img
                 src={release.coverSrc}
                 alt=""
-                class="w-full h-48 sm:w-48 sm:h-48 object-cover shrink-0 self-start rounded-lg"
+                class="w-48 aspect-square object-cover shrink-0 self-start rounded-lg"
               />
             )}
             <div class="flex flex-col gap-4 min-w-0 flex-1">
