@@ -40,7 +40,7 @@ export default function SiteSettingsAdmin(
           <CardTitle>Site settings</CardTitle>
           <CardDescription>
             Manage editable text used across the site, such as the home page
-            description.
+            description. Values support markdown.
           </CardDescription>
         </div>
         <Button href="/admin?tab=site-settings&new=1" size="sm">

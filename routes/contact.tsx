@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { getSiteSetting } from "@/lib/site-settings.ts";
+import { markdownToHtml } from "@/lib/markdown.ts";
 
 const DEFAULT_CONTACT_INFO =
   "I'm open to freelance work, collaborations and full-time opportunities. " +
@@ -31,7 +32,7 @@ export const handler = define.handlers({
       data: {
         error: params.get("error"),
         success: params.get("success") === "1",
-        contactInfo: contactInfo ?? DEFAULT_CONTACT_INFO,
+        contactInfoHtml: markdownToHtml(contactInfo ?? DEFAULT_CONTACT_INFO)!,
       },
     };
   },
@@ -49,9 +50,11 @@ export default define.page<typeof handler>(function Contact({ data }) {
           </p>
         </section>
 
-        <div class="text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
-          {data.contactInfo}
-        </div>
+        <div
+          class="markdown-content text-base leading-relaxed text-zinc-700 dark:text-zinc-300"
+          // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
+          dangerouslySetInnerHTML={{ __html: data.contactInfoHtml }}
+        />
 
         <Card>
           <CardHeader>

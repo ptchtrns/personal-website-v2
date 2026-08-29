@@ -19,6 +19,7 @@ import {
   type WorkExperienceItem,
 } from "@/lib/work-experience.ts";
 import { getSiteSetting } from "@/lib/site-settings.ts";
+import { markdownToHtml } from "@/lib/markdown.ts";
 import ProjectsCarousel from "@/islands/ProjectsCarousel.tsx";
 
 const DEFAULT_DESCRIPTION =
@@ -30,7 +31,7 @@ interface HomeData {
   workExperience: WorkExperienceItem[];
   education: EducationItem[];
   projects: ProjectItem[];
-  description: string;
+  descriptionHtml: string;
   error: string | null;
 }
 
@@ -56,7 +57,7 @@ export const handler = define.handlers({
         workExperience,
         education,
         projects,
-        description: description ?? DEFAULT_DESCRIPTION,
+        descriptionHtml: markdownToHtml(description ?? DEFAULT_DESCRIPTION)!,
         error: null,
       });
     } catch (error) {
@@ -65,7 +66,7 @@ export const handler = define.handlers({
         workExperience: [],
         education: [],
         projects: [],
-        description: DEFAULT_DESCRIPTION,
+        descriptionHtml: markdownToHtml(DEFAULT_DESCRIPTION)!,
         error: "Failed to load homepage data",
       });
     }
@@ -73,7 +74,7 @@ export const handler = define.handlers({
 });
 
 export default define.page<typeof handler>(function Home({ data }) {
-  const { workExperience, education, projects, description, error } = data;
+  const { workExperience, education, projects, descriptionHtml, error } = data;
 
   return (
     <MainDisplay>
@@ -85,9 +86,11 @@ export default define.page<typeof handler>(function Home({ data }) {
           <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
             &#x1F1EB;&#x1F1EE; Espoo, Finland
           </p>
-          <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
-            {description}
-          </p>
+          <div
+            class="markdown-content text-lg leading-relaxed text-zinc-700 dark:text-zinc-300"
+            // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
+            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+          />
         </section>
 
         {error && <p class="text-red-600 dark:text-red-400">{error}</p>}
