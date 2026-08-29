@@ -123,8 +123,7 @@ export default define.page<typeof handler>(function Contact({ data }) {
               </Button>
 
               <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                By sending this message, you agree that your info will be used
-                only to reply to you.
+                Your info will only be used to reply to you.
               </p>
             </form>
           </CardContent>
