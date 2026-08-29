@@ -3,9 +3,20 @@ import { Card, CardContent } from "@/components/ui/card.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Dialog, DialogContent } from "@/components/ui/dialog.tsx";
-import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowUpRightFromSquare,
+  faPause,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
 import { FaIcon } from "@/components/icon.tsx";
+import { cn } from "@/lib/utils.ts";
 import { getLinkLabel, type ReleaseItem } from "@/lib/releases.shared.ts";
+import {
+  currentTrack,
+  isPlaying,
+  type PlayerTrack,
+  playTrack,
+} from "@/lib/player-store.ts";
 
 const RELEASE_TYPE_LABEL: Record<ReleaseItem["type"], string> = {
   album: "Album",
@@ -66,19 +77,49 @@ export default function AudioReleases({
               )}
 
               <div class="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-700">
-                {release.tracks.map((track, index) => (
-                  <div key={track.id} class="flex items-center gap-3 py-2.5">
-                    <span class="text-xs text-zinc-400 dark:text-zinc-500 w-5 shrink-0 text-right">
-                      {index + 1}
-                    </span>
-                    <div class="flex flex-col gap-1 min-w-0 flex-1">
-                      <p class="text-sm font-medium truncate">
+                {release.tracks.map((track, index) => {
+                  const isActive = currentTrack.value?.id === track.id;
+                  const playerTracks: PlayerTrack[] = release.tracks.map((
+                    t,
+                  ) => ({
+                    id: t.id,
+                    title: t.title,
+                    audioSrc: t.audioSrc,
+                    releaseTitle: release.title,
+                    coverSrc: release.coverSrc,
+                  }));
+
+                  return (
+                    <div key={track.id} class="flex items-center gap-3 py-2.5">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={isActive && isPlaying.value
+                          ? `Pause ${track.title}`
+                          : `Play ${track.title}`}
+                        onClick={() =>
+                          playTrack(playerTracks, index)}
+                      >
+                        <FaIcon
+                          icon={isActive && isPlaying.value ? faPause : faPlay}
+                          class="text-xs"
+                        />
+                      </Button>
+                      <span class="text-xs text-zinc-400 dark:text-zinc-500 w-5 shrink-0 text-right">
+                        {index + 1}
+                      </span>
+                      <p
+                        class={cn(
+                          "text-sm font-medium truncate min-w-0 flex-1",
+                          isActive && "text-zinc-950 dark:text-white",
+                        )}
+                      >
                         {track.title}
                       </p>
-                      <audio controls src={track.audioSrc} class="w-full" />
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </CardContent>
