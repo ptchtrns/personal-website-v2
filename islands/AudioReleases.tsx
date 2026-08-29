@@ -45,7 +45,7 @@ export default function AudioReleases({
                   </Badge>
                 </div>
                 {release.description && (
-                  <p class="text-sm text-stone-600 dark:text-stone-400">
+                  <p class="text-sm text-zinc-600 dark:text-zinc-400">
                     {release.description}
                   </p>
                 )}
@@ -65,10 +65,10 @@ export default function AudioReleases({
                 </div>
               )}
 
-              <div class="flex flex-col divide-y divide-stone-200 dark:divide-stone-700">
+              <div class="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-700">
                 {release.tracks.map((track, index) => (
                   <div key={track.id} class="flex items-center gap-3 py-2.5">
-                    <span class="text-xs text-stone-400 dark:text-stone-500 w-5 shrink-0 text-right">
+                    <span class="text-xs text-zinc-400 dark:text-zinc-500 w-5 shrink-0 text-right">
                       {index + 1}
                     </span>
                     <div class="flex flex-col gap-1 min-w-0 flex-1">

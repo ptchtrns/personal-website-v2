@@ -51,7 +51,7 @@ export default function MarkdownEditor(
 
       {preview !== null && (
         <div
-          class="markdown-content border border-stone-300 dark:border-stone-600 rounded-lg p-3 min-h-24"
+          class="markdown-content border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 min-h-24"
           // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side by /api/markdown-preview
           dangerouslySetInnerHTML={{ __html: preview }}
         />

@@ -98,7 +98,7 @@ export default function MediaAdmin(
                   name="alt"
                   placeholder="Describe the file for accessibility"
                   rows={3}
-                  class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                  class="border border-zinc-300 dark:border-zinc-600 p-1.5 rounded-lg"
                 />
               </Field>
 
@@ -122,13 +122,13 @@ export default function MediaAdmin(
         </CardHeader>
         <CardContent class="flex flex-col gap-4">
           {items.length === 0
-            ? <p class="text-sm text-stone-500">No media yet.</p>
+            ? <p class="text-sm text-zinc-500">No media yet.</p>
             : (
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    class="flex flex-col gap-2 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
+                    class="flex flex-col gap-2 border border-zinc-200 dark:border-zinc-700 rounded-lg p-3"
                   >
                     {item.id === deleteId && confirmDelete
                       ? (
@@ -153,14 +153,14 @@ export default function MediaAdmin(
                                 href={item.src}
                                 target="_blank"
                                 rel="noreferrer"
-                                class="h-32 w-full flex items-center justify-center rounded bg-stone-100 dark:bg-stone-800 text-xs uppercase text-stone-500 truncate px-2"
+                                class="h-32 w-full flex items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800 text-xs uppercase text-zinc-500 truncate px-2"
                               >
                                 {item.type}
                               </a>
                             )}
 
                           <span
-                            class="text-xs text-stone-500 truncate"
+                            class="text-xs text-zinc-500 truncate"
                             title={item.src}
                           >
                             {item.src}

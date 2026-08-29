@@ -15,11 +15,11 @@ export const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
-          "border border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-950 dark:hover:text-white hover:bg-linear-to-r from-stone-100 via-stone-100 to-stone-50 dark:from-stone-800 dark:via-stone-800 dark:to-stone-900 hover:border-stone-200 dark:hover:border-stone-600 rounded-lg active:scale-99",
+          "border border-transparent text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white hover:bg-linear-to-r from-zinc-100 via-zinc-100 to-zinc-50 dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-900 hover:border-zinc-200 dark:hover:border-zinc-600 rounded-lg active:scale-99",
         "ghost-muted":
-          "text-stone-400 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 active:scale-92",
+          "text-zinc-400 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 active:scale-92",
         "ghost-active":
-          "text-white bg-stone-400 dark:bg-stone-600 rounded-full hover:bg-stone-400 hover:text-white dark:hover:bg-stone-600 active:scale-92",
+          "text-white bg-zinc-400 dark:bg-zinc-600 rounded-full hover:bg-zinc-400 hover:text-white dark:hover:bg-zinc-600 active:scale-92",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

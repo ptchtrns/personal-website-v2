@@ -63,7 +63,7 @@ function TrackEditor(
   const closeHref = `/admin?tab=music#release-${release.id}`;
 
   return (
-    <div class="flex flex-col gap-3 border-t border-stone-200 dark:border-stone-700 pt-3">
+    <div class="flex flex-col gap-3 border-t border-zinc-200 dark:border-zinc-700 pt-3">
       <div class="flex items-center justify-between gap-3">
         <p class="text-sm font-medium">Tracks</p>
         <Button
@@ -98,7 +98,7 @@ function TrackEditor(
           </div>
         ))}
         {release.tracks.length === 0 && (
-          <p class="text-sm text-stone-500">No tracks yet.</p>
+          <p class="text-sm text-zinc-500">No tracks yet.</p>
         )}
       </div>
 
@@ -265,7 +265,7 @@ export default function MusicAdmin(
                         name="description"
                         rows={2}
                         defaultValue={editing?.description ?? ""}
-                        class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                        class="border border-zinc-300 dark:border-zinc-600 p-1.5 rounded-lg"
                       />
                     </Field>
 
@@ -278,7 +278,7 @@ export default function MusicAdmin(
                         name="links"
                         rows={4}
                         defaultValue={(editing?.links ?? []).join("\n")}
-                        class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                        class="border border-zinc-300 dark:border-zinc-600 p-1.5 rounded-lg"
                       />
                     </Field>
 
@@ -324,7 +324,7 @@ export default function MusicAdmin(
             <div
               key={release.id}
               id={`release-${release.id}`}
-              class="flex flex-col gap-3 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
+              class="flex flex-col gap-3 border border-zinc-200 dark:border-zinc-700 rounded-lg p-3"
             >
               <AdminListRow
                 editHref={`/admin?tab=music&edit=${release.id}`}
@@ -332,7 +332,7 @@ export default function MusicAdmin(
                 logoSrc={release.coverSrc}
                 title={release.title}
                 subtitle={RELEASE_TYPE_LABEL[release.type]}
-                subtitleClass="text-xs uppercase text-stone-500"
+                subtitleClass="text-xs uppercase text-zinc-500"
               />
 
               <TrackEditor

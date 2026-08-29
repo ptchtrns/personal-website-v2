@@ -126,7 +126,7 @@ export default function WorkExperienceAdmin(
                       rows={3}
                       defaultValue={(editing?.links ?? []).join("\n")}
                       placeholder="https://www.linkedin.com/company/..."
-                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                      class="border border-zinc-300 dark:border-zinc-600 p-1.5 rounded-lg"
                     />
                   </Field>
 
@@ -159,7 +159,7 @@ export default function WorkExperienceAdmin(
           {items.map((item) => (
             <div
               key={item.id}
-              class="border border-stone-200 dark:border-stone-700 rounded-lg p-3"
+              class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3"
             >
               <AdminListRow
                 editHref={`/admin?tab=work-experience&edit=${item.id}`}

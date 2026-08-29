@@ -79,13 +79,13 @@ export default define.page<typeof handler>(function Home({ data }) {
     <MainDisplay>
       <div class="flex flex-col gap-8">
         <section class="flex flex-col gap-3">
-          <h1 class="text-4xl font-bold dark:text-stone-100">
+          <h1 class="text-4xl font-bold dark:text-zinc-100">
             Nikolai Zakharov
           </h1>
-          <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
+          <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
             &#x1F1EB;&#x1F1EE; Espoo, Finland
           </p>
-          <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
+          <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
             {description}
           </p>
         </section>
@@ -94,7 +94,7 @@ export default define.page<typeof handler>(function Home({ data }) {
 
         {projects.length > 0 && (
           <section class="flex flex-col gap-6">
-            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
               Projects
             </h2>
             <ProjectsCarousel projects={projects} />
@@ -103,7 +103,7 @@ export default define.page<typeof handler>(function Home({ data }) {
 
         {workExperience.length > 0 && (
           <section class="flex flex-col gap-6">
-            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
               Work Experience
             </h2>
             {workExperience.map((job) => (
@@ -143,7 +143,7 @@ export default define.page<typeof handler>(function Home({ data }) {
                   <CardContent class="flex flex-col gap-3">
                     {job.descriptionHtml && (
                       <div
-                        class="markdown-content text-stone-700 dark:text-stone-300"
+                        class="markdown-content text-zinc-700 dark:text-zinc-300"
                         // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
                         dangerouslySetInnerHTML={{
                           __html: job.descriptionHtml,
@@ -178,7 +178,7 @@ export default define.page<typeof handler>(function Home({ data }) {
 
         {education.length > 0 && (
           <section class="flex flex-col gap-6">
-            <h2 class="text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
               Education
             </h2>
             {education.map((item) => (
@@ -192,16 +192,16 @@ export default define.page<typeof handler>(function Home({ data }) {
                     />
                   )}
                   <div class="flex flex-col gap-2">
-                    <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100">
+                    <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100">
                       {item.degreeTitle}
                     </h3>
-                    <span class="text-stone-700 dark:text-stone-300">
+                    <span class="text-zinc-700 dark:text-zinc-300">
                       {item.educationInstitution},{" "}
                       {formatDateRange(item.startedAt, item.finishedAt)}
                     </span>
                     {item.descriptionHtml && (
                       <div
-                        class="markdown-content text-stone-700 dark:text-stone-300"
+                        class="markdown-content text-zinc-700 dark:text-zinc-300"
                         // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
                         dangerouslySetInnerHTML={{
                           __html: item.descriptionHtml,

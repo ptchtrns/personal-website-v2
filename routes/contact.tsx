@@ -42,14 +42,14 @@ export default define.page<typeof handler>(function Contact({ data }) {
     <MainDisplay>
       <div class="flex flex-col gap-8 w-full">
         <section class="flex flex-col gap-3">
-          <h1 class="text-4xl font-bold dark:text-stone-100">Contact me</h1>
-          <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
+          <h1 class="text-4xl font-bold dark:text-zinc-100">Contact me</h1>
+          <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
             Got a project in mind, a question or just want to say hi? Drop me a
             message below, I read every one and try to reply quickly.
           </p>
         </section>
 
-        <div class="text-base leading-relaxed text-stone-700 dark:text-stone-300">
+        <div class="text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {data.contactInfo}
         </div>
 
@@ -122,7 +122,7 @@ export default define.page<typeof handler>(function Contact({ data }) {
                 Send message
               </Button>
 
-              <p class="text-sm text-stone-500 dark:text-stone-400">
+              <p class="text-sm text-zinc-500 dark:text-zinc-400">
                 By sending this message, you agree that your info will be used
                 only to reply to you.
               </p>

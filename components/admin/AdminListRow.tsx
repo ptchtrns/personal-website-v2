@@ -26,7 +26,7 @@ export function AdminListRow(
         )}
         <div class="min-w-0">
           <p class="font-medium truncate">{title}</p>
-          <p class={subtitleClass ?? "text-sm text-stone-500 truncate"}>
+          <p class={subtitleClass ?? "text-sm text-zinc-500 truncate"}>
             {subtitle}
           </p>
         </div>

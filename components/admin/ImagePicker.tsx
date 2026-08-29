@@ -17,9 +17,9 @@ export function ImagePicker(
 ) {
   return (
     <div class="@container">
-      <div class="grid grid-cols-3 @sm:grid-cols-4 @md:grid-cols-6 gap-x-2 gap-y-3 max-h-72 overflow-y-auto p-2 border border-stone-300 dark:border-stone-600 rounded-lg">
+      <div class="grid grid-cols-3 @sm:grid-cols-4 @md:grid-cols-6 gap-x-2 gap-y-3 max-h-72 overflow-y-auto p-2 border border-zinc-300 dark:border-zinc-600 rounded-lg">
         {allowNoImage && (
-          <label class="relative flex aspect-square min-h-0 flex-col items-center justify-center gap-1 rounded-md border-2 border-transparent bg-stone-100 text-stone-400 cursor-pointer overflow-hidden has-[:checked]:border-primary dark:bg-stone-800">
+          <label class="relative flex aspect-square min-h-0 flex-col items-center justify-center gap-1 rounded-md border-2 border-transparent bg-zinc-100 text-zinc-400 cursor-pointer overflow-hidden has-[:checked]:border-primary dark:bg-zinc-800">
             <FaIcon icon={faImages} />
             <span class="text-[10px]">No image</span>
             <div class="absolute top-1.5 right-1.5">
@@ -27,7 +27,7 @@ export function ImagePicker(
                 name={name}
                 value=""
                 checked={selectedId === null}
-                class="bg-white/90 dark:bg-stone-900/90"
+                class="bg-white/90 dark:bg-zinc-900/90"
               />
             </div>
           </label>
@@ -40,7 +40,7 @@ export function ImagePicker(
             <img
               src={image.src}
               alt={image.alt ?? ""}
-              class="absolute inset-0 w-full h-full object-cover bg-stone-100 dark:bg-stone-800"
+              class="absolute inset-0 w-full h-full object-cover bg-zinc-100 dark:bg-zinc-800"
             />
             <div class="absolute top-1.5 right-1.5">
               <Radio
@@ -48,7 +48,7 @@ export function ImagePicker(
                 value={image.id}
                 checked={selectedId === image.id}
                 required={!allowNoImage}
-                class="bg-white/90 dark:bg-stone-900/90"
+                class="bg-white/90 dark:bg-zinc-900/90"
               />
             </div>
           </label>

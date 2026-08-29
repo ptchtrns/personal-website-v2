@@ -116,7 +116,7 @@ export default function ProjectsAdmin(
                       rows={3}
                       defaultValue={(editing?.links ?? []).join("\n")}
                       placeholder="https://github.com/user/repo"
-                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                      class="border border-zinc-300 dark:border-zinc-600 p-1.5 rounded-lg"
                     />
                   </Field>
 
@@ -136,7 +136,7 @@ export default function ProjectsAdmin(
                       name="changelog"
                       rows={3}
                       defaultValue={editing?.changelog ?? ""}
-                      class="border border-stone-300 dark:border-stone-600 p-1.5 rounded-lg"
+                      class="border border-zinc-300 dark:border-zinc-600 p-1.5 rounded-lg"
                     />
                   </Field>
 
@@ -205,7 +205,7 @@ export default function ProjectsAdmin(
           {items.map((item) => (
             <div
               key={item.id}
-              class="border border-stone-200 dark:border-stone-700 rounded-lg p-3"
+              class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3"
             >
               <AdminListRow
                 editHref={`/admin?tab=projects&edit=${item.id}`}

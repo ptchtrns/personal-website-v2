@@ -37,7 +37,7 @@ export default function PhotoGallery({ gallery }: { gallery: GalleryItem[] }) {
               class="w-full rounded-lg"
             />
             {active.alt && (
-              <p class="text-stone-200 text-center">
+              <p class="text-zinc-200 text-center">
                 {active.alt}
               </p>
             )}

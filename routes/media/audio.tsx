@@ -27,8 +27,8 @@ export default define.page<typeof handler>(function Audio({ data }) {
     <MainDisplay>
       <div class="flex flex-col gap-6">
         <section class="flex flex-col gap-3">
-          <h1 class="text-4xl font-bold dark:text-stone-100">Media</h1>
-          <p class="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
+          <h1 class="text-4xl font-bold dark:text-zinc-100">Media</h1>
+          <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
             Welcome to the repository of my photos and music.
           </p>
         </section>
@@ -37,7 +37,7 @@ export default define.page<typeof handler>(function Audio({ data }) {
           ? <div class="text-red-600">{data.error}</div>
           : data.releases.length === 0
           ? (
-            <div class="text-stone-900 dark:text-stone-100">
+            <div class="text-zinc-900 dark:text-zinc-100">
               No music found
             </div>
           )

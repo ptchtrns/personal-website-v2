@@ -100,7 +100,7 @@ export default function GalleryAdmin(
           {items.map((item) => (
             <div
               key={item.id}
-              class="flex flex-col gap-2 border border-stone-200 dark:border-stone-700 rounded-lg p-3"
+              class="flex flex-col gap-2 border border-zinc-200 dark:border-zinc-700 rounded-lg p-3"
             >
               <img
                 src={item.src}
