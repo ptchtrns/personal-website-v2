@@ -9,7 +9,7 @@ export default define.page(function SidebarLayout({ Component, url, state }) {
       <Sidebar path={url.pathname} pfpSrc={state.pfpSrc} />
       <div
         id="page-main"
-        class="ml-6 md:ml-86 xl:ml-106 mr-6 md:mr-24 w-full min-w-0"
+        class="ml-6 lg:ml-86 xl:ml-106 mr-6 lg:mr-24 w-full min-w-0"
       >
         <Partial name="page-content">
           <Component />

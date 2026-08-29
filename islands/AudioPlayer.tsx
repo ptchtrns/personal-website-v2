@@ -100,7 +100,7 @@ export default function AudioPlayer() {
 
       {track && (
         <div class="fixed inset-x-0 bottom-0 z-30 border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md">
-          <div class="mx-auto 2xl:max-w-[1600px] flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3">
+          <div class="mx-auto 2xl:max-w-[1600px] flex flex-wrap md:flex-nowrap items-center gap-x-3 gap-y-2 sm:gap-x-4 px-4 sm:px-6 py-2.5 md:py-3">
             {track.coverSrc && (
               <img
                 src={track.coverSrc}
@@ -148,8 +148,8 @@ export default function AudioPlayer() {
               </Button>
             </div>
 
-            <div class="flex items-center gap-2 flex-1 min-w-0">
-              <span class="text-xs text-zinc-500 dark:text-zinc-400 tabular-nums w-10 text-right hidden sm:inline">
+            <div class="order-1 w-full md:order-none md:w-auto md:flex-1 flex items-center gap-2 min-w-0">
+              <span class="text-xs text-zinc-500 dark:text-zinc-400 tabular-nums w-10 text-right">
                 {formatTime(currentTime.value)}
               </span>
               <Slider
@@ -159,7 +159,7 @@ export default function AudioPlayer() {
                 onValueChange={handleSeek}
                 aria-label="Seek"
               />
-              <span class="text-xs text-zinc-500 dark:text-zinc-400 tabular-nums w-10 hidden sm:inline">
+              <span class="text-xs text-zinc-500 dark:text-zinc-400 tabular-nums w-10">
                 {formatTime(duration.value)}
               </span>
             </div>

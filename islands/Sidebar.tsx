@@ -81,7 +81,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open menu"
-        class="md:hidden fixed top-6 left-0 z-50 rounded-l-none rounded-r-lg border-l-0 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 active:scale-95"
+        class="lg:hidden fixed top-6 left-0 z-50 rounded-l-none rounded-r-lg border-l-0 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 active:scale-95"
       >
         <FaIcon icon={faBars} class="text-zinc-800 dark:text-zinc-200" />
       </Button>
@@ -90,14 +90,14 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
         class={[
           "fixed top-0 left-0 bottom-0 right-0 z-40 backdrop-blur-3xl bg-gradient",
           "bg-linear-to-br via-transparent from-black/25 to-transparent dark:from-white/10 dark:to-white/5",
-          isOpen ? "block md:hidden fixed" : "hidden",
+          isOpen ? "block lg:hidden fixed" : "hidden",
         ].join(" ")}
         onClick={() => setIsOpen(false)}
       />
 
       <nav
         class={[
-          "fixed z-40 w-64 xl:w-72 my-6 mx-12 transition-transform duration-300 md:translate-x-0",
+          "fixed z-40 w-64 xl:w-72 my-6 mx-12 transition-transform duration-300 lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-120",
         ].join(" ")}
       >
