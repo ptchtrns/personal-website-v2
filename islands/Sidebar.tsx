@@ -101,7 +101,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-120",
         ].join(" ")}
       >
-        <Card class="bg-white dark:bg-zinc-900 rounded-[17px] flex flex-col p-3 border border-zinc-300 dark:border-zinc-700">
+        <Card class="bg-white dark:bg-zinc-900 rounded-[17px] flex flex-col p-3">
           <div class="px-3 pt-2 flex flex-col gap-2.5">
             {pfpSrc && (
               <img
@@ -173,7 +173,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
         </Card>
 
         <div class="flex justify-between mt-4">
-          <Card class="bg-white dark:bg-zinc-900 rounded-[17px] flex flex-row p-1 border border-zinc-300 dark:border-zinc-700 gap-0">
+          <Card class="bg-white dark:bg-zinc-900 rounded-[17px] flex flex-row p-1 gap-0">
             {themes.map((theme) => (
               <Button
                 key={theme.theme}
