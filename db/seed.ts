@@ -2,14 +2,12 @@ import { extname } from "@std/path";
 import { and, eq } from "drizzle-orm";
 import { type Db, getDb } from "@/db/local-client.ts";
 import {
-  education,
   gallery,
   media,
   projects,
   projectsToMedia,
   releases,
   tracks,
-  workExperience,
 } from "@/db/schema.ts";
 import { getConfig } from "@/lib/config.ts";
 import {
@@ -31,44 +29,6 @@ async function uploadSeedFile(
   const { PHOTO_BASE_URL } = await getConfig();
   return `${PHOTO_BASE_URL}/${key}`;
 }
-
-const workExperienceSeed: (typeof workExperience.$inferInsert)[] = [
-  {
-    jobTitle: "UI Development Trainee - Internship",
-    companyName: "Peikko Group",
-    companyUrl: "https://www.peikko.com/",
-    startedAt: new Date("2024-10-01T00:00:00Z"),
-    finishedAt: new Date("2025-05-01T00:00:00Z"),
-    description:
-      "- Built UI layout and components, accurately following company's design guidelines and ensuring accessibility.\n" +
-      "- Used Blazor (C#) and Azure DevOps.\n" +
-      "- Used Three.js library to display 3D objects.\n" +
-      "- Worked in group and collaborated with students from LAB University of Applied Sciences.",
-  },
-];
-
-const educationSeed:
-  (Omit<typeof education.$inferInsert, "institutionLogoId"> & {
-    logoFile: URL;
-  })[] = [
-    {
-      degreeTitle:
-        "Information and Communication Technology - Bachelor's degree (In Progress)",
-      degreeType: "Bachelor's degree",
-      educationInstitution: "Metropolia University of Applied Sciences",
-      logoFile: new URL("../seed/metropolia_logo.avif", import.meta.url),
-      startedAt: new Date("2025-08-01T00:00:00Z"),
-      finishedAt: null,
-    },
-    {
-      degreeTitle: "Software Engineering - Vocational undergraduate degree",
-      degreeType: "Vocational undergraduate degree",
-      educationInstitution: "Salpaus Further Education",
-      logoFile: new URL("../seed/salpaus_logo.avif", import.meta.url),
-      startedAt: new Date("2023-01-01T00:00:00Z"),
-      finishedAt: new Date("2025-06-01T00:00:00Z"),
-    },
-  ];
 
 const projectsSeed: (typeof projects.$inferInsert & {
   logoFile?: URL;
@@ -195,50 +155,6 @@ const musicSeed: { title: string; file: URL }[] = [
   },
 ];
 
-/** Inserts each seed row only if a row with the same natural key isn't already present, so re-running never clobbers admin edits. */
-async function seedWorkExperience(db: Db) {
-  for (const row of workExperienceSeed) {
-    const existing = await db
-      .select({ id: workExperience.id })
-      .from(workExperience)
-      .where(
-        and(
-          eq(workExperience.jobTitle, row.jobTitle),
-          eq(workExperience.companyName, row.companyName),
-        ),
-      )
-      .limit(1);
-    if (existing.length > 0) continue;
-    await db.insert(workExperience).values(row);
-  }
-}
-
-async function seedEducation(db: Db, bucket: LocalR2Bucket) {
-  for (const { logoFile, ...row } of educationSeed) {
-    const existing = await db
-      .select({ id: education.id })
-      .from(education)
-      .where(
-        and(
-          eq(education.degreeTitle, row.degreeTitle),
-          eq(education.educationInstitution, row.educationInstitution),
-        ),
-      )
-      .limit(1);
-    if (existing.length > 0) continue;
-
-    const logoSrc = await uploadSeedFile(bucket, "education", logoFile);
-    const [logoMediaRow] = await db.insert(media).values({
-      src: logoSrc,
-      type: "image",
-    }).returning();
-    await db.insert(education).values({
-      ...row,
-      institutionLogoId: logoMediaRow.id,
-    });
-  }
-}
-
 /** Inserts each seed project and uploads its screenshots as linked media. */
 async function seedProjects(db: Db, bucket: LocalR2Bucket) {
   for (const { screenshotFiles, ...row } of projectsSeed) {
@@ -349,8 +265,6 @@ async function seedPfp(db: Db, bucket: LocalR2Bucket) {
 async function main() {
   const db = await getDb();
   const bucket = await getCdnBucket();
-  await seedWorkExperience(db);
-  await seedEducation(db, bucket);
   await seedProjects(db, bucket);
   await seedGallery(db, bucket);
   await seedMusic(db, bucket);

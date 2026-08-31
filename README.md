@@ -1,8 +1,8 @@
 # Personal Website v2
 
-Personal website and media repository: an about-me / portfolio page (work
-experience, education, projects), a photo and audio gallery, a contact form, and
-an admin dashboard for managing all of the above.
+Personal website and media repository: an about-me / portfolio page (projects),
+a photo and audio gallery, a contact form, and an admin dashboard for managing
+all of the above.
 
 Built with [Fresh](https://fresh.deno.dev) (Deno, Preact, Tailwind CSS v4),
 deployed to [Cloudflare Workers](https://developers.cloudflare.com/workers/).
@@ -41,10 +41,10 @@ deno task db:seed
 
 `db:migrate:local` finds (or creates) the local D1 SQLite file that Wrangler's
 emulation uses and applies the migrations in `db/migrations/`. `db:seed`
-populates it with sample data (work experience, education, projects, gallery
-photos, releases) and copies the accompanying files into the local R2 bucket. In
-production, migrations are applied automatically against the remote D1 database
-as part of the deploy workflow (see below), not run by hand.
+populates it with sample data (projects, gallery photos, releases) and copies
+the accompanying files into the local R2 bucket. In production, migrations are
+applied automatically against the remote D1 database as part of the deploy
+workflow (see below), not run by hand.
 
 Now start the dev server:
 
@@ -86,14 +86,14 @@ plain `[vars]` in `wrangler.toml` (`CONTACT_TO_EMAIL`, `JWT_EXPIRY_HOURS`,
   gallery, audio player, admin forms, carousels)
 - `components/` — server-rendered building blocks, including shadcn-derived UI
   primitives under `components/ui/`
-- `lib/` — domain logic (auth, gallery, media, projects, work experience,
-  education, releases/tracks) shared between routes and islands
+- `lib/` — domain logic (auth, gallery, media, projects, releases/tracks) shared
+  between routes and islands
 - `db/` — Drizzle schema, migrations, seed script, and local/remote D1 client
   setup
 
 Admin dashboard tabs each map to one of these domains — media library, gallery,
-music (releases/tracks), education, work experience, and projects — with shared
-create/update/delete handlers in `lib/`.
+music (releases/tracks), and projects — with shared create/update/delete
+handlers in `lib/`.
 
 ## Deployment
 

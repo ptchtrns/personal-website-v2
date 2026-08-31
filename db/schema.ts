@@ -71,41 +71,6 @@ export const projectsToMedia = sqliteTable(
   (t) => [primaryKey({ columns: [t.projectId, t.mediaId] })],
 );
 
-export const workExperience = sqliteTable("work_experience", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  jobTitle: text("job_title").notNull(),
-  companyName: text("company_name").notNull(),
-  companyUrl: text("company_url"),
-  links: text("links", { mode: "json" }).$type<string[]>(),
-  startedAt: integer("started_at", { mode: "timestamp" }).notNull(),
-  finishedAt: integer("finished_at", { mode: "timestamp" }),
-  companyLogoId: integer("company_logo_id").references(() => media.id, {
-    onDelete: "set null",
-  }),
-  description: text("description"),
-  createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(
-    sql`(unixepoch())`,
-  ),
-});
-
-export const education = sqliteTable("education", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  degreeTitle: text("degree_title").notNull(),
-  degreeType: text("degree_type").notNull(),
-  educationInstitution: text("education_institution").notNull(),
-  institutionLogoId: integer("institution_logo_id").references(
-    () => media.id,
-    { onDelete: "set null" },
-  ),
-  links: text("links", { mode: "json" }).$type<string[]>(),
-  startedAt: integer("started_at", { mode: "timestamp" }).notNull(),
-  finishedAt: integer("finished_at", { mode: "timestamp" }),
-  description: text("description"),
-  createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(
-    sql`(unixepoch())`,
-  ),
-});
-
 export const gallery = sqliteTable("gallery", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   imageId: integer("image_id").notNull().references(() => media.id, {
@@ -155,8 +120,6 @@ const tables = {
   technologies,
   projectsToTechnologies,
   projectsToMedia,
-  workExperience,
-  education,
   gallery,
   releases,
   tracks,
@@ -190,20 +153,6 @@ export const dbRelations = defineRelations(tables, (r) => ({
     image: r.one.media({
       from: r.gallery.imageId,
       to: r.media.id,
-    }),
-  },
-  workExperience: {
-    logo: r.one.media({
-      from: r.workExperience.companyLogoId,
-      to: r.media.id,
-      optional: true,
-    }),
-  },
-  education: {
-    logo: r.one.media({
-      from: r.education.institutionLogoId,
-      to: r.media.id,
-      optional: true,
     }),
   },
   releases: {

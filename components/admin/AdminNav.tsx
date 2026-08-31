@@ -4,8 +4,6 @@ const TABS = [
   { value: "media", label: "Media" },
   { value: "gallery", label: "Gallery" },
   { value: "music", label: "Music" },
-  { value: "education", label: "Education" },
-  { value: "work-experience", label: "Work experience" },
   { value: "projects", label: "Projects" },
   { value: "site-settings", label: "Site settings" },
 ] as const;

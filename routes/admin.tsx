@@ -9,23 +9,17 @@ import { Button } from "@/components/ui/button.tsx";
 import { FaIcon } from "@/components/icon.tsx";
 import GalleryAdmin from "@/components/admin/GalleryAdmin.tsx";
 import MusicAdmin from "@/components/admin/MusicAdmin.tsx";
-import EducationAdmin from "@/components/admin/EducationAdmin.tsx";
-import WorkExperienceAdmin from "@/components/admin/WorkExperienceAdmin.tsx";
 import ProjectsAdmin from "@/components/admin/ProjectsAdmin.tsx";
 import MediaAdmin from "@/components/admin/MediaAdmin.tsx";
 import SiteSettingsAdmin from "@/components/admin/SiteSettingsAdmin.tsx";
 import { listGallery } from "@/lib/gallery.ts";
 import { listReleases } from "@/lib/releases.ts";
-import { listEducation } from "@/lib/education.ts";
-import { listWorkExperience } from "@/lib/work-experience.ts";
 import { listAllProjects } from "@/lib/projects.ts";
 import { listTechnologies } from "@/lib/technologies.ts";
 import { listMedia, type MediaItem } from "@/lib/media.ts";
 import { listSiteSettings } from "@/lib/site-settings.ts";
 import type { GalleryItem } from "@/lib/gallery.ts";
 import type { ReleaseItem } from "@/lib/releases.ts";
-import type { EducationItem } from "@/lib/education.ts";
-import type { WorkExperienceItem } from "@/lib/work-experience.ts";
 import type { ProjectItem } from "@/lib/projects.ts";
 import type { Technology } from "@/lib/technologies.ts";
 import type { SiteSetting } from "@/lib/site-settings.ts";
@@ -34,8 +28,6 @@ const TABS = [
   "media",
   "gallery",
   "music",
-  "education",
-  "work-experience",
   "projects",
   "site-settings",
 ] as const;
@@ -75,20 +67,6 @@ interface AdminData {
     trackEditId: number | null;
     trackNewReleaseId: number | null;
     trackConfirmDelete: boolean;
-  };
-  education?: {
-    items: EducationItem[];
-    images: MediaItem[];
-    editId: number | null;
-    isNew: boolean;
-    confirmDelete: boolean;
-  };
-  workExperience?: {
-    items: WorkExperienceItem[];
-    images: MediaItem[];
-    editId: number | null;
-    isNew: boolean;
-    confirmDelete: boolean;
   };
   projects?: {
     items: ProjectItem[];
@@ -166,28 +144,6 @@ export const handler = define.handlers({
         };
         return { data };
       }
-      case "education": {
-        const [items, images] = await Promise.all([
-          listEducation(),
-          listMedia("image"),
-        ]);
-        const data: AdminData = {
-          ...common,
-          education: { items, images, editId, isNew, confirmDelete },
-        };
-        return { data };
-      }
-      case "work-experience": {
-        const [items, images] = await Promise.all([
-          listWorkExperience(),
-          listMedia("image"),
-        ]);
-        const data: AdminData = {
-          ...common,
-          workExperience: { items, images, editId, isNew, confirmDelete },
-        };
-        return { data };
-      }
       case "projects": {
         const [items, images, technologies] = await Promise.all([
           listAllProjects(),
@@ -247,12 +203,6 @@ export default define.page<typeof handler>(function Admin({ data }) {
           <GalleryAdmin {...data.gallery} />
         )}
         {data.tab === "music" && data.music && <MusicAdmin {...data.music} />}
-        {data.tab === "education" && data.education && (
-          <EducationAdmin {...data.education} />
-        )}
-        {data.tab === "work-experience" && data.workExperience && (
-          <WorkExperienceAdmin {...data.workExperience} />
-        )}
         {data.tab === "projects" && data.projects && (
           <ProjectsAdmin {...data.projects} />
         )}
