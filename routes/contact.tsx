@@ -44,17 +44,12 @@ export default define.page<typeof handler>(function Contact({ data }) {
       <div class="flex flex-col gap-8 w-full">
         <section class="flex flex-col gap-3">
           <h1 class="text-4xl font-bold dark:text-zinc-100">Contact me</h1>
-          <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
-            Got a project in mind, a question or just want to say hi? Drop me a
-            message below, I read every one and try to reply quickly.
-          </p>
+          <div
+            class="markdown-content text-lg leading-relaxed text-zinc-700 dark:text-zinc-300"
+            // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
+            dangerouslySetInnerHTML={{ __html: data.contactInfoHtml }}
+          />
         </section>
-
-        <div
-          class="markdown-content text-base leading-relaxed text-zinc-700 dark:text-zinc-300"
-          // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
-          dangerouslySetInnerHTML={{ __html: data.contactInfoHtml }}
-        />
 
         <Card>
           <CardHeader>
