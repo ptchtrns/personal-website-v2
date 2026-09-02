@@ -5,6 +5,7 @@ import {
   faIdCardClip,
   faImages,
   faMoon,
+  faMusic,
   faSun,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -29,17 +30,23 @@ const socialMediaIcons: { url: string; icon: IconDefinition }[] = [
 const navItems: {
   title: string;
   url: string;
-  /** Prefix used to highlight this item for nested routes, e.g. media's tabs. */
+  /** Prefix used to highlight this item for nested routes. */
   matchPrefix?: string;
   icon: IconDefinition;
 }[] = [
   { title: "About me", url: "/", icon: faUser },
   { title: "Contact me", url: "/contact", icon: faIdCardClip },
   {
-    title: "Media",
+    title: "Photos",
     url: "/media/photos",
-    matchPrefix: "/media",
+    matchPrefix: "/media/photos",
     icon: faImages,
+  },
+  {
+    title: "Music",
+    url: "/media/music",
+    matchPrefix: "/media/music",
+    icon: faMusic,
   },
 ];
 
