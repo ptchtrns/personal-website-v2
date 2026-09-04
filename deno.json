@@ -47,7 +47,7 @@
     "@std/path": "jsr:@std/path@^1.1.6",
     "@std/media-types": "jsr:@std/media-types@^1.1.0",
     "zod": "jsr:@zod/zod@^4.4.3",
-    "@types/node": "npm:@types/node@^24"
+    "@types/node": "npm:@types/node@^26.4.1"
   },
   "compilerOptions": {
     "lib": ["dom", "dom.asynciterable", "dom.iterable", "deno.ns"],
