@@ -43,7 +43,7 @@ export function AdminFormDialog(
             <div>
               <h2 class="text-lg font-semibold leading-none">{title}</h2>
               {description && (
-                <p class="text-sm text-muted-foreground mt-1.5">
+                <p class="text-muted-foreground mt-1.5">
                   {description}
                 </p>
               )}

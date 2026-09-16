@@ -47,7 +47,7 @@ export function CardDescription(
   return (
     <p
       data-slot="card-description"
-      class={cn("text-muted-foreground text-sm", className)}
+      class={cn("text-muted-foreground", className)}
       {...props}
     />
   );

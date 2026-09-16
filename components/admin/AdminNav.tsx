@@ -31,7 +31,7 @@ export function AdminNav({ active }: { active: string }) {
             class={cn(
               "data-[state=active]:bg-background dark:data-[state=active]:text-foreground",
               "dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30",
-              "text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm",
+              "text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 font-medium whitespace-nowrap transition-[color,box-shadow] data-[state=active]:shadow-sm",
             )}
           >
             {tab.label}

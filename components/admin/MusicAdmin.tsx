@@ -65,7 +65,7 @@ function TrackEditor(
   return (
     <div class="flex flex-col gap-3 border-t border-neutral-200 dark:border-neutral-700 pt-3">
       <div class="flex items-center justify-between gap-3">
-        <p class="text-sm font-medium">Tracks</p>
+        <p class="font-medium">Tracks</p>
         <Button
           href={`/admin?tab=music&trackNew=${release.id}#release-${release.id}`}
           size="sm"
@@ -78,7 +78,7 @@ function TrackEditor(
       <div class="flex flex-col gap-2">
         {release.tracks.map((track) => (
           <div key={track.id} class="flex items-center justify-between gap-3">
-            <p class="text-sm truncate">{track.title}</p>
+            <p class="truncate">{track.title}</p>
             <div class="flex gap-2 shrink-0">
               <Button
                 href={`/admin?tab=music&trackEdit=${track.id}#release-${release.id}`}
@@ -98,7 +98,7 @@ function TrackEditor(
           </div>
         ))}
         {release.tracks.length === 0 && (
-          <p class="text-sm text-neutral-500">No tracks yet.</p>
+          <p class="text-neutral-500">No tracks yet.</p>
         )}
       </div>
 

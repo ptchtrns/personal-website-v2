@@ -12,7 +12,7 @@ export function DeleteConfirm(
 ) {
   return (
     <div class="flex flex-col gap-3 p-3 border border-red-300 dark:border-red-900 rounded-lg bg-red-50 dark:bg-red-950/30">
-      <p class="text-sm">Delete {label}? This can't be undone.</p>
+      <p>Delete {label}? This can't be undone.</p>
       <div class="flex gap-2">
         <form method="POST" action={action}>
           <Button type="submit" size="sm" variant="destructive">

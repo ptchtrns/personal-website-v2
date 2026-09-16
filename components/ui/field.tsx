@@ -91,7 +91,7 @@ export function FieldTitle({ class: className, ...props }: DivProps) {
     <div
       data-slot="field-label"
       class={cn(
-        "flex w-fit items-center gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50",
+        "flex w-fit items-center gap-2 leading-snug font-medium group-data-[disabled=true]/field:opacity-50",
         className,
       )}
       {...props}
@@ -119,7 +119,7 @@ export function FieldDescription(
     <p
       data-slot="field-description"
       class={cn(
-        "text-muted-foreground text-sm leading-normal font-normal group-has-[[data-orientation=horizontal]]/field:text-balance",
+        "text-muted-foreground leading-normal font-normal group-has-[[data-orientation=horizontal]]/field:text-balance",
         "last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5",
         "[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
         className,
@@ -141,7 +141,6 @@ export function FieldLegend(
       class={cn(
         "mb-3 font-medium",
         "data-[variant=legend]:text-base",
-        "data-[variant=label]:text-sm",
         className,
       )}
       {...props}
@@ -158,7 +157,7 @@ export function FieldError(
     <div
       role="alert"
       data-slot="field-error"
-      class={cn("text-destructive text-sm font-normal", className)}
+      class={cn("text-destructive font-normal", className)}
       {...props}
     >
       {children}
@@ -174,7 +173,7 @@ export function FieldSeparator(
       data-slot="field-separator"
       data-content={!!children}
       class={cn(
-        "relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2",
+        "relative -my-2 h-5 group-data-[variant=outline]/field-group:-mb-2",
         className,
       )}
       {...props}

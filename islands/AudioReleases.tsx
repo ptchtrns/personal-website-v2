@@ -56,7 +56,7 @@ export default function AudioReleases({
                   </Badge>
                 </div>
                 {release.description && (
-                  <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                  <p class="text-neutral-600 dark:text-neutral-400">
                     {release.description}
                   </p>
                 )}
@@ -111,7 +111,7 @@ export default function AudioReleases({
                       </span>
                       <p
                         class={cn(
-                          "text-sm font-medium truncate min-w-0 flex-1",
+                          "font-medium truncate min-w-0 flex-1",
                           isActive && "text-neutral-950 dark:text-white",
                         )}
                       >

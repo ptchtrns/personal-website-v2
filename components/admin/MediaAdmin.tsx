@@ -122,7 +122,7 @@ export default function MediaAdmin(
         </CardHeader>
         <CardContent class="flex flex-col gap-4">
           {items.length === 0
-            ? <p class="text-sm text-neutral-500">No media yet.</p>
+            ? <p class="text-neutral-500">No media yet.</p>
             : (
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {items.map((item) => (

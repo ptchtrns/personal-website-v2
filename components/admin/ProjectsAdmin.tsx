@@ -141,14 +141,14 @@ export default function ProjectsAdmin(
                   </Field>
 
                   <div class="flex gap-6">
-                    <label class="flex items-center gap-2 text-sm">
+                    <label class="flex items-center gap-2">
                       <Checkbox
                         name="isPinned"
                         checked={editing?.isPinned ?? false}
                       />
                       Pinned
                     </label>
-                    <label class="flex items-center gap-2 text-sm">
+                    <label class="flex items-center gap-2">
                       <Checkbox
                         name="isActive"
                         checked={editing?.isActive ?? true}

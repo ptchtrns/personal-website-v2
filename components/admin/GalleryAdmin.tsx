@@ -107,7 +107,7 @@ export default function GalleryAdmin(
                 alt={item.alt ?? ""}
                 class="h-32 w-full object-cover rounded"
               />
-              <p class="text-sm truncate">{item.alt || "—"}</p>
+              <p class="truncate">{item.alt || "—"}</p>
               <div class="flex gap-2">
                 <Button
                   href={`/admin?tab=gallery&edit=${item.id}`}

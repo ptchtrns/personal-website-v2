@@ -110,7 +110,7 @@ export default function AudioPlayer() {
             )}
 
             <div class="min-w-0 w-28 sm:w-48 shrink-0">
-              <p class="text-sm font-medium truncate">{track.title}</p>
+              <p class="font-medium truncate">{track.title}</p>
               <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                 {track.releaseTitle}
               </p>
@@ -167,7 +167,7 @@ export default function AudioPlayer() {
             <div class="hidden md:flex items-center gap-2 w-24 shrink-0">
               <FaIcon
                 icon={volume.value === 0 ? faVolumeXmark : faVolumeHigh}
-                class="text-neutral-500 dark:text-neutral-400 text-sm shrink-0"
+                class="text-neutral-500 dark:text-neutral-400 shrink-0"
               />
               <Slider
                 value={volume.value}

@@ -120,7 +120,7 @@ export default define.page<typeof handler>(function Contact({ data }) {
                 Send message
               </Button>
 
-              <p class="text-sm text-neutral-500 dark:text-neutral-400">
+              <p class="text-neutral-500 dark:text-neutral-400">
                 Your info will only be used to reply to you.
               </p>
             </form>

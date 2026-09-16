@@ -95,7 +95,7 @@ function ProjectModal(
 
           {project.changelog && (
             <Collapsible open={changelogOpen} onOpenChange={setChangelogOpen}>
-              <CollapsibleTrigger class="flex items-center gap-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100">
+              <CollapsibleTrigger class="flex items-center gap-1.5 font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100">
                 <FaIcon
                   icon={faChevronDown}
                   class={`text-xs transition-transform ${
@@ -105,7 +105,7 @@ function ProjectModal(
                 Changelog
               </CollapsibleTrigger>
               <CollapsibleContent class="pt-2">
-                <p class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-pre-line">
+                <p class="text-neutral-500 dark:text-neutral-400 whitespace-pre-line">
                   {project.changelog}
                 </p>
               </CollapsibleContent>
@@ -232,7 +232,7 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
                     {project.name}
                   </h3>
                   {project.shortOverview && (
-                    <p class="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2">
+                    <p class="text-neutral-700 dark:text-neutral-300 line-clamp-2">
                       {project.shortOverview}
                     </p>
                   )}
