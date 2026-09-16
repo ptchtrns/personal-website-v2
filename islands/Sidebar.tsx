@@ -121,7 +121,9 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
               <h2 class="font-bold text-xl dark:text-neutral-100">
                 Nikolai Zakharov
               </h2>
-              <span class="text-neutral-700 dark:text-neutral-400">@ptchtrns</span>
+              <span class="text-neutral-700 dark:text-neutral-400">
+                @ptchtrns
+              </span>
             </div>
           </div>
 
