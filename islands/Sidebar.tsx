@@ -88,9 +88,9 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open menu"
-        class="lg:hidden fixed top-6 left-0 z-50 rounded-l-none rounded-r-lg border-l-0 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 active:scale-95"
+        class="lg:hidden fixed top-6 left-0 z-50 rounded-l-none rounded-r-lg border-l-0 bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600 active:scale-95"
       >
-        <FaIcon icon={faBars} class="text-zinc-800 dark:text-zinc-200" />
+        <FaIcon icon={faBars} class="text-neutral-800 dark:text-neutral-200" />
       </Button>
 
       <div
@@ -108,7 +108,7 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-120",
         ].join(" ")}
       >
-        <Card class="bg-white dark:bg-zinc-900 rounded-[17px] flex flex-col p-3">
+        <Card class="bg-white dark:bg-neutral-900 rounded-[17px] flex flex-col p-3">
           <div class="px-3 pt-2 flex flex-col gap-2.5">
             {pfpSrc && (
               <img
@@ -118,10 +118,10 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
               />
             )}
             <div>
-              <h2 class="font-bold text-xl dark:text-zinc-100">
+              <h2 class="font-bold text-xl dark:text-neutral-100">
                 Nikolai Zakharov
               </h2>
-              <span class="text-zinc-700 dark:text-zinc-400">@ptchtrns</span>
+              <span class="text-neutral-700 dark:text-neutral-400">@ptchtrns</span>
             </div>
           </div>
 
@@ -141,11 +141,11 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
                     class={[
                       "w-full py-1.5 px-3 flex gap-4",
                       active
-                        ? "font-bold text-zinc-950 dark:text-white"
-                        : "text-zinc-700 dark:text-zinc-300",
-                      "hover:text-zinc-950 dark:hover:text-white",
-                      "hover:bg-linear-to-r from-zinc-100 via-zinc-100 to-zinc-50 dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-900",
-                      "border border-transparent hover:border-zinc-200 dark:hover:border-zinc-600",
+                        ? "font-bold text-neutral-950 dark:text-white"
+                        : "text-neutral-700 dark:text-neutral-300",
+                      "hover:text-neutral-950 dark:hover:text-white",
+                      "hover:bg-linear-to-r from-neutral-100 via-neutral-100 to-neutral-50 dark:from-neutral-800 dark:via-neutral-800 dark:to-neutral-900",
+                      "border border-transparent hover:border-neutral-200 dark:hover:border-neutral-600",
                       "rounded-lg active:scale-99 transition-all",
                     ].join(" ")}
                   >
@@ -180,15 +180,15 @@ export default function Sidebar({ path, pfpSrc }: SidebarProps) {
         </Card>
 
         <div class="flex justify-between mt-4">
-          <Card class="bg-white dark:bg-zinc-900 rounded-[17px] flex flex-row p-1 gap-0">
+          <Card class="bg-white dark:bg-neutral-900 rounded-[17px] flex flex-row p-1 gap-0">
             {themes.map((theme) => (
               <Button
                 key={theme.theme}
                 variant="ghost"
                 size="icon-sm"
                 class={activeTheme === theme.theme
-                  ? "bg-zinc-200 dark:bg-zinc-700 font-bold text-zinc-950 dark:text-white"
-                  : "text-zinc-500 dark:text-zinc-500"}
+                  ? "bg-neutral-200 dark:bg-neutral-700 font-bold text-neutral-950 dark:text-white"
+                  : "text-neutral-500 dark:text-neutral-500"}
                 aria-label={`Use ${theme.theme} theme`}
                 onClick={() => {
                   updateTheme(theme.theme);

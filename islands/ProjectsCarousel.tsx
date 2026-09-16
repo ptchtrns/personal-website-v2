@@ -75,19 +75,19 @@ function ProjectModal(
         )}
 
         <div class="flex flex-col gap-3">
-          <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+          <h3 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
             {project.name}
           </h3>
 
           {project.shortOverview && (
-            <p class="text-zinc-700 dark:text-zinc-300">
+            <p class="text-neutral-700 dark:text-neutral-300">
               {project.shortOverview}
             </p>
           )}
 
           {project.descriptionHtml && (
             <div
-              class="markdown-content text-zinc-700 dark:text-zinc-300"
+              class="markdown-content text-neutral-700 dark:text-neutral-300"
               // deno-lint-ignore react-no-danger -- admin-authored markdown, rendered server-side
               dangerouslySetInnerHTML={{ __html: project.descriptionHtml }}
             />
@@ -95,7 +95,7 @@ function ProjectModal(
 
           {project.changelog && (
             <Collapsible open={changelogOpen} onOpenChange={setChangelogOpen}>
-              <CollapsibleTrigger class="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100">
+              <CollapsibleTrigger class="flex items-center gap-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100">
                 <FaIcon
                   icon={faChevronDown}
                   class={`text-xs transition-transform ${
@@ -105,7 +105,7 @@ function ProjectModal(
                 Changelog
               </CollapsibleTrigger>
               <CollapsibleContent class="pt-2">
-                <p class="text-sm text-zinc-500 dark:text-zinc-400 whitespace-pre-line">
+                <p class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-pre-line">
                   {project.changelog}
                 </p>
               </CollapsibleContent>
@@ -210,7 +210,7 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
                 {project.isPinned && (
                   <FaIcon
                     icon={faThumbtack}
-                    class="absolute top-2 right-2 z-10 text-zinc-100 drop-shadow"
+                    class="absolute top-2 right-2 z-10 text-neutral-100 drop-shadow"
                   />
                 )}
                 {image
@@ -223,16 +223,16 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
                     />
                   )
                   : (
-                    <div class="w-full aspect-video flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-400">
+                    <div class="w-full aspect-video flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-400">
                       <FaIcon icon={faImages} class="text-3xl" />
                     </div>
                   )}
                 <CardContent class="flex flex-col gap-1.5 py-4">
-                  <h3 class="font-bold text-zinc-900 dark:text-zinc-100">
+                  <h3 class="font-bold text-neutral-900 dark:text-neutral-100">
                     {project.name}
                   </h3>
                   {project.shortOverview && (
-                    <p class="text-sm text-zinc-700 dark:text-zinc-300 line-clamp-2">
+                    <p class="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2">
                       {project.shortOverview}
                     </p>
                   )}

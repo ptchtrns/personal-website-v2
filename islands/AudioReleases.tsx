@@ -56,7 +56,7 @@ export default function AudioReleases({
                   </Badge>
                 </div>
                 {release.description && (
-                  <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400">
                     {release.description}
                   </p>
                 )}
@@ -76,7 +76,7 @@ export default function AudioReleases({
                 </div>
               )}
 
-              <div class="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-700">
+              <div class="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-700">
                 {release.tracks.map((track, index) => {
                   const isActive = currentTrack.value?.id === track.id;
                   const playerTracks: PlayerTrack[] = release.tracks.map((
@@ -106,13 +106,13 @@ export default function AudioReleases({
                           class="text-xs"
                         />
                       </Button>
-                      <span class="text-xs text-zinc-400 dark:text-zinc-500 w-5 shrink-0 text-right">
+                      <span class="text-xs text-neutral-400 dark:text-neutral-500 w-5 shrink-0 text-right">
                         {index + 1}
                       </span>
                       <p
                         class={cn(
                           "text-sm font-medium truncate min-w-0 flex-1",
-                          isActive && "text-zinc-950 dark:text-white",
+                          isActive && "text-neutral-950 dark:text-white",
                         )}
                       >
                         {track.title}

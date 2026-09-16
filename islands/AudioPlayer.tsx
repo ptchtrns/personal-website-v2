@@ -99,7 +99,7 @@ export default function AudioPlayer() {
       />
 
       {track && (
-        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md">
+        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200 dark:border-neutral-800 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md">
           <div class="mx-auto 2xl:max-w-[1600px] flex flex-wrap md:flex-nowrap items-center gap-x-3 gap-y-2 sm:gap-x-4 px-4 sm:px-6 py-2.5 md:py-3">
             {track.coverSrc && (
               <img
@@ -111,7 +111,7 @@ export default function AudioPlayer() {
 
             <div class="min-w-0 w-28 sm:w-48 shrink-0">
               <p class="text-sm font-medium truncate">{track.title}</p>
-              <p class="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+              <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                 {track.releaseTitle}
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function AudioPlayer() {
             </div>
 
             <div class="order-1 w-full md:order-none md:w-auto md:flex-1 flex items-center gap-2 min-w-0">
-              <span class="text-xs text-zinc-500 dark:text-zinc-400 tabular-nums w-10 text-right">
+              <span class="text-xs text-neutral-500 dark:text-neutral-400 tabular-nums w-10 text-right">
                 {formatTime(currentTime.value)}
               </span>
               <Slider
@@ -159,7 +159,7 @@ export default function AudioPlayer() {
                 onValueChange={handleSeek}
                 aria-label="Seek"
               />
-              <span class="text-xs text-zinc-500 dark:text-zinc-400 tabular-nums w-10">
+              <span class="text-xs text-neutral-500 dark:text-neutral-400 tabular-nums w-10">
                 {formatTime(duration.value)}
               </span>
             </div>
@@ -167,7 +167,7 @@ export default function AudioPlayer() {
             <div class="hidden md:flex items-center gap-2 w-24 shrink-0">
               <FaIcon
                 icon={volume.value === 0 ? faVolumeXmark : faVolumeHigh}
-                class="text-zinc-500 dark:text-zinc-400 text-sm shrink-0"
+                class="text-neutral-500 dark:text-neutral-400 text-sm shrink-0"
               />
               <Slider
                 value={volume.value}

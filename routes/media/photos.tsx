@@ -26,8 +26,8 @@ export default define.page<typeof handler>(function Photos({ data }) {
     <MainDisplay>
       <div class="flex flex-col gap-6">
         <section class="flex flex-col gap-3">
-          <h1 class="text-4xl font-bold dark:text-zinc-100">Photos</h1>
-          <p class="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
+          <h1 class="text-4xl font-bold dark:text-neutral-100">Photos</h1>
+          <p class="text-lg leading-relaxed text-neutral-700 dark:text-neutral-300">
             A repository of photos I have taken.
           </p>
         </section>
@@ -35,7 +35,7 @@ export default define.page<typeof handler>(function Photos({ data }) {
           ? <div class="text-red-600">{data.error}</div>
           : data.gallery.length === 0
           ? (
-            <div class="text-zinc-900 dark:text-zinc-100">
+            <div class="text-neutral-900 dark:text-neutral-100">
               No photos found
             </div>
           )

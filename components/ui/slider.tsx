@@ -32,9 +32,9 @@ export function Slider(
         // Taller box than the visible track widens the click/drag target
         // without thickening the line itself.
         "h-5 w-full cursor-pointer appearance-none bg-transparent",
-        "accent-zinc-900 dark:accent-zinc-200",
-        "[&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-zinc-200 dark:[&::-webkit-slider-runnable-track]:bg-zinc-700",
-        "[&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-zinc-200 dark:[&::-moz-range-track]:bg-zinc-700",
+        "accent-neutral-900 dark:accent-neutral-200",
+        "[&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-neutral-200 dark:[&::-webkit-slider-runnable-track]:bg-neutral-700",
+        "[&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-neutral-200 dark:[&::-moz-range-track]:bg-neutral-700",
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
