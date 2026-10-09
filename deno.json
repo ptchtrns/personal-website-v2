@@ -20,8 +20,8 @@
   "imports": {
     "@/": "./",
     "fresh": "jsr:@fresh/core@^2.3.3",
-    "preact": "npm:preact@^10.29.8",
-    "preact/hooks": "npm:preact@^10.29.8/hooks",
+    "preact": "npm:preact@^11.0.0",
+    "preact/hooks": "npm:preact@^11.0.0/hooks",
     "@preact/signals": "npm:@preact/signals@^2.11.1",
     "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.1.2",
     "vite": "npm:vite@^7.1.4",
@@ -47,7 +47,7 @@
     "@std/path": "jsr:@std/path@^1.1.6",
     "@std/media-types": "jsr:@std/media-types@^1.1.0",
     "zod": "jsr:@zod/zod@^4.4.3",
-    "@types/node": "npm:@types/node@^24"
+    "@types/node": "npm:@types/node@^26.6.4"
   },
   "compilerOptions": {
     "lib": ["dom", "dom.asynciterable", "dom.iterable", "deno.ns"],
